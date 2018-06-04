@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="busarea_active_main">
-            <div class="tab_header busarea-active-title">
+            <!-- <div class="tab_header busarea-active-title">
                 <span>活动状态 : </span>
                 <el-select v-model="statuselectvalued" placeholder="请选择" size="small">
                     <el-option
@@ -21,21 +21,34 @@
                     </el-option>
                 </el-select>
                 <el-button class="query_button" type="primary" size="small" @click="Dquery">搜 索</el-button>
-            </div>
+            </div> -->
             <div class="pop-busarea-section" v-for="message in goldList">
                 <detail_item :message="message"></detail_item>
             </div>
         </div>
+        <div class="block">
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="1"
+            :page-sizes="[10]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="listtotal">
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
-    import Vouchers from "./Vouchers.vue";
-    import {getTicketList, getShopLists, getLoginStatus, getGoldList, getProductList} from '../../../api/api';
+    import Vouchers from "./cashVouchers.vue";
+    import {getTicketList, getShopLists, getLoginStatus, getGoldList, getProductList,cashDuctibleList} from '../../../api/api';
 
     export default {
         data() {
             return {
                 goldList: '',
+                listpage:'',
+                listtotal:0,
                 shopValued: '',
                 shopselectdatad: [{main_shop_name: '全部门店', id: ''}],
                 shopselectvalued: '',
@@ -46,6 +59,10 @@
                     {value: '3', label: '待进行'}
                 ],
                 statuselectvalued: '',
+                currentPage1: 5,
+                currentPage2: 5,
+                currentPage3: 5,
+                currentPage4: 4
             }
         },
         mounted: function () {
@@ -78,20 +95,30 @@
                 this.getGoldLists(data);
             },
             getGoldLists: function (data) {
-                getGoldList(data)
-                    .then(res => {
+                cashDuctibleList(data).then(res => {
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'})
                         }
-                        this.goldList = res.content.resultList.filter(e =>{
-                            if(e.voucher_type == "代金券"){
-                                return e
-                            }
-                            
-                        });
-
+                        this.goldList = res.content.result;
+                        this.listtotal = res.content.totalCount
                     })
             },
+            handleSizeChange(val) {
+                let datad = this.qs.stringify({
+                    pageNumber: val
+                });
+                this.getGoldLists(datad);
+
+            },
+            handleCurrentChange(val) {
+                let datad = this.qs.stringify({
+                    pageNumber: val
+                });
+                this.getGoldLists(datad);
+
+
+
+            }
         },
         components: {
             detail_item: Vouchers
@@ -373,5 +400,18 @@
         outline: 1px solid grren;
         background: url("../../../assets/images/end.png") 50% 50% no-repeat;
     }
-
+    .pop-nopay{
+        width: 150px;
+        height: 150px;
+        margin-left: 28%;
+        position: absolute;
+        top: 0;
+        outline: 1px solid grren;
+        background: url("../../../assets/images/noPay.png") 50% 50% no-repeat;
+    }
+    .el-pagination{
+        margin: 20px 0;
+        text-align: right;
+        margin-right: 50px;
+    }
 </style>

@@ -11,6 +11,9 @@ import Loginsq from './views/login_sq.vue';
 import MemberCardManage from './views/member-marketing/membercard-manage/MemberCardManage.vue';
 //会员列表
 import MemberList from './views/member-marketing/member-list/MemberList.vue';
+// 会员积分管理
+import IntegralManage from './views/member-marketing/integralManage/integralManage.vue';
+
 
 /*商圈用户管理*/
 //商户列表
@@ -29,11 +32,20 @@ import Consume from './views/marketing-activity/publicpraise-activity/consume.vu
 import Consumedetail from './views/marketing-activity/publicpraise-activity/consumedetail.vue';
 import Scancode from './views/marketing-activity/publicpraise-activity/scancode.vue';
 import Scancodedetail from './views/marketing-activity/publicpraise-activity/scancodedetail.vue';
+
+//积分商城
+
+import IntergralShopMain from './views/marketing-activity/integral-Shopping-Kind/intergralShopMain.vue';
+import IntegralShopping from './views/marketing-activity/integral-Shopping-Kind/integralShopping.vue';
+import ExchangeHistry from './views/marketing-activity/integral-Shopping-Kind/exchangeHistry.vue';
+import CheckCommodity from './views/marketing-activity/integral-Shopping-Kind/checkCommodity.vue';
+
 //积分换礼
 import codeGiftMain from './views/marketing-activity/code-exchange-gift/codeGiftMain.vue';
 import exchangeGifePage from './views/marketing-activity/code-exchange-gift/exchangeGifePage.vue';
 import exchangeGiftRecord from './views/marketing-activity/code-exchange-gift/exchangeGiftRecord.vue';
 import presentLibrary from './views/marketing-activity/code-exchange-gift/presentLibrary.vue';
+
 //积分大转盘
 import TurntableSetting from './views/marketing-activity/turntable/turntableSetting';
 import Setting from './views/marketing-activity/turntable/setting.vue';
@@ -47,6 +59,11 @@ import IntegralFornow from './views/marketing-activity/creating-activities/Integ
 import IntegralPromotion from './views/marketing-activity/creating-activities/IntegralPromotion.vue';
 import AloneStamps from './views/marketing-activity/creating-activities/AloneStamps.vue';
 import ChitCreation from './views/marketing-activity/creating-activities/ChitCreation.vue';
+import RegisterGiveGifts from './views/marketing-activity/creating-activities/registerGiveGifts.vue';
+import Disconunticket from './views/marketing-activity/creating-activities/discounticket.vue';
+import CommuteActualToTicket from './views/marketing-activity/creating-activities/commuteActualToTicket.vue';
+import CashDuctible from './views/marketing-activity/creating-activities/cashDuctible.vue';
+
 //活动列表
 import Active from './views/marketing-activity/activity-list/activeList.vue';
 import RewardPromotion from './views/marketing-activity/activity-list/reward-promotion.vue';
@@ -54,15 +71,21 @@ import VoucherList from './views/marketing-activity/activity-list/voucherList.vu
 import StampsList from './views/marketing-activity/activity-list/stampsList.vue';
 import IntegralList from './views/marketing-activity/activity-list/integralList.vue';
 import Viewdetails from './views/marketing-activity/activity-list/viewdetails.vue';
+import cashViewdetails from './views/marketing-activity/activity-list/cashViewdetails.vue';
 import Activefiguredetails from './views/marketing-activity/activity-list/activefiguredetails.vue';
 import BonusPoints from './views/marketing-activity/activity-list/bonusPoints.vue';
+import RegisterList from './views/marketing-activity/activity-list/registerList.vue';
+import DisconunticketList from './views/marketing-activity/activity-list/discounticketList.vue';
+import CommuteActualToTicketList from './views/marketing-activity/activity-list/commuteActualToTicketList.vue';
+import CashDuctibleList from './views/marketing-activity/activity-list/cashDuctibleList.vue';
 
 /*商圈账单*/
 //活动流水
 import ActivityWater from './views/business-list/activity-water/ActivityWater.vue';
 //账单汇总
 import CheckCollect from './views/business-list/check-collect/CheckCollect.vue';
-
+//支付宝交易通知
+import DealMessage from './views/business-list/deal-message/dealMessage.vue'
 let routes = [{
     path: '/',
     name: 'login',
@@ -94,7 +117,8 @@ let routes = [{
         iconCls: 'el-icon-message', //图标样式class
         children: [
             {path: '/memberCardManage', component: MemberCardManage, name: '会员卡管理'},
-            {path: '/memberList', component: MemberList, name: '会员列表'}
+            {path: '/memberList', component: MemberList, name: '会员列表'},
+            {path: '/integralManage', component: IntegralManage, name: '会员积分管理'}
         ]
     },
     {
@@ -116,12 +140,17 @@ let routes = [{
             path: '/active',
             component: MakeActivity,
             name: '活动创建',
-            redirect: '/integralPromotion',
+            redirect: '/chitCreation',
             children: [
                 {path: '/integralPromotion', component: IntegralPromotion, name: '创建积分促销活动'},
                 {path: '/integralFornow', component: IntegralFornow, name: '创建积分抵现活动'},
                 {path: '/alonestamps', component: AloneStamps, name: '创建单品券'},
                 {path: '/chitCreation', component: ChitCreation, name: '创建代金券'},
+                {path: '/registerGiveGifts', component: RegisterGiveGifts, name: '创建注册送券'},
+                {path: '/discounticket', component: Disconunticket, name: '创建折扣券'},
+                {path: '/commuteActualToTicket', component: CommuteActualToTicket, name: '实物换购券'},
+                {path: '/cashDuctible', component: CashDuctible, name: '现金低价券'},
+                
             ]
         }, {
             path:'/redPacket',
@@ -143,12 +172,16 @@ let routes = [{
                 path: '/activityList',
                 component: Active,
                 name: '活动列表',
-                redirect: '/rewardPromotion',
+                redirect: '/voucherList',
                 children: [
                     {path: '/voucherList', component: VoucherList, name: '代金券活动'},
                     {path: '/rewardPromotion', component: RewardPromotion, name: '积分促销活动'},
                     {path: '/stampsList', component: StampsList, name: '单品券活动'},
                     {path: '/integralList', component: IntegralList, name: '积分抵现活动'},
+                    {path: '/registerList', component: RegisterList, name: '注册送券活动'},
+                    {path: '/discounticketList', component: DisconunticketList, name: '折扣券活动'},
+                    {path: '/commuteActualToTicketList', component: CommuteActualToTicketList, name: '实物换购券活动'},
+                    {path: '/cashDuctibleList', component: CashDuctibleList, name: '现金低价券活动'},
                 ]
             },
             {
@@ -161,6 +194,18 @@ let routes = [{
                     {path: "/exchangeGiftRecord", component: exchangeGiftRecord, name: "会员兑换记录"},
                     {path: "/exchangeGifePage", component: exchangeGifePage, name: '礼品核销'},
                 ]
+            },
+            {
+                path: '/intergralShopMain',
+                component:IntergralShopMain,
+                name:'积分商城',
+                redirect: '/integralShopping',
+                children: [
+                    {path: "/integralShopping", component: IntegralShopping, name: '商品管理'},
+                    {path: "/exchangeHistry", component: ExchangeHistry, name: "兑换记录"},
+                    {path: "/checkCommodity", component: CheckCommodity, name: "核销商品"}
+                ]
+
             },
             {
                 path: '/turntableSetting',
@@ -187,6 +232,7 @@ let routes = [{
                 ]
             },
             {path: '/viewdetails', component: Viewdetails, name: '代金券/单品券详情'}, 
+            {path: '/cashViewdetails', component: cashViewdetails, name: '现金抵价券/单品券详情'}, 
             {path: '/activefiguredetails', component: Activefiguredetails, name: '积分抵现详情'}, 
             {path: '/bonusPoints', component: BonusPoints, name: '积分促销详情'}, 
             {path: '/consume', component: Consume, name: '消费送券'},
@@ -204,7 +250,8 @@ let routes = [{
         iconCls: 'el-icon-document',
         children: [
             {path: '/activityWater', component: ActivityWater, name: '活动流水'},
-            {path: '/checkCollect', component: CheckCollect, name: '账单汇总'}
+            {path: '/checkCollect', component: CheckCollect, name: '账单汇总'},
+            {path: '/dealMessage', component: DealMessage, name: '支付宝交易通知'}
         ]
     },
     {

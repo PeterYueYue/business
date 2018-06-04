@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-
-
-
 // only run one 
 
 // npm run build 需要修改
@@ -10,22 +7,13 @@ import axios from 'axios';
 //测试环境部署打包
 // let base = 'http://139.196.177.162:80';
 // let base = 'http://192.168.1.179:8080';
+// let base = 'http://192.168.1.158:8080';
 
 //正式服务器环境部署打包
-let base = 'http://b.tingzhijun.com';
+// let base = 'http://b.tingzhijun.com';
 
 //本地运行
-// let base = '';
-
- 
-
-
-
-
-
-
-
-
+let base = '';  
 
 //登录接口
 export const requestLogin = params => {
@@ -285,4 +273,102 @@ export const gettruephone = params =>{
 //获取商圈行业积分比例
 export const getRateByCircle = params =>{
     return axios.post(`${base}/business/business_circle!members.action`, params).then(res => res.data);
+}
+//获取支付宝交易通知
+export const getDealMessage = params =>{
+    return axios.post(`${base}/business/business_point_notify!pointNotifyList.action`, params).then(res => res.data);
+}
+//注册送券活动创建
+export const submitRegister = params =>{
+    return axios.post(`${base}/business/business_circle_voucher!saveCircleVoucher.action`,params).then(res => res.data);
+}
+//注册送券活动列表
+export const getRegisterList = params =>{
+    return axios.post(`${base}/business/business_circle_voucher!getListByBusiness.action`,params).then(res => res.data);
+}
+//下架注册送券
+export const disabledRegister = params =>{
+    return axios.post(`${base}/business/business_circle_voucher!offLine.action`,params).then(res => res.data);
+}
+
+//上传Logo
+export const upImages = params =>{
+    return axios.post(`${base}/business/business/file!fileUpload.action`,params).then(res => res.data);
+}
+
+//积分管理员列表
+export const getintegralManagelist = params =>{
+    return axios.post(`${base}/business/business_pointer!pointerList.action`,params).then(res => res.data);
+}
+//积分管理列表 状态启用
+export const enablePointer = params =>{
+    return axios.post(`${base}/business/business_pointer!enablePointer.action`,params).then(res => res.data);
+}
+
+//积分管理列表 状态禁用
+export const disablePointer = params =>{
+    return axios.post(`${base}/business/business_pointer!disablePointer.action`,params).then(res => res.data);
+}
+// 积分管理员列表 新增
+export const addvipUser = params =>{
+    return axios.post(`${base}/business/business_pointer!savePointer.action`,params).then(res => res.data);
+}
+// 积分管理员列表 删除
+export const deletevipUser = params =>{
+    return axios.post(`${base}/business/business_pointer!delPointer.action`,params).then(res => res.data);
+}
+/////////////
+// 营销活动 现金抵价券 创建
+export const creatCashDuctible = params =>{
+    return axios.post(`${base}/business/cash/voucher.jhtml`,params).then(res => res.data);
+}
+// 营销活动 现金抵价券 门店列表
+export const getstorelist = params =>{
+    return axios.post(`${base}/business/get/shop_info.jhtml`,params).then(res => res.data);
+}
+// 营销活动 现金抵价券  活动列表
+export const cashDuctibleList = params =>{
+    return axios.post(`${base}/business/get/template/list.jhtml`,params).then(res => res.data);
+}
+// 营销活动 现金抵价券  详情页
+export const cashItemInfo = params =>{
+    return axios.post(`${base}/business/get/template/one.jhtml`,params).then(res => res.data);
+}
+// 营销活动 现金抵价券  券下架
+export const cashItemLower = params =>{
+    return axios.post(`${base}/business/get/template/lower.jhtml`,params).then(res => res.data);
+}
+//////////////
+
+// 营销活动-积分商城- 积分操作记录
+export const exchangehistryList = params =>{
+    return axios.post(`${base}/business/business_product_log!getProductLogList.action`,params).then(res => res.data);
+}
+// 营销活动-积分商城-列表
+export const integralStoreList = params =>{
+    return axios.post(`${base}/business/business_product!getProductList.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-商品上架
+export const upPutAway = params => {
+    return axios.post(`${base}/business/business_product!productUpBatch.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-商品下架
+export const downSoldOut = params => {
+    return axios.post(`${base}/business/business_product!productDownBatch.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-商品下架
+export const deleteAction= params => {
+    return axios.post(`${base}/business/business_product!productDelBatch.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-位置排序码
+export const sort= params => {
+    return axios.post(`${base}/business/business_product!productShowOrder.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-新增商品-券分类
+export const addtype= params => {
+    return axios.post(`${base}/business/business_product!getInnerVoucherListByType.action`,params).then(res => res.data);
+}
+//营销活动-积分商城-新增商品-券详情
+export const ticketInfo= params => {
+    return axios.post(`${base}/business/business_product!getInnerVoucherByItemId.action`,params).then(res => res.data);
 }

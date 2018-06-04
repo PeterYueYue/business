@@ -84,7 +84,9 @@
                             this.$router.push({path: '/login'})
                         }
                         this.goldList = res.content.resultList.filter(e =>{
-                            if(e.voucher_type == "代金券"){
+
+                            if(e.voucher_type == "折扣券"){
+                                e.amount = e.discount
                                 return e
                             }
                             

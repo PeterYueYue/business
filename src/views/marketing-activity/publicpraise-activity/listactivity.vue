@@ -69,7 +69,7 @@
                     </el-table-column>
                     <el-table-column prop="play" label="操作">
                         <template scope="scope">
-                            <el-button v-if="scope.row.offline == '0'" @click="closeactive(scope.row.id)"  type="text" size="small">结束<span style="color:#333"> | </span></el-button>
+                            <el-button v-if="scope.row.offline == '0' && scope.row.investmentStatus != 3 " @click="closeactive(scope.row.id)"  type="text" size="small">结束<span style="color:#333"> | </span></el-button>
                             <router-link :to="{path:'consumedetail',query:{id:scope.row.id}}">
                                 <el-button  type="text" size="small">查看活动详情</el-button>
                             </router-link>
@@ -113,9 +113,23 @@
                                         <p>{{scope.row.verifyNum}} / {{scope.row.receiveNum}}</p>
                                     </template>
                                 </el-table-column>
+                                <el-table-column  prop="type" label="二维码">
+                                    <template scope="scope">
+                                        <a  v-if="scope.row.qrUrl.length > 10"  @click="QRcode(scope.row.qrUrl)" href="javascript:;">查看二维码</a>
+                                        <p  v-if="scope.row.qrUrl.length < 10">{{scope.row.qrUrl}}</p>
+                                    </template>   
+                                </el-table-column>
                             </el-table>
                         </div>
                     </div>
+                </el-dialog>
+
+
+                <el-dialog title="二维码" :visible.sync="dialogVisible" size="tiny">
+                    <div class="pop-img-main">
+                        <img :src="imgurl" alt="">
+                    </div>
+                    <span slot="footer" class="dialog-footer"></span>
                 </el-dialog>
                 <!--结束提示-->
                 <el-dialog
@@ -139,6 +153,8 @@
     export default {
         data() {
             return {
+                dialogVisible: false,
+                imgurl: '',
                 pageNumber:'1',
                 activeId:'',
                 pageSize:'10',
@@ -198,6 +214,17 @@
             this.getList();
         },
         methods: {
+
+            QRcode(data){
+
+                if (data) {
+                    this.dialogVisible = true;
+                    this.imgurl = data;
+                }
+                
+                
+
+            },
             //搜索按钮调用函数
             getList(){
                 if(this.activetime[0]){
@@ -234,6 +261,8 @@
                 });
                 getSonVoucher(data)
                     .then(res=>{
+
+                        console.log(res.content.resultList)
                         this.dataile_tableData = res.content.resultList;
                 })
             },
@@ -265,5 +294,9 @@
     .padding_10{
         padding: 16px;
         width: auto;
+    }
+    .pop-img-main img{
+        width: 470px;
+        height: 470px;
     }
 </style>

@@ -10,13 +10,14 @@
                     <p>活动日期:{{message.pick_start_date}}至{{message.pick_end_date}}</p>
                 </div>
             </div>
-            <div class="ticket_rule  margin_top50">
+            <div class="ticket_rule  margin_top100">
                 <span class="ticket_title_all">活动内容</span>
                 <el-form ref="form" :model="form" label-width="140px">
                     <el-form-item class="ticket_title" label="活动名称 :">
-                        <span>{{message.active_title}}</span>
+                        <span>{{message.brandName}}</span>
                     </el-form-item>
-                    <el-form-item class="ticket_downtype" :label="message.voucher_type+':'">
+                    <el-form-item class="ticket_downtype" label="现金抵价券 :">
+                        抵扣 {{message.amount}} 元
                         <!-- <div v-if="message.voucher_type === '减至券'">
                             <el-radio v-model="form.radio" label="选中">减到固定金额</el-radio>
                             <br>
@@ -26,16 +27,11 @@
                         <div v-if="message.voucher_type === '代金券'">
                             <!--<el-radio v-model="form.radio" label="选中">立减</el-radio>
                             <br>-->
-                            <span> {{message.amount}} 元</span>
-                        </div>
-                        <div v-if="message.voucher_type === '折扣券'">
-                            <!--<el-radio v-model="form.radio" label="选中">立减</el-radio>
-                            <br>-->
-                            <span> {{message.discount*10}} 折</span>
+                            <span>立减 {{message.amount}} 元</span>
                         </div>
                     </el-form-item>
                     <el-form-item class="code_shop" label="适用门店 :">
-                        <span>已选 {{shopsLength}} 家门店&#X3000;</span>
+                        <span>已选 {{shops.length}} 家门店&#X3000;</span>
                         <el-button type="text" @click="dialogVisible_shopslist = true">点击查看</el-button>
                         <el-dialog
                                 title="适用门店列表"
@@ -53,15 +49,11 @@
                                 <thead>
                                 <tr>
                                     <th>门店</th>
-                                    <th>状态</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr v-for="item in shops">
-                                    <td>{{item.shopName}}</td>
-                                    <td v-if="item.receviedStatus == 2">拒绝</td>
-                                    <td v-if="item.receviedStatus == 1">同意</td>
-                                    <td v-if="item.receviedStatus == 0">未操作</td>
+                                    <td>{{item}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -70,33 +62,21 @@
                         </el-dialog>
                     </el-form-item>
                     <el-form-item class="ticket_number" label="数量 :" v-if="message.quantity != 9999">
-                        <span>{{message.quantity}}</span>
+                        <span>{{message.voucherQuantity}}</span>
                     </el-form-item>
                     <el-form-item class="ticket_number" label="数量 :" v-if="message.quantity == 9999">
                         <span>不限制</span>
                     </el-form-item>
                     <el-form-item label="领券时间 :">
-                        <span>{{message.pick_start_date}}至{{message.pick_end_date}}</span>
+                        <span>{{message.publishStartTime}}至{{message.publishEndTime}}</span>
                     </el-form-item>
                     <el-form-item label="适用商品 :" v-if="tableDataLength != 0">
                         <span>已选 {{tableDataLength}} 种商品&#X3000;</span>
                         <el-button type="text" @click="clickmoregoods">点击查看</el-button>
                     </el-form-item>
-
                     <el-form-item class="ticket_number" label="券有效期 :">
-                        <span v-if="message.Valid_type == 'RELATIVE'"  >领取后 {{message.valid_to_day}} 日内有效</span>
-                        <span v-if="message.Valid_type == 'FIXED'"> {{message.valid_start_date}}至{{message.valid_end_date}} 有效</span>
-                    </el-form-item>
-                    
-
-                    <el-form-item class="ticket_title" label="最低消费 :" v-if="message.min_cost != 9999">
-                        <span>{{message.min_cost}}</span> 元
-                    </el-form-item>
-                    <el-form-item class="ticket_title" label="使用说明 :" v-if="message.descs != 9999">
-                        <span>{{message.descs}}</span> 
-                    </el-form-item>
-                    <el-form-item class="ticket_title" label="是否可转增 :" >
-                        <span>{{message.is_share == true ? "可转增" : "不可转增"}}</span> 
+                        <span  v-if="message.duration" >领取后 {{message.valid_to_day}} 日内有效</span>
+                        <span v-if="!message.duration">{{message.start}} 至 {{message.end}}</span>
                     </el-form-item>
                     <!-- <el-form-item class="ticket_number" v-if="message.min_cost == 0" label="使用条件 :">
                         <span>不限制</span>
@@ -115,9 +95,9 @@
                                 class=" margin_r_10">
                             <el-option
                                     v-for="item in shops"
-                                    :key="item.shopId"
-                                    :label="item.shopName"
-                                    :value="item.shopId">
+                                    :key="item.id"
+                                    :label="item"
+                                    > 
                             </el-option>
                         </el-select>
 
@@ -147,47 +127,36 @@
                         </span>
                     </el-dialog>
                 </el-form>
-                <!-- <span class="ticket_title_all">规则设置</span> -->
+                <span class="ticket_title_all">规则设置</span>
                 <el-form ref="form" :model="form" label-width="140px">
-                    <!-- <el-form-item class="ticket_title" label="领取限制 :" v-if="message.pick_limit_total != 9999">
-                        <span>{{message.pick_limit_total}}</span>
+                    <el-form-item class="ticket_title" label="最低消费 :" v-if="message.floorAmount != 9999">
+                        <span>{{message.floorAmount}}</span> 元
                     </el-form-item>
-                    <el-form-item class="ticket_title" label="领取限制 :" v-if="message.pick_limit_total == 9999">
+                    <el-form-item class="ticket_title" label="最低消费 :" v-if="message.floorAmount == 9999">
                         <span>不限制</span>
                     </el-form-item>
-
-                    <el-form-item class="ticket_downtype" label="每日领取限制 :" v-if="message.pick_limit_num != 9999">
-                        <span>{{message.pick_limit_num}}</span>
-                    </el-form-item>
-                    <el-form-item class="ticket_downtype" label="每日领取限制 :" v-if="message.pick_limit_num == 9999">
-                        <span>不限制</span>
-                    </el-form-item> -->
-
-                    <!--<el-form-item label="是否需要积分兑换 :">
-                        <span>{{message.needExchange}}</span>
-                    </el-form-item>-->
                     <el-form-item v-if="message.needExchange == '是'" label="兑换所需积分 :">
                         <span>{{message.binding_point}} 积分</span>
                     </el-form-item>
                     <!--<el-form-item v-if="form.code_radio == 2" class="setways" label="投放渠道 :">-->
                     <!--<span >{{message.publish_channels}}</span>-->
                     <!--</el-form-item>-->
-                    
-                    <el-form-item  label="可用时间 :">
-                        <p v-if="message.use_time == ''">不限制</p>
-                        <p v-if="message.use_time != ''">每 {{message.use_week}} {{message.use_time}} 可用</p>
-                        
+                    <!-- <el-form-item  label="领券时间 :">
+                        <p v-if="message.exchange_week == ''">不限制</p>
+                        <p v-if="message.exchange_week != ''">无</p>
                     </el-form-item>
-                    <el-form-item  label="不可用时间 :">
-                        <span v-if="message.forbidden_use_date == ''">不限制</span>
-                        <p v-if="message.forbidden_use_date != ''"> {{message.forbidden_use_date}} 不可用</p>
-                        <!-- <p v-if="message.use_week != ''">每 {{message.use_week}} {{message.use_time}} 不可用</p> -->
+                    <el-form-item  label="核销时间 :">
+                        <span v-if="message.use_week == ''">不限制</span>
+                        <p v-if="message.use_week != ''">无</p>
+                    </el-form-item> -->
+                    <el-form-item v-if="message.templateStatus == '草稿'" label="完成支付 :">
+                        <a target="_blank" :href="message.confirmUri">支付</a>
                     </el-form-item>
                     <el-form-item>
 
                         <el-button class="bottom_button" @click="back" size="small">返 回</el-button>
                         <el-button class="bottom_button" @click="dialogVisible_xiajia = true" size="small"
-                                   type="primary" v-if="offline == '0'">
+                                   type="primary" v-if="offline == '草稿'">
                             下 架
                         </el-button>
                     </el-form-item>
@@ -209,7 +178,7 @@
 </template>
 
 <script>
-    import {getProductDetail, productSoldOut,getGoodsByShop} from '../../../api/api'
+    import {getProductDetail,cashItemInfo, cashItemLower,getGoodsByShop} from '../../../api/api'
 
     export default {
         data() {
@@ -217,7 +186,7 @@
                 selectvalue:'',
                 offline:'',
                 tableData: '',
-                shops: '',
+                shops: [],
                 dialogVisible_xiajia: false,
                 dialogVisible_goodslist: false,
                 dialogVisible_shopslist: false,
@@ -232,12 +201,9 @@
         mounted: function () {
             let id = this.$route.query.id;
             let data = this.qs.stringify({
-                voucherId: id
+                id: id
             });
             this.getDetail(data);
-
-            
-
         },
         methods: {
             clickmoregoods(){
@@ -245,7 +211,7 @@
                  let data = this.qs.stringify({
                      voucherId:this.id,
                      shopId:this.selectvalue,
-                 })
+                })
                  getGoodsByShop(data)
                     .then(res =>{
                         if (res.errorCode == 30005) {
@@ -258,10 +224,9 @@
             soldOut: function () {
                 this.dialogVisible_xiajia = false;
                 let data = this.qs.stringify({
-                    voucherId: this.id,
-                    active_id: this.message.active_id
+                    id: this.$route.query.id,
                 });
-                productSoldOut(data)
+                cashItemLower(data)
                     .then(res => {
                         if (res.errorCode == 10000) {
                             this.$message.success("操作成功");
@@ -272,22 +237,15 @@
                     })
             },
             getDetail: function (data) {
-                getProductDetail(data)
+                cashItemInfo(data)
                     .then(res => {
-
-
-                        console.log(res)
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }
                         this.message = res.content;
 
-                        console.log(this.message,"1111")
-                        this.shops = res.content.shopList;
-                        this.shopsLength = res.content.shopList.length;
-                        this.tableData = res.content.goodsList;
-                        this.tableDataLength = res.content.goodsList.length;
-                        this.selectvalue = this.shops[0].shopId;
+                        console.log(this.message)
+                        this.shops = res.content.shopName.split(',')
                     })
             },
             back() {
@@ -382,15 +340,18 @@
         /*outline: 1px solid orange;*/
         border-bottom: 1px solid #bfcbd9;
     }
-    .margin_top50{
-        margin-top: 50px;
-    }
 
     .details_shoplist > p {
         display: inline-block;
         width: 50%;
         text-align: center;
         /*outline: 1px solid red;*/
+    }
+    .zj-table{
+        overflow: hidden;
+    }
+    .margin_top100{
+        margin-top: 100px;
     }
 
     /*.details_shoplist > p:nth-child(2) {*/

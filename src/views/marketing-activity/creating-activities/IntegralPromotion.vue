@@ -18,7 +18,7 @@
                     <br>
                     <div class="ewjf_items" v-for="(item,index) in items">
                         消费满
-                        <el-input size="small" v-model="item.manjine"  type="number"  @blur="reviseManjine(index)"  placeholder="金额" class="zj-input"></el-input>
+                        <el-input size="small" v-model="item.manjine"    type="number"  @blur="reviseManjine(index)"  placeholder="金额" class="zj-input"></el-input>
                         <span>元，可获得额外百分之</span>
                         <el-input size="small" v-model="item.shuzi" placeholder="数字" @blur="reviseShuzi(index)"  type="number"  class="zj-input"></el-input>
                         <span>积分</span>
@@ -154,7 +154,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -162,7 +162,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -170,7 +170,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
@@ -189,28 +189,33 @@
             reviseProbability(){
                 this.data.times = Math.abs(this.data.times);
                 this.data.times = this.data.times.toFixed(2);
-                if(this.data.times == '0.00'){
+                if(this.data.times == '0.00' || this.data.times.length >12){
                     this.data.times = ''
                 }
             },
             reviseManjine(index){
                 this.items[index].manjine = Math.abs(this.items[index].manjine);
                 this.items[index].manjine = parseInt(this.items[index].manjine);
-                if(this.items[index].manjine == '0.00'){
+                if(this.items[index].manjine == '0.00' || this.items[index].manjine.toString().length > '8' ){
                     this.items[index].manjine = ''
                 }
+
+                console.log()
+
+
+
             },
             reviseShuzi(index){
                 this.items[index].shuzi = Math.abs(this.items[index].shuzi);
                 this.items[index].shuzi = parseInt(this.items[index].shuzi);
-                if(this.items[index].shuzi == '0.00'){
+                if(this.items[index].shuzi == '0.00' ||this.items[index].shuzi.toString().length > '8' ){
                     this.items[index].shuzi = ''
                 }
             },
             reviseActivey(){
                 this.data.activey = Math.abs(this.data.activey)
                 this.data.activey = parseInt(this.data.activey);
-                if(this.data.activey == '0.00'){
+                if(this.data.activey == '0.00' || this.data.activey.toString().length > '8'){
                     this.data.activey = ''
                 }
             },

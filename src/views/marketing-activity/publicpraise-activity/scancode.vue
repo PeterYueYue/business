@@ -20,6 +20,7 @@
                             <el-date-picker
                                 v-model="form.investmentStartDate"
                                 type="datetime"
+                                
                                 :disabled="timedisabled1"
                                 placeholder="开始时间">
                             </el-date-picker>
@@ -516,7 +517,7 @@
                         {type: 'date', required: true, message: '请选择结束时间', trigger: 'blur' },
                     ],
                     minCost:[
-                        { required: true, message: '请正确输入最低消费金额', trigger: 'blur' },
+                        { required: false, message: '请正确输入最低消费金额', trigger: 'blur' },
                     ],
                 },
                 //领取上限是否限制
@@ -571,6 +572,7 @@
           this.cookie();
         },
         methods: {
+            
             minCostblur(){
                 this.form.minCost = Number(this.form.minCost);
                 this.form.minCost = Math.abs(this.form.minCost);
@@ -642,8 +644,8 @@
             },
             discountblur(i){
 
-                let discountRe = /^[1-9]+(\.\d{0,1})?$/
-                if(discountRe.test(this.qlist[i].discount)){
+                let discountRe = /^[1-9]+(\.[1-9]{0,1})?$/
+                if(discountRe.test(this.qlist[i].discount) && this.qlist[i].discount >= 1.1 ){
                     this.titlenamechange(i);
                 }else{
                     this.$message.error('填写范围为1.1~9.9')
@@ -711,6 +713,7 @@
             },
             //门店确认时间改变时
             timevalueqchange(){
+
                 this.timedisabled3 = false;
                 this.timedisabled4 = false;
             },
@@ -1089,8 +1092,8 @@
                             return;
                         }
 
-                        let discountRe = /^[1-9]+(\.\d{0,1})?$/
-                        if(discountRe.test(this.qlist[i].discount)){
+                        let discountRe = /^[1-9]+(\.[1-9]{0,1})?$/
+                        if(discountRe.test(this.qlist[i].discount) && this.qlist[i].discount >= 1.1){
                             this.titlenamechange(i);
                         }else{
                             this.$message.error('折扣力度范围为1.1~9.9')
@@ -1431,7 +1434,7 @@
                     )
                 }
                 this.sumbit_data = {
-                    type:'CONSUME_SEND',
+                    type:'DIRECT_SEND',
                     'investment.investmentType':'SHOP_DETAIL',
                     'investment.name':this.form.name,
                     'investment.investmentStartDate':formDateSecond(this.form.investmentStartDate),

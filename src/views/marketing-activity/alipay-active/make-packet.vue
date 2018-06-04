@@ -17,12 +17,12 @@
         </div>
         <div class="zj-content">
             <span>红包活动预算 :</span>
-            <el-input placeholder="1.00~1000000.00" type="number" v-model="form.budget" class="zj-budget"></el-input>
+            <el-input placeholder="1.00~1000000.00"   @blur="reviseBudget" type="number" v-model="form.budget" class="zj-budget"></el-input>
             <span>&#x3000;元</span>
         </div>
         <div class="zj-content">
             <span>红包发放数量 :</span>
-            <el-input placeholder="输入红包数量(1-1000000)" type="number" v-model="form.number" class="zj-budget"></el-input>
+            <el-input placeholder="输入红包数量(1-1000000)" @blur="reviseNumber" type="number" v-model="form.number" class="zj-budget"></el-input>
             <span>&#x3000;个</span>
         </div>
         <div class="zj-shape">
@@ -359,7 +359,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -367,7 +367,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -375,7 +375,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
@@ -388,6 +388,22 @@
             this.form.timelimitselectvalue = '2';
         },
         methods: {
+            reviseNumber(){
+                this.form.number = Math.abs(this.form.number)
+                this.form.number = this.form.number.toFixed(2)
+                if(this.form.number == "0.00"){
+                    this.form.number = '' 
+                }
+
+            },
+            reviseBudget(){
+                this.form.budget = Math.abs(this.form.budget)
+                this.form.budget = this.form.budget.toFixed(2)
+                if(this.form.budget == "0.00"){
+                    this.form.budget = '' 
+                }
+
+            },
             sumite: function () {
 
                 let message = {};                
@@ -404,19 +420,32 @@
                     message.couponName = this.form.name;
                 }              
                 //        红包活动预算
-                let reBudget = /^([1-9]{1,7})(\.[0-9]{2})?$/;
-                if(reBudget.test(this.form.budget)){
+                // let reBudget = /^([1-9]{1,7})(\.[0-9]{2})?$/;
+                // if(reBudget.test(this.form.budget)){
+                //     message.totalMoney = this.form.budget;
+                // }else{
+                //     this.$message('红包活动预算格式不对');
+                //     return;
+                // }
+
+                if(this.form.budget > 1 && this.form.budget < 1000000){
                     message.totalMoney = this.form.budget;
                 }else{
-                    this.$message('红包活动预算格式不对');
+                    this.$message('红包活动预算范围超出');
                     return;
                 }
                 //        红包发放数量
-                let numberRe  = /^([1-9]{1,7})$/
-                if(numberRe.test(this.form.number)){
+                // let numberRe  = /^([1-9]{1,7})$/
+                // if(numberRe.test(this.form.number)){
+                //     message.totalNum = this.form.number;
+                // }else{
+                //     this.$message('红包发放数量格式不对');
+                //     return;
+                // }
+                if(this.form.number > 1 && this.form.number < 1000000){
                     message.totalNum = this.form.number;
                 }else{
-                    this.$message('红包发放数量格式不对');
+                    this.$message('红包发放数量范围超出');
                     return;
                 }
                 //        红包发放形式

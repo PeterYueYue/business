@@ -1,10 +1,14 @@
 <template>
     <div class="zj-main zj-content">
         <div class="zj-header">
+            <span class="bcColor" @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">代金券活动</span>
+            <span class="bcColor" @click="styleClick(6)" :class="{styleTabs : styleTab == 6}">折扣券活动</span>
+            <!-- <span class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span> -->
+            <span class="bcColor" @click="styleClick(8)" :class="{styleTabs : styleTab == 8}">现金抵价券活动</span>
             <span @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">积分促销活动</span>
             <span @click="styleClick(4)" :class="{styleTabs : styleTab == 4}">积分抵现活动</span>
-            <span @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">代金券活动</span>
             <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}">单品券活动</span>
+            <span @click="styleClick(5)" :class="{styleTabs : styleTab == 5}">注册送券</span>
 
         </div>
         <p class="zj-routerview">
@@ -39,7 +43,15 @@
                     this.styleTab = 3;
                 } else if (router == '/integralFornow') {
                     this.styleTab = 4;
-                } 
+                } else if (router == '/registerGiveGifts') {
+                    this.styleTab =5;
+                } else if (router == '/discounticket') {
+                    this.styleTab = 6;
+                } else if (router == '/commuteActualToTicket') {
+                    this.styleTab = 7;
+                } else if (router == '/cashDuctible') {
+                    this.styleTab =8;
+                }
             },
             styleClick: function(data) {
                 if (data == 1) {
@@ -57,6 +69,23 @@
                 } else if (data == 4) {
                     this.$router.push({
                         path: '/integralFornow'
+                    })
+                } else if (data == 5) {
+                    this.$router.push({
+                        path:'/registerGiveGifts'
+                    })
+                } else if (data == 6) {
+
+                    this.$router.push({
+                        path:'/discounticket'
+                    })
+                } else if (data == 7) {
+                    this.$router.push({
+                        path:'/commuteActualToTicket'
+                    })
+                } else if (data == 8) {
+                    this.$router.push({
+                        path:'/cashDuctible'
                     })
                 }
                 this.styleTab = data;
@@ -110,5 +139,8 @@
         width: 100%;
         /*outline: 1px solid red;*/
         margin-top: 10px;
+    }
+    .bcColor{
+        background-color: #DCDCDC   ;
     }
 </style>

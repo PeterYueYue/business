@@ -51,7 +51,12 @@
                     </el-select>
                     <el-input class="width_90"  v-model="emitNumber"     v-if="emitOption == '限制'" type="number" placeholder="请输入数量" size="small" ></el-input>
                 </el-form-item>
-                <el-form-item label="券面额 :">
+                <el-form-item label="折扣力度 :">
+                    <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="discount" placeholder="请输入"></el-input>
+                    折
+                    <!-- <span v-if="jmeIsOk == false"  class="wrongColor">/*劵面额只能为大于0的数字，且长度小于8位</span> -->
+                </el-form-item>
+                <el-form-item label="最高优惠金额 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="money" placeholder="请输入"></el-input>
                     元 
                     <!-- <span v-if="jmeIsOk == false"  class="wrongColor">/*劵面额只能为大于0的数字，且长度小于8位</span> -->
@@ -168,7 +173,7 @@
                         <span class="zj-spand">提示 : 促销时间段不可重叠,否则创建不成功!</span>
                     </div>
                 </el-form-item>
-                <el-form-item class="ticket_limit" label="不可用日期 :">
+                <el-form-item class="ticket_limit" label="不可用时间段 :">
                     <el-select v-model="form.detallimitselectvalue" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in detallimitselectdata"
@@ -279,7 +284,7 @@
                 emitOption:'不限制',
                 optionsNumber:[
                     {
-                        value: '9999',
+                        value: '不限制',
                         label: '不限制'
                     },
                     {
@@ -380,12 +385,13 @@
                 lastTime:'',
                 numberX:'',
                 jmeIsOk:true,
-                // priceTickets:'',
+                priceTickets:'',
                 imageUrltologo: '',
                 brandLogo:'',//图片id
                 urlLogo:'',
                 shopid:{id:''},//上传图片带的id
-                forbidden_use_date:[]
+                forbidden_use_date:[],
+                discount:''
                 
             }
         },
@@ -432,6 +438,7 @@
                 this.$message('正在上传');
             },
             logoonsuccess(response, file, fileList) {
+
                 console.log(response)
                 if (response.error == 0) {
                     this.$message.success('上传LOGO图片成功!');
@@ -487,7 +494,9 @@
             },
             saveMessage:function () {
 
-             
+                
+                //券类型    
+                this.messageData.promo_type = 'RATE'   
                 // 活动名称
                 if(this.form.name){
                     this.messageData.name=this.form.name;
@@ -496,6 +505,9 @@
                     this.$message("活动名称不可为空且最大长度为32");
                     return;
                 }
+                //折扣力度
+                this.messageData.discount = this.discount/10;
+                this.messageData.maxAmount = this.money;
                 //处理时间选择是否正确
                 let date1 = new Date(this.firstTime).getTime();
                 let nowTime = new Date().getTime();
@@ -547,22 +559,13 @@
                     return
                 }
                 
-                if(!this.jmeIsOk){
-                    this.$message("券面额不正确");
-                    return;
-                    
-                }else{
-                    this.messageData.voucher_worth_value=this.money;
-                }    
-
                 if(this.checkedshopstrue){
                     this.messageData.suit_shops=this.checkedshopstrue.join();
                 }else{
                     this.$message("请选择门店");
                     return;
                 }
-
-                 //数量
+                //数量
                 if(this.emitOption == "不限制"){
 
                     this.messageData.quantity="9999"
@@ -570,7 +573,7 @@
                 if(this.emitOption == "限制"){
                     this.messageData.quantity=this.emitNumber;
                 } 
-               
+                
                 //使用条件 
                 if(this.form.uselimitselectvalue == 1){
                     if(this.numberX){
@@ -622,23 +625,15 @@
                     }
                     // return result>0;
                     if(result > 0){
-                        this.$message("可用时间段不能重叠");
+                        this.$message("领券时间段不能重叠");
                         return;
                     }else{
                         this.messageData.use_time=useTime;
                         let arrs=weekDispose(this.checkList);
                         this.messageData.use_week=arrs;
-                        
                     }
                 }
-
-
-                
-
-
                 //不可用时间
-
-
                 let startT = []
                 let endT = []
                 this.times1.forEach( e =>{
@@ -674,7 +669,6 @@
 
                 this.messageData.binding_point=this.form.needcode;
                 delete this.messageData['publish_channels_type'];
-
                 let data=this.qs.stringify(this.messageData);
                 saveProduct(data).then(res=>{
                         if (res.errorCode == 30005) {
@@ -729,8 +723,6 @@
                 this.shopsnumber = this.checkedshopstrue.length;
             },
             changeTime: function () {
-
-                console.log(this.time[0])
                 this.startTime = formateDate(this.time[0]);
                 this.endTime = formateDate(this.time[1]);
                 this.firstTime = formDateSecond(this.time[0]);

@@ -2,12 +2,13 @@
 <template>
     <div>
         <div class="pop-busarea-body">
-            <div class="pop-end" v-if="message.offline == 1"></div>
+            <div class="pop-end" v-if="message.templateStatus == '删除'"></div>
+            <div class="pop-nopay" v-if="message.templateStatus == '草稿'"></div>
             <div class="pop-busarea-title">
                 <div class="pop-busarea-top">
                     <p class="pop-p">
                         <span>活动创建时间:</span>
-                        <span>{{message.create_date}}</span>
+                        <span>{{message.createDate}}</span>
                     </p>
 
                     <div class="pop-div">
@@ -15,7 +16,7 @@
                             <span></span>
                         </div>
                         <div class="pop-word pop-m-word">
-                            <span>{{message.amount}}</span><span> 元&#160;{{message.voucher_type}}</span>
+                            <span>{{message.amount}}</span><span> 元&#160;现金抵价券</span>
                             <!--<p class="pop-download"><span>二维码</span><span>下载</span></p>-->
                         </div>
                     </div>
@@ -26,22 +27,23 @@
                <span>
                 <div class="pop-busarea-p">
                   <p><span></span></p>
-                  <p><span>活动名称 :&nbsp;</span><span>{{message.active_title}}</span></p>
-                  <p><span>活动有效期 :&nbsp;</span><span>{{message.valid_start_date}} 至 {{message.valid_end_date}}</span></p>
-                  <p><span>活动类型 :&nbsp;</span><span>{{message.voucher_type}}</span></p>
+                  <p><span>模板ID :&nbsp;</span><span>{{message.templateId}}</span></p>
+                  <p><span>活动有效期 :&nbsp;</span><span>{{message.start}} 至 {{message.end}}</span></p>
+                  <p><span>活动类型 :&nbsp;</span><span>现金抵价券</span></p>
                   <p><span>适用门店 :&nbsp;</span><span>{{message.count}} 家门店</span></p>
                     <!--<p><span>隶属商圈 :</span><span>{{message.four}}</span></p>-->
                   <p><span>操作 :&nbsp;</span>
                   <router-link tag="span" class="pop-blue"
-                               :to="{path:'viewdetails',query:{id:message.voucher_id,offline:message.offline}}">
+                               :to="{path:'cashViewdetails',query:{id:message.id,offline:message.templateStatus}}">
                           点击设置
                       </router-link>
                   </p>
                 </div>
               </span>
-                    <span>
-                <button @click="getWaters(message.voucher_id)">查看流水</button>
-              </span>
+                <span>
+                    <button @click="getWaters(message.voucher_id)">查看流水</button>
+                </span>
+                
                 </div>
                 <div class="pop-busarea-bottom" v-show="!preview">
                <span>

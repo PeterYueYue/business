@@ -69,7 +69,7 @@
             <p>
                 <span>奖项一 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名" v-model="data.name1"
+                <el-input class="zj-input"  @blur="reviseName1" size="small" placeholder="请输入奖项名" v-model="data.name1"
                           :disabled="shows1"></el-input>
                 <el-select v-model="value1" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange1">
@@ -84,13 +84,13 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number" placeholder="请输入奖项数量" v-model="data.number1"
+                <el-input class="zj-inputs" size="small" @blur="reviseNumber1" type="number" placeholder="请输入奖项数量" v-model="data.number1"
                           :disabled="disabled"></el-input>
             </p>
             <p>
                 <span>奖项二 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名"
+                <el-input class="zj-input" @blur="reviseName2" size="small" placeholder="请输入奖项名"
                           v-model="data.name2" :disabled="shows2"></el-input>
                 <el-select v-model="value2" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange2">
@@ -106,13 +106,13 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number" placeholder="请输入奖项数量" v-model="data.number2"
+                <el-input class="zj-inputs" size="small" @blur="reviseNumber2" type="number" placeholder="请输入奖项数量" v-model="data.number2"
                           :disabled="disabled"></el-input>
             </p>
             <p>
                 <span>奖项三 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名" v-model="data.name3"
+                <el-input class="zj-input" size="small" @blur="reviseName3" placeholder="请输入奖项名" v-model="data.name3"
                           :disabled="shows3"></el-input>
                 <el-select v-model="value3" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange3">
@@ -128,13 +128,13 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number"  placeholder="请输入奖项数量" v-model="data.number3"
+                <el-input class="zj-inputs" size="small" type="number" @blur="reviseNumber3"  placeholder="请输入奖项数量" v-model="data.number3"
                           :disabled="disabled"></el-input>
             </p>
             <p>
                 <span>奖项四 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名" v-model="data.name4"
+                <el-input class="zj-input" @blur="reviseName4" size="small" placeholder="请输入奖项名" v-model="data.name4"
                           :disabled="shows4"></el-input>
                 <el-select v-model="value4" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange4">
@@ -150,13 +150,13 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number" placeholder="请输入奖项数量" v-model="data.number4"
+                <el-input class="zj-inputs" size="small" @blur="reviseNumber4" type="number" placeholder="请输入奖项数量" v-model="data.number4"
                           :disabled="disabled"></el-input>
             </p>
             <p>
                 <span>奖项五 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名" v-model="data.name5"
+                <el-input class="zj-input" size="small" @blur="reviseName5" placeholder="请输入奖项名" v-model="data.name5"
                           :disabled="shows5"></el-input>
                 <el-select v-model="value5" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange5">
@@ -172,13 +172,13 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number"  placeholder="请输入奖项数量" v-model="data.number5"
+                <el-input class="zj-inputs" size="small" type="number" @blur="reviseNumber5"  placeholder="请输入奖项数量" v-model="data.number5"
                           :disabled="disabled"></el-input>
             </p>
             <p>
                 <span>奖项六 :</span>
                 <span>名称</span>
-                <el-input class="zj-input" size="small" placeholder="请输入奖项名" v-model="data.name6"
+                <el-input class="zj-input" size="small" @blur="reviseName6" placeholder="请输入奖项名" v-model="data.name6"
                           :disabled="shows6"></el-input>
                 <el-select v-model="value6" placeholder="请选择" size="small" class="zj-selects" :disabled="disabled" :clearable="boolean"
                            @change="selectChange6">
@@ -194,7 +194,7 @@
             <p>
                 <span></span>
                 <span>数量</span>
-                <el-input class="zj-inputs" size="small" type="number" placeholder="请输入奖项数量" v-model="data.number6"
+                <el-input class="zj-inputs" size="small" type="number" @blur="reviseNumber6"  placeholder="请输入奖项数量" v-model="data.number6"
                           :disabled="disabled"></el-input>
             </p>
             <div class="zj-message zj-messages">
@@ -225,7 +225,7 @@
             <span class="zj-line">
                 <span>抽奖所需积分 : &#X3000;</span>
                 <span> 每次&nbsp;</span>
-                <el-input class="zj-code" size="small" type="number" placeholder="积分" v-model="data.code"
+                <el-input class="zj-code" size="small" type="number" @blur="reviseCode" placeholder="积分" v-model="data.code"
                           :disabled="disabled"></el-input>
                 <span>&nbsp积分</span>
             </span>
@@ -242,7 +242,7 @@
             </span>
             <span class="zj-line" v-if="select == 2">
                 <span></span>
-                <el-input class="zj-code" size="small" type="number" placeholder="次数" v-model="data.quantity"
+                <el-input class="zj-code" size="small" @blur="reviseQuantity" type="number" placeholder="次数" v-model="data.quantity"
                           :disabled="disabled"></el-input>
                 <span>&nbsp;次/人/天</span>
             </span>
@@ -263,7 +263,7 @@
             <span class="zj-line">
                 <span>兑换截止日期 :&#X3000; </span>
                 <span>活动结束后&nbsp;</span>
-                <el-input class="zj-code" size="small" type="number" placeholder="45" v-model="data.date"
+                <el-input class="zj-code" size="small" @blur="reviseDate" type="number" placeholder="45" v-model="data.date"
                           :disabled="disabled"></el-input>
                 <span>&nbsp;天</span>
             </span>
@@ -363,7 +363,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -371,7 +371,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -379,7 +379,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
@@ -394,6 +394,123 @@
             this.queryMessage()
         },
         methods: {
+            reviseDate(){
+                this.data.date = Math.abs(this.data.date);
+                this.data.date = parseInt(this.data.date);
+                if(this.data.date == "0.00" || this.data.date.toString().length > 8){
+                    this.data.date = ''
+                }
+            },
+            reviseQuantity(){
+                this.data.quantity = Math.abs(this.data.quantity);
+                this.data.quantity = parseInt(this.data.quantity);
+                if(this.data.quantity == "0.00" || this.data.quantity.toString().length > 8){
+                    this.data.quantity = ''
+                }
+            },
+            reviseCode(){
+                this.data.code = Math.abs(this.data.code);
+                this.data.code = parseInt(this.data.code);
+                if(this.data.code == "0.00" || this.data.code.toString().length > 8){
+                    this.data.code = ''
+                }
+            },
+            reviseNumber6(){
+                this.data.number6 = Math.abs(this.data.number6);
+                this.data.number6 = parseInt(this.data.number6);
+                if(this.data.number6 == "0.00" || this.data.number6.toString().length > 8){
+                    this.data.number6 = ''
+                }
+            },
+            reviseName6(){
+                if(this.data.name6.length > '15'){
+                    this.data.name6 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
+            reviseNumber5(){
+                this.data.number5 = Math.abs(this.data.number5);
+                this.data.number5 = parseInt(this.data.number5);
+                if(this.data.number5 == "0.00" || this.data.number5.toString().length > 8){
+                    this.data.number5 = ''
+                }
+            },
+            reviseName5(){
+                if(this.data.name5.length > '15'){
+                    this.data.name5 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
+            reviseNumber4(){
+                this.data.number4 = Math.abs(this.data.number4);
+                this.data.number4 = parseInt(this.data.number4);
+                if(this.data.number4 == "0.00" || this.data.number4.toString().length > 8){
+                    this.data.number4 = ''
+                }
+            },
+            reviseName4(){
+                if(this.data.name4.length > '15'){
+                    this.data.name4 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
+            reviseNumber3(){
+                this.data.number3 = Math.abs(this.data.number3);
+                this.data.number3 = parseInt(this.data.number3);
+                if(this.data.number3 == "0.00" || this.data.number3.toString().length > 8){
+                    this.data.number3 = ''
+                }
+            },
+            reviseName3(){
+                if(this.data.name3.length > '15'){
+                    this.data.name3 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
+            reviseNumber2(){
+                this.data.number2 = Math.abs(this.data.number2);
+                this.data.number2 = parseInt(this.data.number2);
+                if(this.data.number2 == "0.00" || this.data.number2.toString().length > 8){
+                    this.data.number2 = ''
+                }
+            },
+            reviseName2(){
+                if(this.data.name2.length > '15'){
+                    this.data.name2 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
+            reviseNumber1(){
+                this.data.number1 = Math.abs(this.data.number1);
+                this.data.number1 = parseInt(this.data.number1);
+                if(this.data.number1 == "0.00" || this.data.number1.toString().length > 8){
+                    this.data.number1 = ''
+                }
+            },
+            reviseName1(){
+                if(this.data.name1.length > '15'){
+                    this.data.name1 = "";
+                    this.$message({
+                    type: 'warning',
+                    message: '内容过长，请从新输入!'
+                });
+                }
+            },
             open2() {
                 this.$confirm('是否提交?', '提示', {
                     confirmButtonText: '确定',
@@ -513,7 +630,7 @@
             },
             sureTo: function () {              
                 let rewardType = [];
-                let numbersRe = /^[1-9]{1,7}$/
+                let numbersRe = /^(?!00)(?:[0-9]{1,5}|100000)$/
                 if(this.data.name1.length > 0 && this.data.name1.length < 15){
                     if(numbersRe.test(this.data.number1)){
                         rewardType.push({

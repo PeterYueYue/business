@@ -42,6 +42,7 @@
 						</template>
 						<el-menu-item index="/memberCardManage">会员卡管理</el-menu-item>
 						<el-menu-item index="/memberList">会员管理</el-menu-item>
+						<!-- <el-menu-item index="/integralManage">会员积分管理</el-menu-item> -->
 					</el-submenu>
 					<el-submenu index="2">
 						<template slot="title">
@@ -61,6 +62,7 @@
 						</template>
                         <el-menu-item index="/redPacket">现金红包</el-menu-item>
                         <el-menu-item index="/addbusiness">口碑招商活动</el-menu-item>
+						<el-menu-item index="/intergralShopMain">积分商城</el-menu-item>
 						<el-menu-item index="/codeGiftMain">积分换礼</el-menu-item>
 						<el-menu-item index="/turntableSetting">积分大转盘</el-menu-item>
 						<el-menu-item index="/active">活动创建</el-menu-item>
@@ -75,6 +77,7 @@
 						</template>
 						<el-menu-item index="/activityWater">活动流水</el-menu-item>
 						<el-menu-item index="/checkCollect">账单汇总</el-menu-item>
+						<el-menu-item index="/dealMessage">支付宝交易通知</el-menu-item>
 					</el-submenu>
 			</el-menu>
 				<!--导航菜单-->
@@ -115,7 +118,10 @@
 							</el-breadcrumb-item>
 						</el-breadcrumb>
 					</el-col>-->
-					<el-col :span="24" class="content-wrapper">
+					<el-col :span="24" class="content-wrapper"  v-loading="loading2"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(0, 0, 0, 0.8)"    >
 						<transition name="fade" mode="out-in">
 							<router-view></router-view>
 						</transition>
@@ -128,6 +134,8 @@
 
 
 <script>
+
+import {mapGetters} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -146,12 +154,18 @@
 					type: [],
 					resource: '',
 					desc: ''
-				}
+				},
+				// loading2: false
 			}
 		},
+		computed:mapGetters({
+			loading2:'loading2'
+		}),
 		mounted:function() {
 			this.routerChange();
 			let user = sessionStorage.getItem('user');
+
+			
 //			alert(user);
 			if (user) {
 				user = JSON.parse(user);
@@ -167,10 +181,10 @@
 		methods: {
 			routerChange(){
 				this.menu_start = this.$route.path;
-				if(this.$route.path == "/integralPromotion" || this.$route.path == "/integralFornow" || this.$route.path == "/chitCreation" || this.$route.path == "/alonestamps"|| this.$route.path == "/addactive"){
+				if(this.$route.path == "/cashDuctible" ||this.$route.path == "/commuteActualToTicket" ||this.$route.path == "/discounticket" ||this.$route.path == "/integralPromotion" ||this.$route.path == "/registerGiveGifts" || this.$route.path == "/integralFornow" || this.$route.path == "/chitCreation" || this.$route.path == "/alonestamps"|| this.$route.path == "/addactive"){
 					this.menu_start = "/active";
 				}
-				if(this.$route.path == "/rewardPromotion" || this.$route.path == "/integralList" || this.$route.path == "/voucherList" || this.$route.path == "/stampsList" || this.$route.path == "/activefiguredetails"|| this.$route.path == "/bonusPoints"|| this.$route.path == "/viewdetails"){
+				if(this.$route.path == "/registerList"||this.$route.path == "/cashDuctibleList"||this.$route.path == "/discounticketList" ||this.$route.path == "/rewardPromotion" || this.$route.path == "/integralList" || this.$route.path == "/voucherList" || this.$route.path == "/stampsList" || this.$route.path == "/activefiguredetails"|| this.$route.path == "/bonusPoints"|| this.$route.path == "/viewdetails"){
 					this.menu_start = "/activityList";
 				}
 				if(this.$route.path == "/setting" || this.$route.path == "/record" || this.$route.path == "/cancel" || this.$route.path == "/content" || this.$route.path == "/detail"){
@@ -186,7 +200,10 @@
 				if(this.$route.path =='/exchangeGifePage' || this.$route.path =='/exchangeGiftRecord' || this.$route.path
                     =='/presentLibrary'){
                     this.menu_start = "/codeGiftMain";
-                }
+				}
+				if(this.$route.path =='/integralShopping'||this.$route.path =='/exchangeHistry' ||this.$route.path == '/checkCommodity'){
+					this.menu_start = "/intergralShopMain";
+				}
 			},
 			handleopen() {
 			},

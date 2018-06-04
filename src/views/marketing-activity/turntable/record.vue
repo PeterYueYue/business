@@ -72,7 +72,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -80,7 +80,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -88,7 +88,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]

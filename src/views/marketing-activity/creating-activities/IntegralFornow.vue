@@ -106,7 +106,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -114,7 +114,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -122,7 +122,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
@@ -141,28 +141,28 @@
             reviseVerify(){
                 this.data.cost = Math.abs(this.data.cost);
                 this.data.cost = parseInt(this.data.cost);
-                if(this.data.cost == '0.00'){
+                if(this.data.cost == '0.00' || this.data.cost.toString().length > '8'){
                     this.data.cost = ''
                 }
             },
             reviseGain(){
                 this.data.gain = Math.abs(this.data.gain);
                 this.data.gain = this.data.gain.toFixed(2);
-                if(this.data.gain == '0.00'){
+                if(this.data.gain == '0.00' || this.data.gain.toString().length > '11' ){
                     this.data.gain = ''
                 }
             },
             reviseIntegration(){
                 this.data.integration = Math.abs(this.data.integration);
                 this.data.integration = parseInt(this.data.integration);
-                if(this.data.integration == '0.00'){
+                if(this.data.integration == '0.00' || this.data.integration.toString().length > '8'){
                     this.data.integration = ''
                 }
             },
             rebiseTotalPoint(){  
                 this.totalPoint = Math.abs(this.totalPoint);
                 this.totalPoint = parseInt(this.totalPoint);
-                if(this.totalPoint == '0.00'){
+                if(this.totalPoint == '0.00' || this.totalPoint.toString().length > '8'){
                     this.totalPoint = ''
                 }
             },

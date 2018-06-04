@@ -15,10 +15,11 @@
     "element-ui": "^1.2.8",
     "font-awesome": "^4.7.0",
     "nprogress": "^0.2.0",
+    "qs": "^6.4.0",
     "vue": "^2.2.2",
+    "vue-clipboard2": "^0.1.1",
     "vue-router": "^2.3.0",
-    "vuex": "^2.0.0-rc.6",
-    "qs": "^6.4.0"
+    "vuex": "^2.0.0-rc.6"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

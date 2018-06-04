@@ -644,27 +644,14 @@
             },
             discountblur(i){
 
-                let discountRe = /^[1-9]+(\.\d{0,1})?$/
-                if(discountRe.test(this.qlist[i].discount)){
+                let discountRe = /^[1-9]+(\.[1-9]{0,1})?$/
+                if(discountRe.test(this.qlist[i].discount) && this.qlist[i].discount >= 1.1){
                     this.titlenamechange(i);
                 }else{
                     this.$message.error('填写范围为1.1~9.9')
                     this.qlist[i].discount = ' ';
                     return
                 }
-                //下面是修改之前的代码
-                // if(this.qlist[i].discount.length > 3){
-                //     this.qlist[i].discount = this.qlist[i].discount.substr(0,3); 
-                // }
-                // this.qlist[i].discount = Number(this.qlist[i].discount);
-                // this.qlist[i].discount = Math.abs(this.qlist[i].discount);
-                // if(this.qlist[i].discount == "0.00"){
-                //     this.qlist[i].discount = ' ';
-                // }
-                // if(this.qlist[i].discount == ""){
-                //     this.qlist[i].discount = ' ';
-                // }
-                // this.titlenamechange(i);
             },
             removetimeduan(index,item,inde){
                 var index1 = this.qlist[index].timelist.indexOf(item)
@@ -1092,8 +1079,8 @@
                         }
 
 
-                        let discountRe = /^[1-9]+(\.\d{0,1})?$/
-                        if(discountRe.test(this.qlist[i].discount)){
+                        let discountRe = /^[1-9]+(\.[1-9]{0,1})?$/
+                        if(discountRe.test(this.qlist[i].discount) && this.qlist[i].discount >= 1.1){
                             this.titlenamechange(i);
                         }else{
                             this.$message.error('折扣力度范围为1.1~9.9')

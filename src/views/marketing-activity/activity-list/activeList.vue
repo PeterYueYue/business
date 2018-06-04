@@ -1,10 +1,14 @@
 <template>
     <div class="zj-main">
         <div class="zj-header">
+            <span class="bcColor" @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">代金券活动</span>
+            <span class="bcColor" @click="styleClick(6)" :class="{styleTabs : styleTab == 6}">折扣券活动</span>
+            <!-- <span class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span> -->
+            <span class="bcColor" @click="styleClick(8)" :class="{styleTabs : styleTab == 8}">现金抵价券活动</span>
             <span @click="styleClick(4)" :class="{styleTabs : styleTab == 4}">积分促销活动</span>
             <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}">积分抵现活动</span>
-            <span @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">代金券活动</span>
             <span @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">单品券活动</span>
+            <span @click="styleClick(5)" :class="{styleTabs : styleTab == 5}">注册送券活动</span>
         </div>
         <p class="zj-routerview">
             <transition name="fade" mode="out-in">
@@ -37,6 +41,14 @@
                     this.styleTab = 3;
                 } else if (router == '/rewardPromotion') {
                     this.styleTab = 4;
+                } else if (router == '/registerList') {
+                    this.styleTab = 5;
+                } else if ( router == '/discounticketList') {
+                    this.styleTab = 6;
+                } else if ( router == '/commuteActualToTicketList') {
+                    this.styleTab = 7;
+                } else if (router == '/cashDuctibleList') {
+                    this.styleTab = 8;
                 }
             },
             styleClick: function(data) {
@@ -55,6 +67,22 @@
                 } else if (data == 4) {
                     this.$router.push({
                         path: '/rewardPromotion'
+                    })
+                } else if (data == 5) {
+                    this.$router.push({
+                        path:'/registerList'
+                    })
+                } else if (data == 6 ){
+                    this.$router.push({
+                        path:'/discounticketList'
+                    })
+                } else if (data == 7 ){
+                    this.$router.push({
+                        path:'/commuteActualToTicketList'
+                    })
+                } else if (data == 8) {
+                    this.$router.push({
+                        path:'/cashDuctibleList'
                     })
                 }
                 this.styleTab = data;
@@ -103,5 +131,8 @@
         width: 100%;
         /*outline: 1px solid red;*/
         /*margin-top: 10px;*/
+    }
+    .bcColor{
+        background-color: #DCDCDC   ;
     }
 </style>

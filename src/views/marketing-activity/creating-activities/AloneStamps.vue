@@ -313,7 +313,7 @@
                     </el-select>
                     <br>
                     <div v-if="this.form.limitselectvalue == 1">
-                        <el-input class="width_90" size="small"  type="number" @blur="reviseNumber1" v-model="form.number1" placeholder="请输入"></el-input>
+                        <el-input class="width_90" size="small"  type="number" @blur="reviseNumber2" v-model="form.number2" placeholder="请输入"></el-input>
                         <span>张/人</span>
                     </div>
                 </el-form-item> 
@@ -328,7 +328,7 @@
                     </el-select>
                     <br>
                     <div v-if="this.form.datelimitselectvalue == 1">
-                        <el-input class="width_90" size="small"  type="number" @blur="reviseNumber2" v-model="form.number2" placeholder="请输入"></el-input>
+                        <el-input class="width_90" size="small"  type="number" @blur="reviseNumber1" v-model="form.number1" placeholder="请输入"></el-input>
                         张/人/天
                     </div>
 
@@ -570,7 +570,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -578,7 +578,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 30);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
                             picker.$emit('pick', [start, end]);
                         }
                     }, {
@@ -586,7 +586,7 @@
                         onClick(picker) {
                             const end = new Date();
                             const start = new Date();
-                            start.setTime(start.getTime() + 3600 * 1000 * 24 * 90);
+                            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }]
@@ -618,21 +618,21 @@
             reviseNumber(){
                 this.form.number = Math.abs(this.form.number);
                 this.form.number = parseInt(this.form.number);
-                if(this.form.number == '0.00'){
+                if(this.form.number == '0.00' || this.form.number.toString().length > '8'){
                     this.form.number = ''
                 }
             },
             reviseNumbers(){
                 this.form.numbers = Math.abs(this.form.numbers);
                 this.form.numbers = parseInt(this.form.numbers);
-                if(this.form.numbers == '0.00'){
+                if(this.form.numbers == '0.00' || this.form.numbers.toString().length > '8'){
                     this.form.numbers = ''
                 }
             },
             reviseNumber3(){
                 this.form.number3 = Math.abs(this.form.number3);
                 this.form.number3 = this.form.number3.toFixed(2);
-                if(this.form.number3 == '0.00'){
+                if(this.form.number3 == '0.00' || this.form.number3.toString().length > '11'){
                     this.form.number3 = ''
                 }
 
@@ -640,43 +640,43 @@
             reviseNumber4(){
                 this.form.number4 = Math.abs(this.form.number4);
                 this.form.number4 = parseInt(this.form.number4);
-                if(this.form.number4 == '0.00'){
+                if(this.form.number4 == '0.00' ||this.form.number4.toString().length > '8' ){
                     this.form.number4 = ''
                 }
             },
             reviseNumber5(){
                 this.form.number5 = Math.abs(this.form.number5);
                 this.form.number5 = parseInt(this.form.number5);
-                if(this.form.number5 == '0.00'){
+                if(this.form.number5 == '0.00' || this.form.number5.toString().length > '8' ){
                     this.form.number5 = ''
                 }
             },
             reviseNumber6(){
                 this.form.number6 = Math.abs(this.form.number6);
                 this.form.number6 = parseInt(this.form.number6);
-                if(this.form.number6 == '0.00'){
+                if(this.form.number6 == '0.00' || this.form.number6.toString().length > '8'){
                     this.form.number6 = ''
                 }
             },
             reviseNumber1(){
                 this.form.number1 = Math.abs(this.form.number1);
                 this.form.number1 = parseInt(this.form.number1);
-                if(this.form.number1 == '0.00'){
+                if(this.form.number1 == '0.00' ||this.form.number1.toString().length > '8' ){
                     this.form.number1 = ''
                 }
             },
             reviseNumber2(){
                 this.form.number2 = Math.abs(this.form.number2);
                 this.form.number2 = parseInt(this.form.number2);
-                if(this.form.number2 == '0.00'){
+                if(this.form.number2 == '0.00' ||this.form.number2.toString().length > '8' ){
                     this.form.number2 = ''
                 }
             },
             reviseNeedcode(){
                 this.form.needcode = Math.abs(this.form.needcode);
                 this.form.needcode = parseInt(this.form.needcode)
-                if(this.form.needcode == '0.00'){
-                    this.form.needcode = ''
+                if(this.form.needcode == '0.00' || this.form.needcode.toString().length > '8'){
+                    this.form.needcode = '0'
                 }
 
             },
@@ -778,8 +778,8 @@
                 }
 
 //        优惠方式
-                let ljRe = /^[1-9]+(\.\d{1,2})?$/;
-                if(ljRe.test(this.form.saletype)&& this.form.saletype !== ''){
+                
+                if(this.form.saletype ){
                     if (this.form.radio == 1) {
                         let promo_type = 'MONEY';
                         this.data.promo_type = promo_type;
@@ -791,7 +791,7 @@
                         this.data.voucher_worth_value = this.moneySpread;
                     }
                 }else{
-                    this.$message('立减金额不正确');
+                    this.$message('请输入立减金额');
                 }
                 
 //        门店列表
@@ -799,7 +799,7 @@
                 this.data.suit_shops = this.checkedshops.join();
 //        数量
 
-                let numberRe = /^[1-9]{1,4}$/;
+                let numberRe = /^(?!00)(?:[0-9]{1,3}|9999)$/;
                 if(numberRe.test(this.form.number)){
                     this.data.quantity = this.form.number;
                 }else{
@@ -822,17 +822,13 @@
                     return;
                 }
 
-
                 this.data.item_info_item_ids = JSON.stringify(this.multipleSelection);
                 this.data.constraint_info_item_ids = JSON.stringify(this.multipleSelection);
 
 //       指定单品最低消费金额
-                let coRe = {
-                    fiveandtwo : /^[0-9]+(.[0-9]{1,2})?$/ ,
-                    oneandn : /^[1-9]{1,2}$/ 
-                }
+                
                 if(this.form.skuMinConsume == 1){
-                    if(coRe.fiveandtwo.test(this.form.number3) && this.form.number3 >= 0.01 && this.form.number3 <= 49999.99){
+                    if(this.form.number3 && this.form.number3 >= 0.01 && this.form.number3 <= 49999.99){
                         this.data.skuMinConsume = this.form.number3
                     }else{
                         this.$message('最低消费金额输入格式不对');
@@ -841,7 +837,7 @@
                 }
 //       指定单品最低购买数量
                 if(this.form.minConsumeNum == 1){
-                    if(coRe.fiveandtwo.test(this.form.number4) && this.form.number4 >= 0.01 && this.form.number4 <= 49999.99){
+                    if(this.form.number4 && this.form.number4 >= 0.01 && this.form.number4 <= 49999.99){
                         this.data.minConsumeNum = this.form.number4
                     }else{
                         this.$message('最低购买量输入格式不对');
@@ -850,7 +846,7 @@
                 }
 //       指定单品最高优惠数量
                 if(this.form.maxDiscountNum == 1){
-                    if(coRe.oneandn.test(this.form.number5) ){
+                    if(this.form.number5){
                         this.data.maxDiscountNum = this.form.number5
                     }else{
                         this.$message('最高优惠输入格式不对');
@@ -859,7 +855,7 @@
                 }
 //       指定单品总共优惠件数
                 if(this.form.totalMaxDiscountNum == 1){
-                    if(coRe.oneandn.test(this.form.number6) ){
+                    if(this.form.number6){
                         this.data.totalMaxDiscountNum = this.form.number6
                     }else{
                         this.$message('总共优惠件数输入格式不对');
@@ -875,7 +871,7 @@
 
 //        领取限制
                 if (this.form.limitselectvalue == 1) {
-                    if(numberRe.test(this.form.number1)){
+                    if(this.form.number1){
                         this.data.user_win_count = this.form.number1;
                     }else{
                         this.$message('优惠券领取数量输入格式不对');
@@ -884,7 +880,7 @@
                 }
 //          每日领取限制
                 if (this.form.datelimitselectvalue == 1 ) {
-                    if(numberRe.test(this.form.number2)){
+                    if(this.form.number2){
                         this.data.user_win_frequency = this.form.number2;
                     }else{
                         this.$message('每日领取优惠券数量输入格式不对');
@@ -1097,7 +1093,7 @@
                     this.form.saletype = Math.abs(this.form.saletype);
                     this.form.saletype = this.form.saletype.toFixed(2);
                     this.form.saletype = Number(this.form.saletype)
-                    if(this.form.saletype == '0.00' ){
+                    if(this.form.saletype == '0.00' || this.form.saletype.toString().length > '8' ){
                         this.form.saletype = ''
                     }
                     this.money = this.form.saletype;

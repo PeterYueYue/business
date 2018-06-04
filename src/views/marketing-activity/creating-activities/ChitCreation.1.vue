@@ -1,22 +1,22 @@
 <!--代金券创建s-->
 <!--活动营销/单品营销-->
 <template>
-    <div class="zj-main mainBox">
-        <!-- <div class="ticket_show">
+    <div class="zj-main">
+        <div class="ticket_show">
             <div>
                 <img src="../../../assets/ticket.png" alt="">
                 <span>{{money}}元</span>
                 <p>活动日期:{{startTime}}至{{endTime}}</p>
             </div>
-        </div> -->
-
-        <div class="smallhint" > 小提示：积分商城券池创建</div>
-        <div class="ticket_rule  center bottom_margin_50">
+        </div>
+        <div class="ticket_rule bottom_margin_50">
             <span class="ticket_title_all">活动内容</span>
             <el-form ref="form" :model="form" label-width="140px">
                 <el-form-item class="ticket_title" label="活动名称 :">
-                    <el-input size="small"  v-model="form.name" placeholder="请输入活动名称"></el-input>
+                    <el-input size="small" maxlength="30"  v-model="form.name" placeholder="请输入活动名称"></el-input>
                     <span  v-if="form.name.length > 30" class="wrongColor"> * 活动名称长度不能超过30个字符</span>
+                   
+                    
                 </el-form-item>
                  <el-form-item label="活动时间 :">
                     <div class="block">
@@ -40,67 +40,16 @@
                         </el-button>
                     </div>
                 </el-form-item>
-                <el-form-item label="发放数量 :"  >
-                    <el-select size="small"   v-model="emitOption" placeholder="请选择">
-                        <el-option
-                        v-for="item in optionsNumber"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                    <el-input class="width_90"  v-model="emitNumber"     v-if="emitOption == '限制'" type="number" placeholder="请输入数量" size="small" ></el-input>
-                </el-form-item>
+
+
+
+
+
                 <el-form-item label="券面额 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="money" placeholder="请输入"></el-input>
                     元 
                     <!-- <span v-if="jmeIsOk == false"  class="wrongColor">/*劵面额只能为大于0的数字，且长度小于8位</span> -->
                 </el-form-item>
-                <el-form-item class="ticket_limit " label="最低消费 :">
-                    <el-select class="margin_bto10" v-model="form.uselimitselectvalue" placeholder="请选择" size="small">
-                        <el-option
-                                v-for="item in limitselectdata"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                        </el-option>
-                    </el-select>
-                    <br>
-                    <div  v-if="this.form.uselimitselectvalue == 1">
-                        <span>消费满 </span>
-                        <el-input class="width_90"  type="number"  @blur="reviseNumberX"  size="small" placeholder="金额" v-model="numberX"></el-input>
-                        <span>可用</span>
-                    </div>
-                </el-form-item>
-                <el-form-item class="ticket_number" label="券有效期 :">
-                    <el-select size="small"   v-model="validity" placeholder="请选择">
-                        <el-option
-                        v-for="item in optionsValidity"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                     <span v-if="validity == '相对时间'"  >&ensp;券领取后&ensp;</span>
-                    <el-input v-if="validity == '相对时间'" class="width_90"   @blur="reviseNumbers"    size="small" v-model="finallyValidity" type="number"
-                              placeholder="输入天数"></el-input><span v-if="validity == '相对时间'"  >&ensp;天有效</span>
-                    <el-date-picker
-                            v-if="validity == '绝对时间'"
-                            v-model="finallyValidity1"
-                            type="daterange"
-                            align="right"
-                            size="small"
-                            placeholder="选择日期范围"
-                            :picker-options="pickerOptions2">
-                    </el-date-picker>   
-                </el-form-item>
-                <el-form-item  label="品牌名称:" >
-                    <el-input class="width_200 "   v-model="brandName"  size="small"  placeholder="请输入品牌名称" ></el-input>
-                </el-form-item>
-
-
-
-                
 
                 <el-form-item label="券Logo :" required>
                     <el-upload
@@ -116,24 +65,115 @@
                     <span class="ticket_tip color_888 ">请上传品牌Logo，文件格式GIF、JPG、JPEG、PNG文件大小10M以内，建议尺寸120px*120px</span>
                 </el-form-item>
 
-                <el-form-item  label="使用说明:" >
-                    <div class="margin_bto10"    v-for=" (item , i)  in instructions"  :key="item.id" >
-                        <el-input class="width_300 "  v-model="item.val"   size="small"  placeholder="例如：本优惠券不可兑换现金" ></el-input>
-                        <el-button  v-if="instructions.length > 1"   type="danger" size="small" @click="delinstructions(item,i)" class="margin_left50"  circle>删除</el-button>
+               
+
+
+
+
+                
+                <el-form-item class="ticket_number" label="数量 :">
+
+                    <el-input class="width_90" @blur="numberIsOk" type="number"  size="small" v-model="form.number" placeholder="输入数量"></el-input>
+                </el-form-item>
+                
+                <el-form-item class="ticket_number" label="券有效期 :">
+                    券领取后&ensp;
+                    <el-input class="width_90"   @blur="reviseNumbers"    size="small" v-model="form.numbers" type="number"
+                              placeholder="输入天数"></el-input>&ensp;天有效
+                </el-form-item>
+                <el-form-item class="ticket_limit" label="使用条件 :">
+                    <el-select v-model="form.uselimitselectvalue" placeholder="请选择" size="small">
+                        <el-option
+                                v-for="item in limitselectdata"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <br>
+                    <div v-if="this.form.uselimitselectvalue == 1">
+                        <span>消费满 </span>
+                        <el-input class="width_90"  type="number"  @blur="reviseNumberX"  size="small" placeholder="金额" v-model="numberX"></el-input>
+                        <span>可用</span>
                     </div>
 
-                    <el-button  v-if="instructions.length <= 4"   @click="addinstructions" size="small" type="primary" round>新增</el-button>
                 </el-form-item>
+                <!--选择适用门店弹窗-->
+                <el-dialog
+                        title="选择适用门店"
+                        v-model="dialogVisible_queryshops"
+                        size="small"
+                        top="20%">
+                    <div class="kinds_main">
+                        <div class="shopkinds_list">
+                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
+                                         @change="handleCheckAllChange">全选
+                            </el-checkbox>
+                            <el-checkbox-group v-model="checkedshops" @change="handleCheckedCitiesChange">
+                                <div class="check_divbox" v-for="item in Objects"  :key="item.id"  >
+                                    <el-checkbox :label="item.id" :key="item.id">{{item.main_shop_name}}</el-checkbox>
+                                </div>
 
-                <!-- <el-form-item label="生效方式:">
-                    <el-radio v-model="formRadio" label="1">当日生效</el-radio>
-                    <el-radio v-model="formRadio" label="2">次日生效</el-radio>
-                </el-form-item> -->
-                <el-form-item label="是否可转增:">
-                    <el-radio v-model="isPresentRadio" label="true">可转增</el-radio>
-                    <el-radio v-model="isPresentRadio" label="false">不可转增</el-radio>
+                            </el-checkbox-group>
+                        </div>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
+                        <el-button type="primary" @click="queryshops_btn">确 定</el-button>
+                    </span>
+                </el-dialog>
+            </el-form>
+            <span class="ticket_title_all ">规则设置</span>
+            <el-form ref="form" :model="form" label-width="140px">
+                <el-form-item class="ticket_limit" label="领取限制 :">
+                    <el-select v-model="form.limitselectvalue" placeholder="请选择" size="small" @change="requisitionRestrictions">
+                        <el-option
+                                v-for="item in limitselectdata"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <br>
+                    <div v-if="this.form.limitselectvalue == 1">
+                        <el-input class="width_90" size="small"  @blur="rebiseNumber2"  type="number"   v-model="form.number2" placeholder="请输入"></el-input>
+                        <span>张/人</span>
+                    </div>
                 </el-form-item>
-                <el-form-item class="ticket_limit" label="可用时间段 :">
+                <el-form-item class="ticket_limit" label="每日领取限制 :">
+                    <el-select v-model="form.datelimitselectvalue" placeholder="请选择" size="small" @change="everyRequisitionRestrictions">
+                        <el-option
+                                v-for="item in datelimitselectdata"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <br>
+                    <div v-if="this.form.datelimitselectvalue == 1">
+                        <el-input class="width_90" size="small"  type="number"  @blur="rebiseNumber1" v-model="form.number1" placeholder="请输入"></el-input>
+                        张/人/天
+                    </div>
+
+                </el-form-item>
+                <!--<el-form-item label="是否需要积分兑换 :">-->
+                    <!--<el-radio class="radio" v-model="form.code_radio" label="1">是</el-radio>-->
+                    <!--<el-radio class="radio" v-model="form.code_radio" label="2">否</el-radio>-->
+                <!--</el-form-item>-->
+                <el-form-item v-if="form.code_radio == 1" label="兑换所需积分 :">
+                    <el-input class="width_90"  type="number"   @blur="rebiseNeedcode" size="small" v-model="form.needcode" placeholder="积分"></el-input>
+                </el-form-item>
+                <el-form-item v-if="form.code_radio == 2" class="setways" label="投放渠道 :">
+                    <el-select v-model="form.ways" multiple placeholder="请选择">
+                        <el-option
+                                v-for="item in wayskinds"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item class="ticket_limit" label="领券时间 :">
                     <el-select v-model="form.timelimitselectvalue" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in timelimitselectdata"
@@ -162,13 +202,16 @@
                                         placeholder="选择时间范围">
                                     </el-time-picker>
                                     <el-button type="danger" v-if="index != 0" @click.prevent="removeDomain(time)">删除</el-button>
+                                    
                                 </div>
                                 <el-button type="primary" v-if="times.length < 5" @click="addDomain">新增</el-button>
                         </div>
                         <span class="zj-spand">提示 : 促销时间段不可重叠,否则创建不成功!</span>
+
                     </div>
+
                 </el-form-item>
-                <el-form-item class="ticket_limit" label="不可用日期 :">
+                <el-form-item class="ticket_limit" label="核销时间 :">
                     <el-select v-model="form.detallimitselectvalue" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in detallimitselectdata"
@@ -179,7 +222,7 @@
                     </el-select>
                     <br>
                     <div class="bgf4f4f4" v-if="this.form.detallimitselectvalue == 1">
-                        <!-- <el-checkbox-group v-model="checkList1">
+                        <el-checkbox-group v-model="checkList1">
                         <el-checkbox label="星期一"></el-checkbox>
                         <el-checkbox label="星期二"></el-checkbox>
                         <el-checkbox label="星期三"></el-checkbox>
@@ -187,18 +230,15 @@
                         <el-checkbox label="星期五"></el-checkbox>
                         <el-checkbox label="星期六"></el-checkbox>
                         <el-checkbox label="星期日"></el-checkbox>
-                        </el-checkbox-group> -->
+                        </el-checkbox-group>
                         <span class="viltop">指定时段</span>
                         <div class="neiform">
                             <div v-for="(time,index) in times1"  :key="time.id" class="margin_b_20">
-                                    <el-date-picker
+                                    <el-time-picker
+                                        is-range
                                         v-model="time.value"
-                                        type="daterange"
-                                        align="right"
-                                        size="small"
-                                        placeholder="选择日期范围"
-                                        :picker-options="pickerOptions2">
-                                    </el-date-picker>
+                                        placeholder="选择时间范围">
+                                    </el-time-picker>
                                     <el-button type="danger" v-if="index != 0" @click.prevent="removeDomain1(time)">删除</el-button>
                                     
                                 </div>
@@ -207,33 +247,12 @@
                         <span class="zj-spand">提示 : 促销时间段不可重叠,否则创建不成功!</span>
 
                     </div>
-                </el-form-item>
+
+                    </el-form-item>
                 <el-form-item>
                     <el-button class="bottom_button" size="small" type="primary" @click="saveMessage">提 交</el-button>
                 </el-form-item>
-                <!--选择适用门店弹窗-->
-                <el-dialog
-                        title="选择适用门店"
-                        v-model="dialogVisible_queryshops"
-                        size="small"
-                        top="20%">
-                    <div class="kinds_main">
-                        <div class="shopkinds_list">
-                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
-                                         @change="handleCheckAllChange">全选
-                            </el-checkbox>
-                            <el-checkbox-group v-model="checkedshops" @change="handleCheckedCitiesChange">
-                                <div class="check_divbox" v-for="item in Objects"  :key="item.id"  >
-                                    <el-checkbox :label="item.id" :key="item.id">{{item.main_shop_name}}</el-checkbox>
-                                </div>
-                            </el-checkbox-group>
-                        </div>
-                    </div>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                        <el-button type="primary" @click="queryshops_btn">确 定</el-button>
-                    </span>
-                </el-dialog>
+
             </el-form>
         </div>
     </div>
@@ -252,7 +271,7 @@
                 ],
                 times1:[
                     {
-                        value:[new Date(2018, 10 ,10),new Date(2018, 10 ,10)]
+                        value:[new Date(2017, 9, 10, 0,0,0), new Date(2017, 9, 10, 23,59,59)]
                     }
                 ],
                 checkList:["星期一","星期二","星期三","星期四","星期五","星期六","星期日"],
@@ -275,46 +294,14 @@
                 time: '',
                 money: '',
                 showList: [],
-                emitNumber:'',
-                emitOption:'不限制',
-                optionsNumber:[
-                    {
-                        value: '9999',
-                        label: '不限制'
-                    },
-                    {
-                        value: '限制',
-                        label: '限制'
-                    }
-                ],
-                finallyValidity:'',
-                finallyValidity1:'',
-                validity:'相对时间',
-                optionsValidity:[
-                    {
-                        value: '相对时间',
-                        label: '相对时间'
-                    },
-                    {
-                        value: '绝对时间',
-                        label: '绝对时间'
-                    }
-                ],
-                instructions:[
-                    {
-                        val:''
-                    }
-                ],
-                formRadio:'1',
-                isPresentRadio:'false',
-                brandName:'',
                 form: {
+
                     dialogImageUrl: '',
                     dialogVisible: false,
                     numbers:'45',
                     name: '',
                     shop: '门店1',
-                    number: '',
+                    number: '9999',
                     time: '',
                     timelimitselectvalue:'2',
                     detallimitselectvalue:'2',
@@ -380,12 +367,11 @@
                 lastTime:'',
                 numberX:'',
                 jmeIsOk:true,
-                // priceTickets:'',
+                priceTickets:'',
                 imageUrltologo: '',
                 brandLogo:'',//图片id
                 urlLogo:'',
                 shopid:{id:''},//上传图片带的id
-                forbidden_use_date:[]
                 
             }
         },
@@ -397,20 +383,6 @@
           
         },
         methods: {
-            delinstructions(item,index){
-                
-                if(this.instructions.length > 1){
-                    this.instructions = this.instructions.filter( (e,i) => index !==i )
-                }
-            },
-            addinstructions(){
-
-                if(this.instructions.length < 5){
-                    this.instructions.push({
-                        val:''
-                    })
-                }
-            },
             cookie(){
                 function getCookie(cookieName) {                   
                     var strCookie = document.cookie;
@@ -428,10 +400,11 @@
                 console.log(user_id)
                 this.shopid.id = user_id ;
             },
-            logobeforeAvatarUpload(file) {
+           logobeforeAvatarUpload(file) {
                 this.$message('正在上传');
             },
             logoonsuccess(response, file, fileList) {
+
                 console.log(response)
                 if (response.error == 0) {
                     this.$message.success('上传LOGO图片成功!');
@@ -476,7 +449,7 @@
             //核销时间3个函数(添加,删除,处理)
             addDomain1(){
                 this.times1.push({
-                       value:[new Date(),new Date()]
+                       value:[new Date(2017, 9, 10, 0,0,0), new Date(2017, 9, 10, 23,59,59)]
                     })
             },
             removeDomain1(time) {
@@ -487,8 +460,17 @@
             },
             saveMessage:function () {
 
-             
-                // 活动名称
+
+
+                
+                if(this.brandLogo){
+                    this.messageData.voucherLogo = this.brandLogo;
+                }else{
+                    this.$message("请上传图片Logo");
+                    return
+                }
+
+
                 if(this.form.name){
                     this.messageData.name=this.form.name;
                     
@@ -496,57 +478,6 @@
                     this.$message("活动名称不可为空且最大长度为32");
                     return;
                 }
-                //处理时间选择是否正确
-                let date1 = new Date(this.firstTime).getTime();
-                let nowTime = new Date().getTime();
-                if(date1 + 86400000 > nowTime){
-                    this.messageData.start_time=this.firstTime;
-                    this.messageData.end_time=this.lastTime;
-
-                }else{
-
-                    this.$message("请选择正确的时间格式");
-                    return;
-                }
-                // 使用说明
-                this.messageData.isShare = this.isPresentRadio
-                let str = [];
-                this.instructions.forEach(e => {
-                    str.push(e.val)
-                })
-                this.messageData.desc = str.toString().replace('"','')
-                // 券有效期
-                if(this.validity == '相对时间'){
-                    // 相对时间
-                    this.messageData.validate_type = "RELATIVE";
-                    this.finallyValidity1 = '';
-                    this.messageData.voucher_start_time = "";
-                    this.messageData.voucher_end_time = "";
-                    this.messageData.relative_time = this.finallyValidity;
-
-                }
-                if(this.validity == '绝对时间'){
-                    // 绝对时间
-                    this.messageData.validate_type = "FIXED";
-                    this.finallyValidity = '';
-                    this.messageData.relative_time = "";
-                    this.messageData.voucher_start_time = formateDate(this.finallyValidity1[0]).replace(/\//g,'-');
-                    this.messageData.voucher_end_time = formateDate(this.finallyValidity1[1]).replace(/\//g,'-');
-                }
-                //品牌名称
-                if(this.brandName){
-                    this.messageData.brandName = this.brandName
-                }else{
-                    this.$message("请输入品牌名称");
-                    return;
-                }
-                if(this.brandLogo){
-                    this.messageData.voucherLogo = this.brandLogo;
-                }else{
-                    this.$message("请上传图片Logo");
-                    return
-                }
-                
                 if(!this.jmeIsOk){
                     this.$message("券面额不正确");
                     return;
@@ -557,22 +488,40 @@
 
                 if(this.checkedshopstrue){
                     this.messageData.suit_shops=this.checkedshopstrue.join();
+                }
+                if(this.priceTickets){
+                    this.$message("请输入正确的代金券数量");
+                    return;
                 }else{
-                    this.$message("请选择门店");
+                    this.messageData.quantity=this.form.number;
+                }
+                
+                //处理时间选择是否正确
+                let date1 = new Date(this.firstTime).getTime();
+                let nowTime = new Date().getTime();
+
+                if(date1 + 86400000 > nowTime){
+                    this.messageData.start_time=this.firstTime;
+                    this.messageData.end_time=this.lastTime;
+
+                }else{
+
+                    this.$message("请选择正确的时间格式");
                     return;
                 }
 
-                 //数量
-                if(this.emitOption == "不限制"){
+                //有效期
+                
+                if(this.form.numbers){
+                this.messageData.relative_time = this.form.numbers;
+                }else{
+                    this.$message("请输入有效期");
+                    return;
+                }
 
-                    this.messageData.quantity="9999"
-                }  
-                if(this.emitOption == "限制"){
-                    this.messageData.quantity=this.emitNumber;
-                } 
-               
                 //使用条件 
                 if(this.form.uselimitselectvalue == 1){
+                    // let numberXRe = /^[1-9]+$/;
                     if(this.numberX){
                         this.messageData.send_rule_min_cost=this.numberX;
                     }else{
@@ -582,7 +531,31 @@
                 }else if(this.form.uselimitselectvalue == 2){
                     this.messageData.send_rule_min_cost='0';
                 }
+                //领取限制
+                if(this.form.limitselectvalue == 1){
+                    let number1Re = /^[1-9]+$/;
+                    if(number1Re.test(this.form.number1)){
+                        this.messageData.user_win_count=this.form.number1;
+                    }else{
+                        this.$message("优惠券领取数量输入格式不对");
+                        return;
+                    }
+                }else if(this.form.limitselectvalue == 2){
+                    this.messageData.user_win_count='9999';
+                }
+                //每日领取限制
+                if(this.form.datelimitselectvalue == 1){
+                    let number2Re = /^[1-9]+$/;
+                    if(number2Re.test(this.form.number2)){
+                        this.messageData.user_win_frequency=this.form.number2;
 
+                    }else{
+                        this.$message("每日领取优惠券数量输入格式不对");
+                        return;
+                    }
+                }else if(this.form.datelimitselectvalue == 2){
+                    this.messageData.user_win_frequency='9999';
+                }
                 //领取时间限制
                 if(this.form.timelimitselectvalue ==1){
 
@@ -611,6 +584,7 @@
                     (newArrTime || []).map(function(item) {
                         startTimeArr.push(item.startTime);
                         endTimeArr.push(item.endTime);
+                       
                     });
                     var allStartTime = startTimeArr.sort();
                     var allEndTime = endTimeArr.sort();
@@ -619,64 +593,71 @@
                         if (allStartTime[k] <= allEndTime[k-1]){
                             result+=1;  
                         }
+
+                    }
+                    // return result>0;
+
+                    if(result > 0){
+                        this.$message("领券时间段不能重叠");
+                        return;
+                    }else{
+                        this.messageData.exchange_time=useTime;
+                        let arrs=weekDispose(this.checkList);
+                        this.messageData.exchange_week=arrs;
+                    }
+
+                }
+                //核销时间
+                if(this.form.detallimitselectvalue == 1){
+                    let useTime=DateLong(this.times1);
+                    let arrTime = useTime.split(/\^/g);
+                    let newArrTime  = []
+                    arrTime.forEach((e,i) =>{
+                        let startTime = e.split(',')[0];
+                        let endTime   = e.split(',')[1];
+                       newArrTime.push({
+                           startTime:startTime.substring(0,2)*3600 + startTime.substring(3,5)*60 + startTime.substring(6,),
+                           endTime:endTime.substring(0,2)*3600 + endTime.substring(3,5)*60 + endTime.substring(6,)
+                       })
+                    })
+
+                    for(var i=0;i<newArrTime.length;i++){
+                        if(newArrTime[i].startTime == newArrTime[i].endTime){
+                            this.$message("领券开始时间不可以等于结束时间");
+                            return;
+                        }
+                    }
+                    var startTimeArr = [];
+                    var endTimeArr = [];
+                    var thatThis = this;
+                    (newArrTime || []).map(function(item) {
+                        startTimeArr.push(item.startTime);
+                        endTimeArr.push(item.endTime);
+                    });
+                    var allStartTime = startTimeArr.sort();
+                    var allEndTime = endTimeArr.sort();
+                    var result = 0;
+                    for(var k=1;k<allStartTime.length;k++){
+                        if (allStartTime[k] <= allEndTime[k-1]){
+                            result+=1;
+                        }
                     }
                     // return result>0;
                     if(result > 0){
-                        this.$message("可用时间段不能重叠");
+                        this.$message("核销时间段不能重叠");
                         return;
+
                     }else{
-                        this.messageData.use_time=useTime;
-                        let arrs=weekDispose(this.checkList);
+                        let arrs=weekDispose(this.checkList1);
                         this.messageData.use_week=arrs;
-                        
+                        this.messageData.use_time=useTime;
                     }
                 }
-
-
-                
-
-
-                //不可用时间
-
-
-                let startT = []
-                let endT = []
-                this.times1.forEach( e =>{
-                    startT.push(new Date(e.value[0].toLocaleDateString()).getTime())
-                    endT.push(new Date(e.value[1].toLocaleDateString()).getTime())
-                })
-                var allStartTime = startT.sort();
-                var allEndTime = endT.sort();
-                var result = 0;
-                for(var k=1;k<allStartTime.length;k++){
-                    if (allStartTime[k] <= allEndTime[k-1]){
-                        result+=1;  
-                    }
-                }
-                // return result>0;
-                if(result > 0){
-                    this.$message("不可用时间段不能重叠");
-                    return;
-                }else{
-                     this.times1.forEach(e =>{
-                        let arr = []
-                        
-                        arr.push(formateDate(e.value[0]).replace(/\//g,'-'))     
-                        arr.push(formateDate(e.value[1]).replace(/\//g,'-'))     
-                        this.forbidden_use_date.push(arr+'^')
-                    })
-                    if(this.form.detallimitselectvalue == "2"){
-                        this.messageData.forbidden_use_date = ""
-                    }else{
-                        this.messageData.forbidden_use_date = this.forbidden_use_date.toString().replace('^,','^').slice(0,-1)
-                    }
-                }
-
                 this.messageData.binding_point=this.form.needcode;
                 delete this.messageData['publish_channels_type'];
-
                 let data=this.qs.stringify(this.messageData);
-                saveProduct(data).then(res=>{
+                saveProduct(data)
+                    .then(res=>{
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }else if(res.errorCode == 10000){
@@ -725,12 +706,9 @@
             queryshops_btn() {
                 this.dialogVisible_queryshops = false;
                 this.checkedshopstrue = this.checkedshops;
-
                 this.shopsnumber = this.checkedshopstrue.length;
             },
             changeTime: function () {
-
-                console.log(this.time[0])
                 this.startTime = formateDate(this.time[0]);
                 this.endTime = formateDate(this.time[1]);
                 this.firstTime = formDateSecond(this.time[0]);
@@ -998,41 +976,5 @@
     .wrongColor{
         color: red;
     }
-   .center{
-       margin-left: 25%;
-   }
-   .width_50{
-       width: 50px;
-   }
-   .width_100{
-       width: 100px;
-   }
-   .width_150{
-       width: 150px;
-   }
-   .width_200{
-       width: 200px;
-   }
-   .width_300{
-       width: 300px;
-   }
-   .margin_bto10{
-       margin-bottom: 10px;
-   }
-   .margin_tp20{
-       margin-top: 20px;
-   }
-   .margin_left50{
-       margin-left: 50px;
-   }
-   .mainBox{
-       position: relative;
-   }
-   .smallhint{
-       position: absolute;
-       left: 5px;
-       top: 0;
-       font-size: 12px;
-   }
    
 </style>

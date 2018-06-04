@@ -21,6 +21,12 @@ import axios from 'axios';
 Vue.prototype.axios = axios;
 import qs from 'qs';
 Vue.prototype.qs = qs;
+
+
+// 点击复制到粘贴板
+import VueClipboard from 'vue-clipboard2'
+
+Vue.use(VueClipboard)
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 Vue.use(Vuex);
