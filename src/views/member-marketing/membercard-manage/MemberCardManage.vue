@@ -122,6 +122,8 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
+            <span style="padding-left:20px;">标签 : </span>
+            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
           </div>
           <div style="margin-bottom: 10px;">
             <span>(2) </span><span>标题 : </span>
@@ -131,6 +133,8 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
+            <span style="padding-left:20px;">标签 : </span>
+            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
           </div>
           <div style="margin-bottom: 10px;">
             <span>(3) </span><span>标题 : </span>
@@ -140,6 +144,8 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
+            <span style="padding-left:20px;">标签 : </span>
+            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
           </div>
           <!--<div style="margin-bottom: 10px;">-->
           <!--<span>(4) </span><span>标题 : </span>-->
@@ -152,12 +158,16 @@
           <div style="margin-bottom: 10px;" v-for="(item,index) in lwlist">
             <div>
               <span>({{index+4}}) </span><span><i style="color:#ff4949;">* </i>标题 : </span>
-              <el-input style="display:inline-block;width: 140px"
-                        size="small" v-model="item.title" placeholder="请填写标题"></el-input>
+              <el-input style="display:inline-block;width: 140px" size="small" v-model="item.title"
+                        placeholder="请填写标题"></el-input>
               &#X3000;
               <span>副标题 : </span>
               <el-input style="display:inline-block;width: 140px" size="small" v-model="item.subTitle"
                         placeholder="请填写副标题"></el-input>
+              &#X3000;
+              <span>标签 : </span>
+              <el-input style="display:inline-block;width: 85px" size="small" v-model="item.tag"
+                        placeholder="请填写标签"></el-input>
             </div>
             <div style="margin-top: 4px;">
               &#X3000; <span><i style="color:#ff4949;">* </i>链接 : </span>
@@ -165,6 +175,19 @@
                         placeholder="请填写链接地址,例:https://www.baidu.com"></el-input>
               <el-button size="small" type="text" @click="removeDomain(item)">删除</el-button>
             </div>
+            <el-form-item label="LOGO : " prop="tagUrl" style="margin-top: 5px;" label-width="67px">
+              <el-upload
+                class="avatar-uploader"
+                action="/business/file!fileUpload.action"
+                :data="shopid"
+                :show-file-list="false"
+                :on-success="tagonsuccess"
+                :before-upload="tagbeforeAvatarUpload">
+                <img v-if="imageUrltag" :src="imageUrltag" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+              <span class="ticket_tip color_888">备注 : 1M以内,格式png、jpg; 尺寸不小于500*500px的正方形; 请优先使用商家LOGO;</span>
+            </el-form-item>
           </div>
           <el-button class="margin-l-f" size="small" v-if="lwlist.length <6" type="text" @click="addDomain">新增栏目
           </el-button>
@@ -344,7 +367,8 @@
         isshow1: 1,
         isshow2: 1,
         isshow3: 1,
-        isshow4: 1,
+        // isshow4: 1,
+        tag: '',
         gradetabledata: [
           {name: '', point: '0', times: '1'},
         ],
@@ -370,6 +394,7 @@
         radio: '',
         imageUrltobg: '',
         imageUrltologo: '',
+        imageUrltag: '',
 
         bgimgurl: require('../../../assets/membercard.png'),
         logoimgurl: require('../../../../src/assets/card_logo.png'),
@@ -382,6 +407,8 @@
           logoUrl: '',
           bgId: '',
           bgUrl: '',
+          tagUrl: '',
+          tagId: '',
           cardName: '',
           bgColor: 'rgb(60,148,197)',
           memo: '',
@@ -406,6 +433,9 @@
           logoUrl: [
             {required: true, message: ' ', trigger: 'blur'}
           ],
+          // tagUrl: [
+          //   {required: true, message: ' ', trigger: 'blur'}
+          // ],
           memo: [
             {required: true, message: ' ', trigger: 'blur'}
           ],
@@ -437,7 +467,7 @@
         this.gradetabledata.push({name: '', point: '', times: ''})
       },
       addDomain() {
-        this.lwlist.push({title: '', subTitle: '', url: ''})
+        this.lwlist.push({title: '', subTitle: '', url: '', tag: ''})
       },
       removeDomain(item) {
         var index = this.lwlist.indexOf(item)
@@ -477,8 +507,8 @@
 
         // 验证栏位设置不能为空
         for (let a = 0; a < this.lwlist.length; a++) {
-          if (this.lwlist[a].title == '' || this.lwlist[a].url == '') {
-            this.$message.warning('栏位设置第' + (a + 5) + '条填写不完整');
+          if (this.lwlist[a].title == '' || this.lwlist[a].url == '' || this.lwlist[a].tag == '') {
+            this.$message.warning('栏位设置第' + (a + 4) + '条填写不完整');
             return;
           }
         }
@@ -514,14 +544,18 @@
           }
         }
         this.form.fieldList = this.sumbit_fieldList.substr(0, this.sumbit_fieldList.length - 1);
-        this.form.hiddens = this.isshow1 + ',' + this.isshow2 + ',' + this.isshow3 + ',' + this.isshow4;
+        this.form.hiddens = this.isshow1 + ',' + this.isshow2 + ',' + this.isshow3;
         this.sumbit_fieldList = '';
         if (this.sumbit_q == false) {
           for (let a = 0; a < this.lwlist.length; a++) {
-            if (this.lwlist[a].title == '' && this.lwlist[a].subTitle == '' && this.lwlist[a].url == '') {
+            if (this.lwlist[a].title == '' && this.lwlist[a].subTitle == '' && this.lwlist[a].url == '' &&
+              this.lwlist[a].tag == '') {
               continue;
             } else {
-              this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + 'AAA' + this.lwlist[a].subTitle + 'AAA' + this.lwlist[a].url;
+              this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
+                '!!!' + this.lwlist[a].url + '!!!' + '1n2qOXxNT1uhGS6ZiBaPbAAAACMAAQED' + '!!!' +
+                'https://oalipay-dl-django.alicdn.com/rest/1.0/image?fileIds=CJk7OYTtSD2IrYv66SVf8gAAACMAAQED&zoom=original' +
+                '!!!' + this.lwlist[a].tag;
               if (a < this.lwlist.length - 1) {
                 this.sumbit_columns = this.sumbit_columns + 'BBB';
               }
@@ -537,7 +571,8 @@
           this.form.levels = '';
         } else {
           for (let i = 0; i < this.gradetabledata.length; i++) {
-            this.sumbit_levels = this.sumbit_levels + this.gradetabledata[i].name + 'AAA' + this.gradetabledata[i].point + 'AAA' + this.gradetabledata[i].times;
+            this.sumbit_levels = this.sumbit_levels + this.gradetabledata[i].name + '!!!' +
+              this.gradetabledata[i].point + '!!!' + this.gradetabledata[i].times;
             if (i < this.gradetabledata.length - 1) {
               this.sumbit_levels = this.sumbit_levels + 'BBB';
             }
@@ -594,8 +629,6 @@
           }
         });
         getmembercade().then(res => {
-
-
           console.log(res)
           if (res.content.id) {
             this.form = res.content;
@@ -612,6 +645,7 @@
           // this.pointsmethod = res.content.selfPoint;
           this.listStyle = res.content.layout === 'list' ? 0 : 1;
           this.imageUrltobg = res.content.bgUrl;
+          this.imageUrltag = res.content.cardTemplateColumnList.iconUrl;
           if (res.content.fieldList == 'POINT') {
             this.checkedCities1 = ['积分'];
           }
@@ -626,7 +660,7 @@
           res.content.hiddens.charAt(0) == '0' ? this.isshow1 = 0 : this.isshow1 = 1;
           res.content.hiddens.charAt(1) == '0' ? this.isshow2 = 0 : this.isshow2 = 1;
           res.content.hiddens.charAt(2) == '0' ? this.isshow3 = 0 : this.isshow3 = 1;
-          res.content.hiddens.charAt(3) == '0' ? this.isshow4 = 0 : this.isshow4 = 1;
+          // res.content.hiddens.charAt(3) == '0' ? this.isshow4 = 0 : this.isshow4 = 1;
           this.lwlist = res.content.cardTemplateColumnList;
           if (res.content.regFiled) {
             this.getpersonaldata = res.content.regFiled.replace('IDCARD', '身份证').replace('MOBILE', '手机号').replace('BIRTHDAY', '生日');
@@ -687,10 +721,24 @@
           this.$message(response.url);
         }
       },
+      tagonsuccess(response, file, fileList) {
+        if (response.error == 0) {
+          this.$message.success('上传LOGO图片成功!');
+          this.imageUrltag = URL.createObjectURL(file.raw);
+          this.form.tagUrl = response.url;
+          this.form.tagId = response.imageId;
+        }
+        else if (response.error == 1) {
+          this.$message(response.url);
+        }
+      },
       bgbeforeAvatarUpload(file) {
         this.$message('正在上传');
       },
       logobeforeAvatarUpload(file) {
+        this.$message('正在上传');
+      },
+      tagbeforeAvatarUpload(file) {
         this.$message('正在上传');
       },
       // 会员积分回显
@@ -708,10 +756,11 @@
       },
       //验证会员积分设置
       checksure() {
-
-
         for (let i = 0; i < this.hy_tableData.length; i++) {
-          this.converRates = this.converRates + this.hy_tableData[i].categoryId + 'AAA' + this.hy_tableData[i].categoryName + 'AAA' + this.hy_tableData[i].cost + 'AAA' + this.hy_tableData[i].gain + 'AAA' + this.hy_tableData[i].dayTopPoint + 'AAA' + this.hy_enable;
+          this.converRates = this.converRates + this.hy_tableData[i].categoryId + '!!!' +
+            this.hy_tableData[i].categoryName + '!!!' + this.hy_tableData[i].cost + '!!!' +
+            this.hy_tableData[i].gain +
+            '!!!' + this.hy_tableData[i].dayTopPoint + '!!!' + this.hy_enable;
           if (i < this.hy_tableData.length - 1) {
             this.converRates = this.converRates + 'BBB';
           }
