@@ -126,7 +126,7 @@
                             </el-checkbox>
                             <el-checkbox-group v-model="checkedshops" @change="handleCheckedCitiesChange">
                                 <div class="check_divbox" v-for="item in Objects"  :key="item.id"  >
-                                    <el-checkbox :label="item.shopId"  :key="item.id">{{item.main_shop_name}}</el-checkbox>
+                                    <el-checkbox :label="item.id"  :key="item.id">{{item.main_shop_name}}</el-checkbox>
                                 </div>
                             </el-checkbox-group>
                         </div>

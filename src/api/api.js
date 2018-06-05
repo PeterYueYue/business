@@ -372,3 +372,7 @@ export const addtype= params => {
 export const ticketInfo= params => {
     return axios.post(`${base}/business/business_product!getInnerVoucherByItemId.action`,params).then(res => res.data);
 }
+//营销活动-积分商城-新增商品-添加
+export const addStiorInfo= params => {
+    return axios.post(`${base}/business/business_product!insertProduct.action`,params).then(res => res.data);
+}
