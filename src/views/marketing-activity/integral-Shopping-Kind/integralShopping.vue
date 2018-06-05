@@ -370,29 +370,7 @@
 
                 </el-form-item>
 
-                <!--选择适用门店弹窗-->
-                <el-dialog
-                        title="选择适用门店"
-                        v-model="dialogVisible_queryshops"
-                        size="small"
-                        top="20%">
-                    <div class="kinds_main">
-                        <div class="shopkinds_list">
-                            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
-                                         @change="handleCheckAllChange">全选
-                            </el-checkbox>
-                            <el-checkbox-group v-model="checkedshops" @change="handleCheckedCitiesChange">
-                                <div class="check_divbox" v-for="item in Objects"  :key="item.id"  >
-                                    <el-checkbox :label="item.id"  :key="item.id">{{item.main_shop_name}}</el-checkbox>
-                                </div>
-                            </el-checkbox-group>
-                        </div>
-                    </div>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                        <el-button type="primary" @click="queryshops_btn">确 定</el-button>
-                    </span>
-                </el-dialog>
+                
 
 
 
@@ -453,6 +431,31 @@
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="compilegift_true_btn">确 定</el-button>
                 <el-button @click="compilegift_dialog = false">取 消</el-button>
+            </span>
+        </el-dialog>
+
+
+        <!--选择适用门店弹窗-->
+        <el-dialog
+                title="选择适用门店"
+                v-model="dialogVisible_queryshops"
+                size="small"
+                top="20%">
+            <div class="kinds_main">
+                <div class="shopkinds_list">
+                    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll"
+                                    @change="handleCheckAllChange">全选
+                    </el-checkbox>
+                    <el-checkbox-group v-model="checkedshops" @change="handleCheckedCitiesChange">
+                        <div class="check_divbox" v-for="item in Objects"  :key="item.id"  >
+                            <el-checkbox :label="item.id"  :key="item.id">{{item.main_shop_name}}</el-checkbox>
+                        </div>
+                    </el-checkbox-group>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
+                <el-button type="primary" @click="queryshops_btn">确 定</el-button>
             </span>
         </el-dialog>
     </div>
