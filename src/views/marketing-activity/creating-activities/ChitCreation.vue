@@ -486,8 +486,6 @@
                 }
             },
             saveMessage:function () {
-
-             
                 // 活动名称
                 if(this.form.name){
                     this.messageData.name=this.form.name;
@@ -502,9 +500,7 @@
                 if(date1 + 86400000 > nowTime){
                     this.messageData.start_time=this.firstTime;
                     this.messageData.end_time=this.lastTime;
-
                 }else{
-
                     this.$message("请选择正确的时间格式");
                     return;
                 }

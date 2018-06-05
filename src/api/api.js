@@ -376,3 +376,7 @@ export const ticketInfo= params => {
 export const addStiorInfo= params => {
     return axios.post(`${base}/business/business_product!insertProduct.action`,params).then(res => res.data);
 }
+//营销活动-积分商城-新增商品-兑换条件单独
+export const addCondition= params => {
+    return axios.post(`${base}/business/business_product!getCardTemplateLevel.action`,params).then(res => res.data);
+}

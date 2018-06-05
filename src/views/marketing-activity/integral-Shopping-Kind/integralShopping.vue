@@ -56,7 +56,6 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="exchangePage" label="兑换条件">
-                        
                     </el-table-column>
                     <el-table-column prop="count" label="数量">
                     </el-table-column>
@@ -64,7 +63,6 @@
                         <template scope="scope">
                             <div>
                                 <el-input @blur="changeOrder(scope.row)" @change="showasdasd" size="small" :value="scope.row.showOrder" ></el-input>
-                                
                             </div>
                         </template>
                     </el-table-column>
@@ -141,8 +139,6 @@
             size="small"
             top="15%">
             <el-form label-width="105px" class="addtable_form" :model="addform" :rules="addrule" ref="addform">
-
-
                 <el-form-item prop="typeOptionsValue" label="商品类型">
                     <el-select size="small" v-model="addform.typeOptionsValue" @change="selectType" placeholder="请选择">
                         <el-option
@@ -181,11 +177,52 @@
                 <el-form-item v-if="addform.sourceValue == 'OUTER'" label="券 ID : " prop="">
                     <el-input size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
                 </el-form-item>
-                <el-form-item label="最低消费金额 : " prop="point">
-                    <el-input size="small" type="number" class="width_150" placeholder="请输入最低消费金额" v-model="addform.point"></el-input>
+                <el-form-item 
+                        v-if="addform.sourceValue == 'OUTER'||addform.sourceValue == 'SELF'" 
+                        v-show="addform.typeOptionsValue == 'RATE'"
+                        label="最高优惠金额 : " 
+                        prop="maxPreAmount">
+                    <el-select v-model="addform.maxPreAmount" class="validityTypeInline" placeholder="请选择" size="small">
+                        <el-option
+                        v-for="item in maxPreAmountselect"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <span v-if="addform.maxPreAmount == '1'"  >  
+                        <el-input size="small"
+                         type="number" class="width_50" 
+                         placeholder="金额" 
+                         v-model="addform.money1">
+                         </el-input>元
+                        
+                    </span>
                 </el-form-item>
-                <el-form-item   label="券有效期 : " >
 
+
+                <el-form-item v-if="addform.sourceValue == 'OUTER' "  label="最低消费金额 : " >
+                    <el-select v-model="minPreAmount" class="validityTypeInline" placeholder="请选择" size="small">
+                        <el-option
+                        v-for="item in minPreAmountselect"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <span  v-if="minPreAmount == '1'" >
+                    <el-input 
+                    size="small" type="number" 
+                    class="width_50" 
+                    placeholder="金额" 
+                    v-model="addform.money">
+                    </el-input>元
+                        
+                    </span>
+                </el-form-item>
+
+
+                <el-form-item  v-if="addform.sourceValue == 'OUTER'"   label="券有效期 : " >
                     <el-select v-model="validityType" class="validityTypeInline" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in validityselectdata"
@@ -206,11 +243,11 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
                     </el-date-picker>
-                    <span v-if="validityType == '2' "  > 领取后 <el-input  class="width_50" placeholder="天数" type="number" size="small" ></el-input> 天内有效</span>
+                    <span v-if="validityType == '2' "  > 领取后 <el-input v-model="validDays"  class="width_50" placeholder="天数" type="number" size="small" ></el-input> 天内有效</span>
                 </el-form-item>
 
 
-                <el-form-item label="适用门店 :">
+                <el-form-item label="适用门店 :"  v-if="addform.sourceValue == 'OUTER'"  >
                     <div>
                         <span v-if="shopsnumber">已选择{{shopsnumber}}家门店</span>
                         <!--<el-button v-if="this.shopsnumber" type="text" @click="dialogVisible_queryshops = true">点击查看</el-button>-->
@@ -221,7 +258,10 @@
                 </el-form-item>
 
 
-                <el-form-item class="ticket_limit" label="可用时间段 :">
+                <el-form-item  
+                    v-if="addform.sourceValue == 'OUTER'" 
+                    v-show="addform.typeOptionsValue != 'CASH'"
+                    class="ticket_limit" label="可用时间段 :">
                     <el-select v-model="timelimitselectvalue" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in timelimitselectdata"
@@ -256,7 +296,10 @@
                         <span class="zj-spand">提示 : 促销时间段不可重叠,否则创建不成功!</span>
                     </div>
                 </el-form-item>
-                <el-form-item class="ticket_limit" label="不可用日期 :">
+                <el-form-item 
+                    v-if="addform.sourceValue == 'OUTER'" 
+                    v-show="addform.typeOptionsValue != 'CASH'"
+                    class="ticket_limit" label="不可用日期 :">
                     <el-select v-model="detallimitselectvalue" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in detallimitselectdata"
@@ -296,6 +339,14 @@
 
                     </div>
                 </el-form-item>
+                <el-form-item    v-if="addform.sourceValue == 'OUTER'"  label="使用说明:" >
+                    <div class="margin_bto10"    v-for=" (item , i)  in instructions"  :key="item.id" >
+                        <el-input class="width_300 "  v-model="item.val"   size="small"  placeholder="例如：本优惠券不可兑换现金" ></el-input>
+                        <el-button  v-if="instructions.length > 1"   type="danger" size="small" @click="delinstructions(item,i)" class="margin_left50"  circle>删除</el-button>
+                    </div>
+
+                    <el-button  v-if="instructions.length <= 4"   @click="addinstructions" size="small" type="primary" round>新增</el-button>
+                </el-form-item>
 
                 
 
@@ -303,10 +354,18 @@
 
 
                 <el-form-item label="商品名称 : " prop="name">
-                    <el-input size="small" placeholder="请输入商品名称" v-model="addform.name"></el-input>
+                    <el-input class="width_300" size="small" placeholder="请输入商品名称" v-model="addform.name"></el-input>
                 </el-form-item>
-                <el-form-item label="商品数量 : " prop="point">
-                    <el-input size="small" type="number" placeholder="请输入商品数量" v-model="addform.point"></el-input>*小提示：商品数量请与发券数量填写一致
+                <el-form-item v-if="addform.sourceValue == 'OUTER'"   label="商品数量 : " prop="point">
+
+                    <span class="color_888">
+                        <el-input 
+                        size="small" class="width_100" 
+                        type="number" placeholder="请输入数量" 
+                        v-model="addform.point">
+                        </el-input>
+                        *小提示：商品数量请与发券数量填写一致
+                    </span>
                 </el-form-item>
                 
                 
@@ -323,8 +382,9 @@
                     </el-upload>
                     <span class="ticket_tip color_888">备注 : 300KB以内,格式jpg/png; 尺寸不小于160px*160px的正方形;</span>               
                 </el-form-item>
-                <el-form-item label="商品详情 : " prop="textarea">
+                <el-form-item  label="商品详情 : " prop="textarea">
                     <el-input
+                    class="width_300"
                     resize="none"
                     type="textarea"
                     :rows="4"
@@ -342,8 +402,9 @@
                 <el-form-item label="商品周期 : " >
                     <el-date-picker
                         v-model="value6"
+                        size="small"
                         type="daterange"
-                        placeholder="请选怎时间范围"
+                        placeholder="请选择时间范围"
                         @change="timeChange"
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -354,8 +415,12 @@
 
                 <el-form-item label="兑换条件">
                     <el-checkbox-group v-model="exchangeValue">
-                        <el-checkbox v-for="item in exchangeOpction" :key="item.id"  :label="item.value"></el-checkbox>
-                    </el-checkbox-group>
+                        <el-checkbox class="margin_bottom15" v-for="item in exchangeOpction" @change="exchangeGrade(item)" :key="item.id"  :label="item.name"></el-checkbox>
+                    </el-checkbox-group >
+                    积分：<el-input size="small" v-model="integralValue" class="width_50" type="number"  ></el-input>  金额：<el-input class="width_50"   v-model="moneyValue" size="small" type="number"  ></el-input>
+                    <span class="color_888"> *小提示：金额非必填，不填默认仅需积分兑换</span>
+                   
+
                 </el-form-item>
                 <el-form-item label="兑换限制">
                     <el-select size="small" v-model="exchangeAstrictValue" placeholder="请选择">
@@ -366,7 +431,14 @@
                         :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-input  v-if="exchangeAstrictValue != '不限制'" class="width_70px" v-model="exchangeAstrictCount" placeholder="请输入" size="small" ></el-input>
+                    <span  v-if="exchangeAstrictValue != 'N'" >
+                        <el-input  
+                        class="width_70px" 
+                        v-model="exchangeAstrictCount" 
+                        placeholder="请输入" size="small" >
+                        </el-input>
+                        人/张
+                    </span>
 
                 </el-form-item>
 
@@ -420,21 +492,12 @@
                 </el-form-item>
 
 
-
-
-                
-
-
-
-
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="compilegift_true_btn">确 定</el-button>
                 <el-button @click="compilegift_dialog = false">取 消</el-button>
             </span>
         </el-dialog>
-
-
         <!--选择适用门店弹窗-->
         <el-dialog
                 title="选择适用门店"
@@ -461,7 +524,7 @@
     </div>
 </template>
 <script>
-    import { getShopLists,savaGift,giftLibrary,selectGift,deleteGift,afterGift,afterGifts,integralStoreList,upPutAway,downSoldOut,deleteAction,sort,addtype,ticketInfo,addStiorInfo} from '../../../api/api';
+    import { getShopLists,savaGift,giftLibrary,selectGift,deleteGift,afterGift,afterGifts,integralStoreList,upPutAway,downSoldOut,deleteAction,sort,addtype,ticketInfo,addStiorInfo,addCondition} from '../../../api/api';
     import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,DateLong} from '../../../api/CommonMethods'
     export default {
         data() {
@@ -519,13 +582,22 @@
                 ],
                 checkList:["星期一","星期二","星期三","星期四","星期五","星期六","星期日"],
                 checkList1:["星期一","星期二","星期三","星期四","星期五","星期六","星期日"],
-                timelimitselectvalue:'',
+                timelimitselectvalue:'2',
                 timelimitselectdata:[
                     {value: '1', label: '限制'},
                     {value: '2', label: '不限制'},
                 ],
-                detallimitselectvalue:'',
+                detallimitselectvalue:'2',
                 detallimitselectdata:[
+                    {value: '1', label: '限制'},
+                    {value: '2', label: '不限制'},
+                ],
+                maxPreAmountselect:[
+                    {value: '1', label: '限制'},
+                    {value: '2', label: '不限制'},
+                ],
+                minPreAmount:'2',
+                minPreAmountselect:[
                     {value: '1', label: '限制'},
                     {value: '2', label: '不限制'},
                 ],
@@ -558,7 +630,8 @@
                     typeOptionsValue:'',
                     sourceValue:'',
                     movableValue:'',
-                    textarea:''
+                    textarea:'',
+                    maxPreAmount:'2'
                 },
                 compileform:{
                     name:'',
@@ -570,11 +643,14 @@
                     typeOptionsValue:'',
                     sourceValue:'',
                     movableValue:'',
-                    textarea:''
+                    textarea:'',
+                    money:'',
+                    money1:'',
+                    maxPreAmount:''
                 },
                 addrule:{
                     name:[
-                        { required: true, message: '请输入礼品名称', trigger: 'blur' },
+                        { required: false, message: '请输入礼品名称', trigger: 'blur' },
                         { max: 15, message: '礼品名称长度大于15个字符', trigger: 'blur' },
                     ],
                     totalNum:[
@@ -584,20 +660,29 @@
                     point:[
                         { required: true, message: '请输入商品数量', trigger: 'blur' },
                     ],
+                    maxPreAmount:[
+                        { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
+                    ],
+                    money:[
+                        { required: true, message: '请输入最低消费金额', trigger: 'blur' },
+                    ],
+                    money1:[
+                        { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
+                    ],
                     logo:[
                         // { required: true, message: '请上传图片', trigger: 'blur' },
                     ],
                     typeOptionsValue:[
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                        { required: false, message: '请选择类型', trigger: 'change' },
                     ],
                     sourceValue:[
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                        { required: false, message: '请选择类型', trigger: 'change' },
                     ],
                     movableValue:[
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                        { required: false, message: '请选择类型', trigger: 'change' },
                     ],
                     textarea:[
-                        { required: true, message: '请输入内容信息', trigger: 'blur' },
+                        { required: false, message: '请输入内容信息', trigger: 'blur' },
                     ]
                 },
                 compilerule:{
@@ -610,10 +695,17 @@
                         {validator: totalNumvalidate, trigger: 'blur'},
                         { max: 10, message: '长度小于10个字符', trigger: 'blur' },
                     ],
+                    
                     point:[
                         { required: true, message: '请输入兑换所需积分', trigger: 'blur' },
                         {validator: pointvalidate, trigger: 'blur'},
                         { max: 10, message: '长度小于10个字符', trigger: 'blur' },
+                    ],
+                    money:[
+                        { required: true, message: '请输入最低消费金额', trigger: 'blur' },
+                    ],
+                    money1:[
+                        { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
                     ],
                     logo:[
                         // { required: true, message: '请上传图片', trigger: 'blur' },
@@ -708,19 +800,19 @@
                 exchangeValue:[],
                 exchangeAstrictOpction:[
                     {
-                        value: '不限制',
+                        value: 'N',
                         label: '不限制'
                     },
                     {
-                        value: '天',
+                        value: 'D',
                         label: '每日'
                     },
                     {
-                        value: '月',
+                        value: 'M',
                         label: '每月'
                     },
                     {
-                        value: '总数',
+                        value: 'T',
                         label: '总数限制'
                     }
                 ],
@@ -739,6 +831,15 @@
                 checkAll: false,
                 Objects:'',
                 checkedShopPid:[],
+                hhddatas2: [],
+                validDays:'',
+                instructions:[
+                    {
+                        val:''
+                    }
+                ],
+                addcondition:'',
+                grade:[]
 
             }
         },
@@ -754,8 +855,6 @@
                     pageSize: '10000'
                 });
                 getShopLists(data).then(res=>{
-
-                    console.log(res)
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }else{
@@ -777,15 +876,12 @@
                     pageSize:this.pageSize,
                 });
                 integralStoreList(data).then(res => {
-
-                    console.log(res)
                     if(res.errorCode == '30005'){
                         this.$router.push({path: '/login'});
                     }
                     else if(res.errorCode == '10000'){
                         if(res.status == 'success'){
                             this.tableData = res.content.result;
-
                            this.tableData.forEach( (e,i) =>{
                                 e.index = i+1
                                 return e;
@@ -864,11 +960,6 @@
             },
             //调用接口,上架或者下架
             solidoutgift_f(istype){
-
-
-                console.log(istype)    
-
-                return
                 let data = this.qs.stringify({
                     id:this.chooseafterid,
                     types:istype,
@@ -917,6 +1008,18 @@
             },
             //添加商品
             addgift_btn(){
+
+
+                addCondition().then(res =>{
+
+                    this.exchangeOpction = res.content;
+
+
+                    
+                     console.log(res)   
+
+
+                })
                 this.addgift_dialog = true;
                 this.addform.name = '';
                 this.addform.status = 'start';
@@ -945,7 +1048,12 @@
             //添加礼品接口
             start_addgift(){
 
+
+                      
+
+
                 let ObjectDate ={
+                    //*****其他渠道*******
                     voucherType:this.addform.typeOptionsValue,      //商品分类
                     productSource:this.addform.sourceValue,         //商品来源
                     activeId :this.ticketItemID,                    //活动id
@@ -953,7 +1061,7 @@
                     name:this.addform.name,                         // 商品名称
                     count:this.addform.point,                       //数量  
                     // logo:this.imageUrltologo,                    //商品图片
-                    memo:this.addform.textarea,                     //文本框输入信息
+                    memo:'',                                        //使用说明
                     pickStartDate:this.addTimeValue[0],             //领取开始时间
                     pickEndDate:this.addTimeValue[1],               //领取结束日期
                     bindingPoint:this.integralValue,                //兑换所需积分
@@ -964,30 +1072,36 @@
                     useWeek:'',                                     //可使用的星期，存星期几逗号隔开 1,3,7
                     useTime:'',                                     //可使用的时间支持多个 开始结束逗号分隔，多个时间之间^分割 如：16:00:00,20:00:00^21:00:00,22:00:00
                     forbiddenUseDate:'',                            //不可使用日期：开始结束逗号分隔，多个时间之间^分割 如：2016-03-03,2016-03-08^2016-10-01,2016-10-01
+                    shopInfo:this.checkedshopstrue,                 //适用门店
+                    validStartDate:this.addTimeValue1[0],           //有效期开始日期
+                    validEndDate:this.addTimeValue1[1],             //有效期结束日期
+                    validDays:this.validDays,                       //领取后N天有效
+                    validType:this.validityType,                    //券有效期类型
+                    minCost:this.addform.money ,                    //满金额
+                    grade:this.grade.toString(),                               //可领取级别
+                    gradeCN:this.exchangeValue.toString(),                     //可领取级别中文
+                    goodDetails:this.addform.textarea,              //文本框输入信息
+                    maxAmount:this.addform.money1,                  //最高优惠金额，折扣券有效
 
-
-
-                    //*****其他渠道*******
-                    grade:'',                                       //可领取级别
-                    gradeCN:'',                                     //可领取级别中文
-                    validType:'',                                   //券有效期类型
-                    validDays:'',                                   //领取后N天有效
-                    validStartDate:'',                              //有效期开始日期
-                    validEndDate:'',                                //有效期结束日期
-                    shopInfo:'',                                    //适用门店
-                    amount:'',                                      //优惠券面额
-                    minCost:'',                                     //满金额
                     discount:'',                                    //折扣力度
-                    maxAmount:'',                                   //最高优惠金额，折扣券有效
                     isShare:'',                                     //是否可转赠 true 为可转赠
                     categoryType:'',                                //行业分类
                     exchangeWeek:'',                                //可积分兑换的星期，存星期几逗号隔开 1,3,7
                     exchangeTime:'',                                //可积分兑换的时间支持多个 开始结束逗号分隔，多个时间之间^分割 如：16:00:00,20:00:00^21:00:00,22:00:00
                     forbiddenExchangeDate:'',                       //不可积分兑换日期：开始结束逗号分隔，多个时间之间^分割 如：2016-03-03,2016-03-08^2016-10-01,2016-10-01
-                    marketed:'',                                    //上架 0否1是
+                    marketed:'1',                                    //上架 0否1是
+                    amount:'',                                      //优惠券面额
+                    
                 }
 
 
+                
+                //使用说明
+                let str = [];
+                this.instructions.forEach(e => {
+                    str.push(e.val)
+                })
+                ObjectDate.memo = str.toString().replace('"','')
                 //领取时间限制
                 if(this.timelimitselectvalue ==1){
                     let useTime=DateLong(this.times);
@@ -1070,8 +1184,6 @@
                 }
 
                 console.log(ObjectDate)
-
-                return;
 
                 let data = this.qs.stringify(ObjectDate);
                 addStiorInfo(data).then(res => {
@@ -1348,12 +1460,43 @@
                 })
                 
             },
+            handleCheckedCitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.Objects.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.hhddatas2.length;
+            },
+            delinstructions(item,index){
+                
+                if(this.instructions.length > 1){
+                    this.instructions = this.instructions.filter( (e,i) => index !==i )
+                }
+            },
+            addinstructions(){
+
+                if(this.instructions.length < 5){
+                    this.instructions.push({
+                        val:''
+                    })
+                }
+            },
+            exchangeGrade(item){
+                this.grade=[]
+                this.exchangeOpction.forEach(e =>{
+                    this.exchangeValue.forEach(k =>{
+                        if(e.name == k){
+                            this.grade.push(e.level)
+                        }
+                    })
+                })
+
+            }
+            
         }
     }
 </script>
 <style scoped>
     .addtable_form {
-        width: 480px;
+        width: 600px;
         margin: 0 auto;
     }
     .gift_table_imgbox{
@@ -1371,6 +1514,9 @@
     .width_150{
         width: 150px;
     }
+    .width_300{
+        width: 300px;
+    }
     .width60{
         width: 60px;
         margin-top: 15px;
@@ -1382,8 +1528,14 @@
         display: inline-block;
         vertical-align: top;
     }
-    .width_300{
-        width: 300px;
+    .margin_left50{
+        margin-left: 50px;
+    }
+    .margin_bto10{
+        margin-bottom: 10px;
+    }
+    .margin_bottom15{
+        margin-bottom: 15px;
     }
    
 </style>
