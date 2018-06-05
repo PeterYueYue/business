@@ -36,7 +36,7 @@
                 label="交易时间"
                 class="active_time_pad"
                 width="90">
-                <template scope="scope">
+                <template slot-scope="scope">
                 <p>{{scope.row.createDate}}</p>
                 <p>{{scope.row.createTime}}</p>
                 </template>
@@ -45,7 +45,7 @@
                 prop="ordernumber"
                 label="订单号/交易号"
                 min-width="260">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <div>
                         <span class="width60">订单号 :</span>
                         <span class="">{{scope.row.paymentSn}}</span>
@@ -60,7 +60,7 @@
                 prop="money"
                 label="订单金额(元)"
                 min-width="200">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <div>
                         <span class="width60">订单金额 :</span>
                         <span class="">{{ scope.row.totalAmount.toFixed(2)}}</span>
@@ -80,7 +80,7 @@
                 prop="saletype"
                 min-width="100"
                 label="优惠方式">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <div>
                         <span class="width60">积分优惠 :</span>
                         <span class="">{{ scope.row.integralDiscount}}</span>

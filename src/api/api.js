@@ -155,6 +155,13 @@ export const alipyPointList = params => {
 export const alipyDetail = params => {
     return axios.post(`${base}/business/ali_cash_activity!getAliCashActivityById.action`, params).then(res => res.data)
 };
+//加上这个以免报错
+export const alipyRefresh = params => {
+    return false
+    // return axios.post(`${base}/business/ali_cash_activity!getAliCashActivityById.action`, params).then(res => res.data)
+};
+
+
 // ----------------------------分割线-----------------------------------------------------
 //获取商户列表
 export const getShopList = params => {

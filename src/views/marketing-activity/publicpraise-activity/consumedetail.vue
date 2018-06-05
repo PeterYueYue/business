@@ -168,7 +168,7 @@
                                 </el-table-column>
                                 <el-table-column
                                     label="状态">
-                                    <template scope="scope">
+                                    <template slot-scope="scope">
                                         <p v-if="scope.row.confirmStatus =='PENDING' ">未同意</p>
                                         <p v-if="scope.row.confirmStatus =='PASS' ">已同意</p>
                                     </template>

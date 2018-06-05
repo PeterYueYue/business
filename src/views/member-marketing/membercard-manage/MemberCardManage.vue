@@ -95,7 +95,8 @@
         </el-form-item>
         <el-form-item label="列表样式 : ">
           <el-radio-group
-            v-model="listStyle">
+            v-model="listStyle"
+            @change="changeListStyle">
             <el-radio :label="1">九宫格</el-radio>
             <el-radio :label="0">列表</el-radio>
           </el-radio-group>
@@ -157,7 +158,7 @@
           <!--</div>-->
           <div style="margin-bottom: 10px;" v-for="(item,index) in lwlist">
             <div>
-              <span>({{index+4}}) </span><span><i style="color:#ff4949;">* </i>标题 : </span>
+              <span>({{index + 4}}) </span><span><i style="color:#ff4949;">* </i>标题 : </span>
               <el-input style="display:inline-block;width: 140px" size="small" v-model="item.title"
                         placeholder="请填写标题"></el-input>
               &#X3000;
@@ -179,11 +180,13 @@
               <el-upload
                 class="avatar-uploader"
                 action="/business/file!fileUpload.action"
-                :data="shopid"
+                accept="image/*"
+                :multiple="false"
+                :data="{id:shopid.id,index:index}"
                 :show-file-list="false"
                 :on-success="tagonsuccess"
                 :before-upload="tagbeforeAvatarUpload">
-                <img v-if="imageUrltag" :src="imageUrltag" class="avatar">
+                <img v-if="item.imageUrltag" :src="item.imageUrltag" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
               <span class="ticket_tip color_888">备注 : 1M以内,格式png、jpg; 尺寸不小于500*500px的正方形; 请优先使用商家LOGO;</span>
@@ -215,7 +218,7 @@
                 prop="date"
                 width="80"
                 label="会员等级">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <div v-if="scope.$index == 0">
                     <span style="color:red;">* </span>Vip1
                   </div>
@@ -226,7 +229,7 @@
               <el-table-column
                 prop="name"
                 label="等级名称">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-input v-if="scope.$index == 0" size="small" v-model="scope.row.name" placeholder="普卡"></el-input>
                   <el-input v-if="scope.$index == 1" size="small" v-model="scope.row.name" placeholder="银卡"></el-input>
                   <el-input v-if="scope.$index == 2" size="small" v-model="scope.row.name" placeholder="金卡"></el-input>
@@ -235,7 +238,7 @@
               <el-table-column
                 prop="address"
                 label="等级标准">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <span v-if="scope.$index == 0">授权领取</span>
                   <div v-if="scope.$index == 1">
                     <span>累计</span>
@@ -254,7 +257,7 @@
               <el-table-column
                 prop="all"
                 label="会员积分获取权益">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <span v-if="scope.$index == 0">标准比率</span>
                   <div v-if="scope.$index == 1">
                     <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'times')"
@@ -307,28 +310,28 @@
             <el-table-column
               prop="date"
               label="店铺类型">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <div><span>{{scope.row.categoryName}}</span></div>
               </template>
             </el-table-column>
             <el-table-column
               prop="name"
               label="每消费金额(元)">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input type="number" size="small" v-model="scope.row.cost" placeholder="金额"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               prop="address"
               label="获得积分">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input type="number" size="small" v-model="scope.row.gain" placeholder="积分"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               prop="all"
               label="日积分消耗上限">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-input type="number" size="small" v-model="scope.row.dayTopPoint" placeholder="无上限"></el-input>
               </template>
             </el-table-column>
@@ -349,445 +352,457 @@
 </template>
 
 <script>
-  import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus} from '../../../api/api'
+	import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus} from '../../../api/api'
 
-  const typeOptions = ['积分', '余额'];
-  export default {
-    data() {
-      return {
-        personaldata: [],
-        pointsmethod: 0,
-        listStyle: 1,
-        readonly: true,
-        checksuredisabled: false,
-        disabled: false,
-        getpersonaldata: '',
-        sumbit_regFiled: '',
-        sumbit_fieldList: '',
-        isshow1: 1,
-        isshow2: 1,
-        isshow3: 1,
-        // isshow4: 1,
-        tag: '',
-        gradetabledata: [
-          {name: '', point: '0', times: '1'},
-        ],
-        hy_tableData: [],
-        hy_enable: '',
-        converRates: '',
-        sumbit_fieldList: '',
-        sumbit_levels: '',
-        sumbit_columns: '',
-        lwlist: [
-          // {title:'',subTitle:'',url:''},
-        ],
-        checkedCities1: ['积分'],
-        cities: typeOptions,
-        //8a99afc65ca00c25015ca00f4f280000
-        shopid: {id: ''},
-        selectdata: [
-          {value: 'value1', label: '选择1'},
-          {value: 'value2', label: '选择2'},
-          {value: 'value3', label: '选择3'},
-        ],
-        selectvalue: 'value1',
-        radio: '',
-        imageUrltobg: '',
-        imageUrltologo: '',
-        imageUrltag: '',
+	const typeOptions = ['积分', '余额'];
+	export default {
+		data() {
+			return {
+				personaldata: [],
+				pointsmethod: 0,
+				listStyle: 1,
+				readonly: true,
+				checksuredisabled: false,
+				disabled: false,
+				getpersonaldata: '',
+				sumbit_regFiled: '',
+				isshow1: 1,
+				isshow2: 1,
+				isshow3: 1,
+				// isshow4: 1,
+				tag: '',
+				gradetabledata: [
+					{name: '', point: '0', times: '1'},
+				],
+				hy_tableData: [],
+				hy_enable: '',
+				converRates: '',
+				sumbit_fieldList: '',
+				sumbit_levels: '',
+				sumbit_columns: '',
+				lwlist: [
+					// {title:'',subTitle:'',url:''},
+				],
+				checkedCities1: ['积分'],
+				cities: typeOptions,
+				//8a99afc65ca00c25015ca00f4f280000
+				shopid: {id: ''},
+				selectdata: [
+					{value: 'value1', label: '选择1'},
+					{value: 'value2', label: '选择2'},
+					{value: 'value3', label: '选择3'},
+				],
+				selectvalue: 'value1',
+				radio: '',
+				imageUrltobg: '',
+				imageUrltologo: '',
+				imageUrltag: '',
 
-        bgimgurl: require('../../../assets/membercard.png'),
-        logoimgurl: require('../../../../src/assets/card_logo.png'),
-        colorStyle: {
-          background: 'rgb(60,148,197)',
-        },
-        sumbit_q: false,
-        form: {
-          logoId: '',
-          logoUrl: '',
-          bgId: '',
-          bgUrl: '',
-          tagUrl: '',
-          tagId: '',
-          cardName: '',
-          bgColor: 'rgb(60,148,197)',
-          memo: '',
-          sendPoint: '',
-          fieldList: '',
-          columns: '',
-          hiddens: '',
-          levels: '',
-          selfPoint: '',
-          layout: '',
-        },
-        rules_1: {
-          cardName: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ],
-          bgColor: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ],
-          bgUrl: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ],
-          logoUrl: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ],
-          // tagUrl: [
-          //   {required: true, message: ' ', trigger: 'blur'}
-          // ],
-          memo: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ],
-          sendPoint: [
-            {required: true, message: ' ', trigger: 'blur'}
-          ]
-        }
-      }
-    },
-    mounted: function () {
-      this.memberPoints();
-      //获取商圈会员卡模板
-      this.getMembercard();
-      this.cookie();
+				bgimgurl: require('../../../assets/membercard.png'),
+				logoimgurl: require('../../../../src/assets/card_logo.png'),
+				colorStyle: {
+					background: 'rgb(60,148,197)',
+				},
+				sumbit_q: false,
+				form: {
+					logoId: '',
+					logoUrl: '',
+					bgId: '',
+					bgUrl: '',
+					cardName: '',
+					bgColor: 'rgb(60,148,197)',
+					memo: '',
+					sendPoint: '',
+					fieldList: '',
+					columns: '',
+					hiddens: '',
+					levels: '',
+					selfPoint: '',
+					layout: '',
+				},
+				rules_1: {
+					cardName: [
+						{required: true, message: ' ', trigger: 'blur'}
+					],
+					bgColor: [
+						{required: true, message: ' ', trigger: 'blur'}
+					],
+					bgUrl: [
+						{required: true, message: ' ', trigger: 'blur'}
+					],
+					logoUrl: [
+						{required: true, message: ' ', trigger: 'blur'}
+					],
+					tagUrl: [
+						{required: false, message: ' ', trigger: 'blur'}
+					],
+					memo: [
+						{required: true, message: ' ', trigger: 'blur'}
+					],
+					sendPoint: [
+						{required: true, message: ' ', trigger: 'blur'}
+					]
+				}
+			}
+		},
+		mounted: function () {
+			this.memberPoints();
+			//获取商圈会员卡模板
+			this.getMembercard();
+			this.cookie();
 
-    },
-    methods: {
-      //会员等级设置table内input验证
-      tableinputdatablur(index, type) {
-        if (type == 'point') {
-          this.gradetabledata[index].point = Math.abs(this.gradetabledata[index].point);
-          this.gradetabledata[index].point = Math.floor(this.gradetabledata[index].point);
-        } else if (type == 'times') {
-          this.gradetabledata[index].times = Math.abs(this.gradetabledata[index].times);
-        }
-      },
-      //新增会员等级
-      addgrade() {
-        this.gradetabledata.push({name: '', point: '', times: ''})
-      },
-      addDomain() {
-        this.lwlist.push({title: '', subTitle: '', url: '', tag: ''})
-      },
-      removeDomain(item) {
-        var index = this.lwlist.indexOf(item)
-        if (index !== -1) {
-          this.lwlist.splice(index, 1)
-        }
-      },
-      cookie() {
-        function getCookie(cookieName) {
-          var strCookie = document.cookie;
-          var arrCookie = strCookie.split("; ");
-          for (var i = 0; i < arrCookie.length; i++) {
-            var arr = arrCookie[i].split("=");
-            if (cookieName == arr[0]) {
-              return arr[1];
-            }
-          }
-          return "";
-        }
+		},
+		methods: {
+			//会员等级设置table内input验证
+			tableinputdatablur(index, type) {
+				if (type == 'point') {
+					this.gradetabledata[index].point = Math.abs(this.gradetabledata[index].point);
+					this.gradetabledata[index].point = Math.floor(this.gradetabledata[index].point);
+				} else if (type == 'times') {
+					this.gradetabledata[index].times = Math.abs(this.gradetabledata[index].times);
+				}
+			},
+			//新增会员等级
+			addgrade() {
+				this.gradetabledata.push({name: '', point: '', times: ''})
+			},
+			addDomain() {
+				this.lwlist.push({
+					title: '',
+					subTitle: '',
+					url: '',
+					tag: '',
+					imageUrltag: '',
+					iconUrl: '',
+					iconId: '',
+				})
+			},
+			removeDomain(item) {
+				var index = this.lwlist.indexOf(item)
+				if (index !== -1) {
+					this.lwlist.splice(index, 1)
+				}
+			},
+			cookie() {
+				function getCookie(cookieName) {
+					var strCookie = document.cookie;
+					var arrCookie = strCookie.split("; ");
+					for (var i = 0; i < arrCookie.length; i++) {
+						var arr = arrCookie[i].split("=");
+						if (cookieName == arr[0]) {
+							return arr[1];
+						}
+					}
+					return "";
+				}
 
-        var user_id = getCookie("ENTITY_ID");
-        this.shopid.id = user_id;
-      },
-      //验证
-      set_Membercard(form) {
+				var user_id = getCookie("ENTITY_ID");
+				this.shopid.id = '297e8fd76383381401638342f4120000';
+//				this.shopid.id = user_id;
+			},
+			//验证
+			set_Membercard(form) {
+				let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
+				let sendPointRe = /^([1-9][0-9]*)$/
+				if (!nameRe.test(this.form.cardName)) {
+					this.$message.warning('钱包端名称填写不完整，请重新填写！');
+					return;
+				}
+				if (!sendPointRe.test(this.form.sendPoint)) {
+					this.$message.warning('会员领卡赠送积分格式不正确，请重新填写！');
+					return;
+				}
 
-        let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
-        let sendPointRe = /^([1-9][0-9]*)$/
-        if (!nameRe.test(this.form.cardName)) {
-          this.$message.warning('钱包端名称填写不完整，请重新填写！');
-          return;
-        }
-        if (!sendPointRe.test(this.form.sendPoint)) {
-          this.$message.warning('会员领卡赠送积分格式不正确，请重新填写！');
-          return;
-        }
+				// 验证栏位设置不能为空
+				for (let a = 0; a < this.lwlist.length; a++) {
+					if (this.lwlist[a].title == '' || this.lwlist[a].url == '' || this.lwlist[a].tag == '') {
+						this.$message.warning('栏位设置第' + (a + 4) + '条填写不完整');
+						return;
+					}
+				}
+				// 验证会员等级设置
+				if (this.gradetabledata.length > 1) {
+					for (let i = 0; i < this.gradetabledata.length; i++) {
+						if (this.gradetabledata[i].name == '' || this.gradetabledata[i].point == '' || this.gradetabledata[i].times == '') {
+							this.$message.warning('会员等级设置不完整');
+							return;
+						}
+					}
+				}
+				this.$refs[form].validate((valid) => {
+					if (valid) {
+						this.up_Membercard();
+					} else {
+						this.$message('信息填写不完整，请重新填写！');
+						return false;
+					}
+				});
+			},
+			//会员卡样式设置
+			up_Membercard() {
 
-        // 验证栏位设置不能为空
-        for (let a = 0; a < this.lwlist.length; a++) {
-          if (this.lwlist[a].title == '' || this.lwlist[a].url == '' || this.lwlist[a].tag == '') {
-            this.$message.warning('栏位设置第' + (a + 4) + '条填写不完整');
-            return;
-          }
-        }
-        // 验证会员等级设置
-        if (this.gradetabledata.length > 1) {
-          for (let i = 0; i < this.gradetabledata.length; i++) {
-            if (this.gradetabledata[i].name == '' || this.gradetabledata[i].point == '' || this.gradetabledata[i].times == '') {
-              this.$message.warning('会员等级设置不完整');
-              return;
-            }
-          }
-        }
-        this.$refs[form].validate((valid) => {
-          if (valid) {
-            this.up_Membercard();
-          } else {
-            this.$message('信息填写不完整，请重新填写！');
-            return false;
-          }
-        });
-      },
-      //会员卡样式设置
-      up_Membercard() {
+				this.form.selfPoint = this.pointsmethod;
+				this.form.layout = this.listStyle === 0 ? 'list' : 'grid';
+				for (let i = 0; i < this.checkedCities1.length; i++) {
+					if (this.checkedCities1[i] == '积分') {
+						this.sumbit_fieldList = this.sumbit_fieldList + 'POINT' + ',';
+					}
+					if (this.checkedCities1[i] == '余额') {
+						this.sumbit_fieldList = this.sumbit_fieldList + 'BALANCE' + ',';
+					}
+				}
+				this.form.fieldList = this.sumbit_fieldList.substr(0, this.sumbit_fieldList.length - 1);
+				this.form.hiddens = this.isshow1 + ',' + this.isshow2 + ',' + this.isshow3;
+				this.sumbit_fieldList = '';
+				if (this.sumbit_q == false) {
+					for (let a = 0; a < this.lwlist.length; a++) {
+						if (this.lwlist[a].title == '' && this.lwlist[a].subTitle == '' && this.lwlist[a].url == '' &&
+							this.lwlist[a].tag == '') {
+							continue;
+						} else {
+							console.log(this.form);
+							this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
+								'!!!' + this.lwlist[a].iconUrl + '!!!' + '1n2qOXxNT1uhGS6ZiBaPbAAAACMAAQED' + '!!!' +
+								'https://oalipay-dl-django.alicdn.com/rest/1.0/image?fileIds=CJk7OYTtSD2IrYv66SVf8gAAACMAAQED&zoom=original' +
+								'!!!' + this.lwlist[a].iconId;
+							if (a < this.lwlist.length - 1) {
+								this.sumbit_columns = this.sumbit_columns + 'BBB';
+							}
+						}
+						this.form.hiddens = this.form.hiddens + ',2';
+					}
+					this.form.columns = this.sumbit_columns;
+					this.sumbit_columns = '';
+				} else if (this.sumbit_q == true) {
+					this.form.columns = '';
+				}
+				if (this.gradetabledata.length == 1 && this.gradetabledata[0].name == '') {
+					this.form.levels = '';
+				} else {
+					for (let i = 0; i < this.gradetabledata.length; i++) {
+						this.sumbit_levels = this.sumbit_levels + this.gradetabledata[i].name + '!!!' +
+							this.gradetabledata[i].point + '!!!' + this.gradetabledata[i].times;
+						if (i < this.gradetabledata.length - 1) {
+							this.sumbit_levels = this.sumbit_levels + 'BBB';
+						}
+					}
+					this.form.levels = this.sumbit_levels;
+					this.sumbit_levels = '';
+				}
+				if (this.personaldata.length == 0) {
+					this.form.regCommon = 0;
+					this.form.regFiled = '';
+				} else {
+					this.form.regCommon = 1;
+					for (let i = 0; i < this.personaldata.length; i++) {
+						if (this.personaldata[i] == '姓名') {
+							this.sumbit_regFiled = this.sumbit_regFiled + 'NAME';
+						} else if (this.personaldata[i] == '手机号') {
+							this.sumbit_regFiled = this.sumbit_regFiled + 'MOBILE';
+						} else if (this.personaldata[i] == '身份证') {
+							this.sumbit_regFiled = this.sumbit_regFiled + 'IDCARD';
+						} else if (this.personaldata[i] == '生日') {
+							this.sumbit_regFiled = this.sumbit_regFiled + 'BIRTHDAY';
+						}
+						if (i < this.personaldata.length - 1) {
+							this.sumbit_regFiled = this.sumbit_regFiled + ',';
+						}
+					}
+					this.form.regFiled = this.sumbit_regFiled;
+				}
+				if (this.form.cardTemplateColumnList) {
+					delete this.form.cardTemplateColumnList;
+					delete this.form.cardTemplateColumnSize;
+					delete this.form.cardTemplateLevelList;
+					delete this.form.cardTemplateLevelSize;
+				}
+				let data = this.qs.stringify(this.form);
+				// console.log(this.form);
+				this.$message('提交中...');
+				this.disabled = true;
+				sentmembercard(data).then(res => {
+					this.disabled = false;
+					if (res.status == "success") {
+						this.$message.success("操作成功!")
+						this.getMembercard();
+					} else {
+						this.$message(res.message);
+					}
+				})
+			},
+			//获取商圈会员卡模板
+			getMembercard() {
+				getLoginStatus().then(res => {
+					if (res == false) {
+						this.$router.push({path: '/login'});
+					}
+				});
+				getmembercade().then(res => {
+					console.log(res)
+					if (res.content.id) {
+						this.form = res.content;
+					} else {
+						return;
+					}
+					if (res.content.sendPoint) {
+						this.form.sendPoint = res.content.sendPoint.toString();
+					}
+					this.colorStyle.background = res.content.bgColor;
+					this.logoimgurl = res.content.logoUrl;
+					this.imageUrltologo = res.content.logoUrl;
+					this.bgimgurl = res.content.bgUrl;
+					// this.pointsmethod = res.content.selfPoint;
+					this.listStyle = res.content.layout === 'list' ? 0 : 1;
+					this.imageUrltobg = res.content.bgUrl;
+					this.imageUrltag = res.content.cardTemplateColumnList.iconUrl;
+					if (res.content.fieldList == 'POINT') {
+						this.checkedCities1 = ['积分'];
+					}
+					if (res.content.fieldList == 'BALANCE') {
+						this.checkedCities1 = ['余额'];
+					}
+					if (res.content.fieldList == 'POINT,BALANCE') {
+						this.checkedCities1 = ['积分', '余额'];
+					}
 
-        this.form.selfPoint = this.pointsmethod;
-        this.form.layout = this.listStyle === 0 ? 'list' : 'grid';
-        for (let i = 0; i < this.checkedCities1.length; i++) {
-          if (this.checkedCities1[i] == '积分') {
-            this.sumbit_fieldList = this.sumbit_fieldList + 'POINT' + ',';
-          }
-          if (this.checkedCities1[i] == '余额') {
-            this.sumbit_fieldList = this.sumbit_fieldList + 'BALANCE' + ',';
-          }
-        }
-        this.form.fieldList = this.sumbit_fieldList.substr(0, this.sumbit_fieldList.length - 1);
-        this.form.hiddens = this.isshow1 + ',' + this.isshow2 + ',' + this.isshow3;
-        this.sumbit_fieldList = '';
-        if (this.sumbit_q == false) {
-          for (let a = 0; a < this.lwlist.length; a++) {
-            if (this.lwlist[a].title == '' && this.lwlist[a].subTitle == '' && this.lwlist[a].url == '' &&
-              this.lwlist[a].tag == '') {
-              continue;
-            } else {
-              this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
-                '!!!' + this.lwlist[a].url + '!!!' + '1n2qOXxNT1uhGS6ZiBaPbAAAACMAAQED' + '!!!' +
-                'https://oalipay-dl-django.alicdn.com/rest/1.0/image?fileIds=CJk7OYTtSD2IrYv66SVf8gAAACMAAQED&zoom=original' +
-                '!!!' + this.lwlist[a].tag;
-              if (a < this.lwlist.length - 1) {
-                this.sumbit_columns = this.sumbit_columns + 'BBB';
-              }
-            }
-            this.form.hiddens = this.form.hiddens + ',2';
-          }
-          this.form.columns = this.sumbit_columns;
-          this.sumbit_columns = '';
-        } else if (this.sumbit_q == true) {
-          this.form.columns = '';
-        }
-        if (this.gradetabledata.length == 1 && this.gradetabledata[0].name == '') {
-          this.form.levels = '';
-        } else {
-          for (let i = 0; i < this.gradetabledata.length; i++) {
-            this.sumbit_levels = this.sumbit_levels + this.gradetabledata[i].name + '!!!' +
-              this.gradetabledata[i].point + '!!!' + this.gradetabledata[i].times;
-            if (i < this.gradetabledata.length - 1) {
-              this.sumbit_levels = this.sumbit_levels + 'BBB';
-            }
-          }
-          this.form.levels = this.sumbit_levels;
-          this.sumbit_levels = '';
-        }
-        if (this.personaldata.length == 0) {
-          this.form.regCommon = 0;
-          this.form.regFiled = '';
-        } else {
-          this.form.regCommon = 1;
-          for (let i = 0; i < this.personaldata.length; i++) {
-            if (this.personaldata[i] == '姓名') {
-              this.sumbit_regFiled = this.sumbit_regFiled + 'NAME';
-            } else if (this.personaldata[i] == '手机号') {
-              this.sumbit_regFiled = this.sumbit_regFiled + 'MOBILE';
-            } else if (this.personaldata[i] == '身份证') {
-              this.sumbit_regFiled = this.sumbit_regFiled + 'IDCARD';
-            } else if (this.personaldata[i] == '生日') {
-              this.sumbit_regFiled = this.sumbit_regFiled + 'BIRTHDAY';
-            }
-            if (i < this.personaldata.length - 1) {
-              this.sumbit_regFiled = this.sumbit_regFiled + ',';
-            }
-          }
-          this.form.regFiled = this.sumbit_regFiled;
-        }
-        if (this.form.cardTemplateColumnList) {
-          delete this.form.cardTemplateColumnList;
-          delete this.form.cardTemplateColumnSize;
-          delete this.form.cardTemplateLevelList;
-          delete this.form.cardTemplateLevelSize;
-        }
-        let data = this.qs.stringify(this.form);
-        // console.log(this.form);
-        this.$message('提交中...');
-        this.disabled = true;
-        sentmembercard(data).then(res => {
-          this.disabled = false;
-          if (res.status == "success") {
-            this.$message.success("操作成功!")
-            this.getMembercard();
-          } else {
-            this.$message(res.message);
-          }
-        })
-      },
-      //获取商圈会员卡模板
-      getMembercard() {
-        getLoginStatus().then(res => {
-          if (res == false) {
-            this.$router.push({path: '/login'});
-          }
-        });
-        getmembercade().then(res => {
-          console.log(res)
-          if (res.content.id) {
-            this.form = res.content;
-          } else {
-            return;
-          }
-          if (res.content.sendPoint) {
-            this.form.sendPoint = res.content.sendPoint.toString();
-          }
-          this.colorStyle.background = res.content.bgColor;
-          this.logoimgurl = res.content.logoUrl;
-          this.imageUrltologo = res.content.logoUrl;
-          this.bgimgurl = res.content.bgUrl;
-          // this.pointsmethod = res.content.selfPoint;
-          this.listStyle = res.content.layout === 'list' ? 0 : 1;
-          this.imageUrltobg = res.content.bgUrl;
-          this.imageUrltag = res.content.cardTemplateColumnList.iconUrl;
-          if (res.content.fieldList == 'POINT') {
-            this.checkedCities1 = ['积分'];
-          }
-          if (res.content.fieldList == 'BALANCE') {
-            this.checkedCities1 = ['余额'];
-          }
-          if (res.content.fieldList == 'POINT,BALANCE') {
-            this.checkedCities1 = ['积分', '余额'];
-          }
+					res.content.selfPoint.charAt(0) == '0' ? this.pointsmethod = 0 : this.pointsmethod = 1;
+					res.content.hiddens.charAt(0) == '0' ? this.isshow1 = 0 : this.isshow1 = 1;
+					res.content.hiddens.charAt(1) == '0' ? this.isshow2 = 0 : this.isshow2 = 1;
+					res.content.hiddens.charAt(2) == '0' ? this.isshow3 = 0 : this.isshow3 = 1;
+					// res.content.hiddens.charAt(3) == '0' ? this.isshow4 = 0 : this.isshow4 = 1;
+					this.lwlist = res.content.cardTemplateColumnList;
+					if (res.content.regFiled) {
+						this.getpersonaldata = res.content.regFiled.replace('IDCARD', '身份证').replace('MOBILE', '手机号').replace('BIRTHDAY', '生日');
+						this.personaldata = this.getpersonaldata.split(',');
+					}
+					if (res.content.cardTemplateColumnList) {
+						for (let i = res.content.cardTemplateColumnList.length - 1; i >= 0; i--) {
+							if (res.content.cardTemplateColumnList[i].title == '优惠信息') {
+								res.content.cardTemplateColumnList.splice(i, 1);
+								continue;
+							}
+							if (res.content.cardTemplateColumnList[i].title == '积分商城') {
+								res.content.cardTemplateColumnList.splice(i, 1);
+								continue;
+							}
+							if (res.content.cardTemplateColumnList[i].title == '积分转盘') {
+								res.content.cardTemplateColumnList.splice(i, 1);
+								continue;
+							}
+							if (res.content.cardTemplateColumnList[i].title == '积分换礼品') {
+								res.content.cardTemplateColumnList.splice(i, 1);
+								continue;
+							}
 
-          res.content.selfPoint.charAt(0) == '0' ? this.pointsmethod = 0 : this.pointsmethod = 1;
-          res.content.hiddens.charAt(0) == '0' ? this.isshow1 = 0 : this.isshow1 = 1;
-          res.content.hiddens.charAt(1) == '0' ? this.isshow2 = 0 : this.isshow2 = 1;
-          res.content.hiddens.charAt(2) == '0' ? this.isshow3 = 0 : this.isshow3 = 1;
-          // res.content.hiddens.charAt(3) == '0' ? this.isshow4 = 0 : this.isshow4 = 1;
-          this.lwlist = res.content.cardTemplateColumnList;
-          if (res.content.regFiled) {
-            this.getpersonaldata = res.content.regFiled.replace('IDCARD', '身份证').replace('MOBILE', '手机号').replace('BIRTHDAY', '生日');
-            this.personaldata = this.getpersonaldata.split(',');
-          }
-          if (res.content.cardTemplateColumnList) {
-            for (let i = res.content.cardTemplateColumnList.length - 1; i >= 0; i--) {
-              if (res.content.cardTemplateColumnList[i].title == '优惠信息') {
-                res.content.cardTemplateColumnList.splice(i, 1);
-                continue;
-              }
-              if (res.content.cardTemplateColumnList[i].title == '积分商城') {
-                res.content.cardTemplateColumnList.splice(i, 1);
-                continue;
-              }
-              if (res.content.cardTemplateColumnList[i].title == '积分转盘') {
-                res.content.cardTemplateColumnList.splice(i, 1);
-                continue;
-              }
-              if (res.content.cardTemplateColumnList[i].title == '积分换礼品') {
-                res.content.cardTemplateColumnList.splice(i, 1);
-                continue;
-              }
-
-            }
-            this.lwlist = res.content.cardTemplateColumnList;
-          }
-          if (res.content.cardTemplateLevelList) {
-            this.gradetabledata = res.content.cardTemplateLevelList;
-          }
-        })
-      },
-      //颜色改变时
-      colorchange() {
-        this.form.bgColor = this.colorStyle.background;
-      },
-      bgonsuccess(response, file, fileList) {
-        if (response.error == 0) {
-          this.$message.success('上传背景图片成功!');
-          this.bgimgurl = file.url;
-          this.imageUrltobg = URL.createObjectURL(file.raw);
-          this.form.bgUrl = response.url;
-          this.form.bgId = response.imageId;
-        }
-        else if (response.error == 1) {
-          this.$message(response.url);
-        }
-      },
-      logoonsuccess(response, file, fileList) {
-        if (response.error == 0) {
-          this.$message.success('上传LOGO图片成功!');
-          this.logoimgurl = file.url;
-          this.imageUrltologo = URL.createObjectURL(file.raw);
-          this.form.logoUrl = response.url;
-          this.form.logoId = response.imageId;
-        }
-        else if (response.error == 1) {
-          this.$message(response.url);
-        }
-      },
-      tagonsuccess(response, file, fileList) {
-        if (response.error == 0) {
-          this.$message.success('上传LOGO图片成功!');
-          this.imageUrltag = URL.createObjectURL(file.raw);
-          this.form.tagUrl = response.url;
-          this.form.tagId = response.imageId;
-        }
-        else if (response.error == 1) {
-          this.$message(response.url);
-        }
-      },
-      bgbeforeAvatarUpload(file) {
-        this.$message('正在上传');
-      },
-      logobeforeAvatarUpload(file) {
-        this.$message('正在上传');
-      },
-      tagbeforeAvatarUpload(file) {
-        this.$message('正在上传');
-      },
-      // 会员积分回显
-      memberPoints: function () {
-        getMemberPoints().then(res => {
-          if (res.errorCode == 30005) {
-            this.$router.push({path: '/login'});
-          } else if (res.errorCode == 30006) {
-            this.$router.push({path: '/login'});
-          } else {
-            this.hy_tableData = res.content.converRateList;
-            this.hy_enable = res.content.converRateList[0].enable;
-          }
-        })
-      },
-      //验证会员积分设置
-      checksure() {
-        for (let i = 0; i < this.hy_tableData.length; i++) {
-          this.converRates = this.converRates + this.hy_tableData[i].categoryId + '!!!' +
-            this.hy_tableData[i].categoryName + '!!!' + this.hy_tableData[i].cost + '!!!' +
-            this.hy_tableData[i].gain +
-            '!!!' + this.hy_tableData[i].dayTopPoint + '!!!' + this.hy_enable;
-          if (i < this.hy_tableData.length - 1) {
-            this.converRates = this.converRates + 'BBB';
-          }
-        }
-        this.sure();
-      },
-      sure: function () {
-        let data = this.qs.stringify(
-          {
-            converRates: this.converRates,
-          }
-        );
-        this.checksuredisabled = true;
-        saveMember(data).then(res => {
-          this.checksuredisabled = false;
-          if (res.errorCode == 30005 || res.errorCode == 30006) {
-            this.$router.push({path: '/login'});
-          } else if (res.status == "success") {
-            this.$message.success("修改成功!");
-            this.memberPoints();
-          }
-        })
-      }
-    }
-  }
+						}
+						this.lwlist = res.content.cardTemplateColumnList;
+					}
+					if (res.content.cardTemplateLevelList) {
+						this.gradetabledata = res.content.cardTemplateLevelList;
+					}
+				})
+			},
+			//颜色改变时
+			colorchange() {
+				this.form.bgColor = this.colorStyle.background;
+			},
+			bgonsuccess(response, file, fileList) {
+				if (response.error == 0) {
+					this.$message.success('上传背景图片成功!');
+					this.bgimgurl = file.url;
+					this.imageUrltobg = URL.createObjectURL(file.raw);
+					this.form.bgUrl = response.url;
+					this.form.bgId = response.imageId;
+				}
+				else if (response.error == 1) {
+					this.$message(response.url);
+				}
+			},
+			logoonsuccess(response, file, fileList) {
+				if (response.error == 0) {
+					this.$message.success('上传LOGO图片成功!');
+					this.logoimgurl = file.url;
+					this.imageUrltologo = URL.createObjectURL(file.raw);
+					this.form.logoUrl = response.url;
+					this.form.logoId = response.imageId;
+				}
+				else if (response.error == 1) {
+					this.$message(response.url);
+				}
+			},
+			tagonsuccess(response, file, fileList) {
+				if (response.error == 0) {
+					const index = response.index;
+					this.$message.success('上传LOGO图片成功!');
+					this.lwlist[index].imageUrltag = URL.createObjectURL(file.raw);
+					this.lwlist[index].iconUrl = response.url;
+					this.lwlist[index].iconId = response.imageId;
+				}
+				else if (response.error == 1) {
+					this.$message(response.url);
+				}
+			},
+			bgbeforeAvatarUpload(file) {
+				this.$message('正在上传');
+			},
+			logobeforeAvatarUpload(file) {
+				this.$message('正在上传');
+			},
+			tagbeforeAvatarUpload(index) {
+				console.log(index);
+				this.$message('正在上传');
+			},
+			// 会员积分回显
+			memberPoints() {
+				getMemberPoints().then(res => {
+					if (res.errorCode == 30005) {
+						this.$router.push({path: '/login'});
+					} else if (res.errorCode == 30006) {
+						this.$router.push({path: '/login'});
+					} else {
+						this.hy_tableData = res.content.converRateList;
+						this.hy_enable = res.content.converRateList[0].enable;
+					}
+				})
+			},
+			//验证会员积分设置
+			checksure() {
+				for (let i = 0; i < this.hy_tableData.length; i++) {
+					this.converRates = this.converRates + this.hy_tableData[i].categoryId + '!!!' +
+						this.hy_tableData[i].categoryName + '!!!' + this.hy_tableData[i].cost + '!!!' +
+						this.hy_tableData[i].gain +
+						'!!!' + this.hy_tableData[i].dayTopPoint + '!!!' + this.hy_enable;
+					if (i < this.hy_tableData.length - 1) {
+						this.converRates = this.converRates + 'BBB';
+					}
+				}
+				this.sure();
+			},
+			sure() {
+				let data = this.qs.stringify(
+					{
+						converRates: this.converRates,
+					}
+				);
+				this.checksuredisabled = true;
+				saveMember(data).then(res => {
+					this.checksuredisabled = false;
+					if (res.errorCode == 30005 || res.errorCode == 30006) {
+						this.$router.push({path: '/login'});
+					} else if (res.status == "success") {
+						this.$message.success("修改成功!");
+						this.memberPoints();
+					}
+				})
+			},
+			changeListStyle(val){
+				this.rules_1.tagUrl[0].required = val;
+			},
+		}
+	}
 
 </script>
+
 <style>
   .margin-l-f {
     margin-left: 24px;

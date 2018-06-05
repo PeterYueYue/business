@@ -14,7 +14,7 @@
                 <el-table-column
                     label="店铺名称"
                     width="240">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div class="main_shop_name">{{scope.row.main_shop_name}}</div>
                     </template>
                 </el-table-column>
@@ -39,7 +39,7 @@
                     prop="setcode"
                     width="130"
                     label="每人日积分获得上限">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div class="date_time_input">
                             <el-input
                             size="small"
@@ -59,7 +59,7 @@
                 <!--<el-table-column
                     prop="set"
                     label="操作">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                        <el-button type="text" size="small" :disabled="true">二维码</el-button>
                        <span style="color: #ddd">&nbsp;|</span>
                        <el-button type="text" size="small" :disabled="true">下载</el-button>

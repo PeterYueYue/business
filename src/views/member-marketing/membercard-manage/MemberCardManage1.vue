@@ -165,7 +165,7 @@
                                 prop="date"
                                 width="80"
                                 label="会员等级">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <div v-if="scope.$index == 0">
                                         <span style="color:red;">* </span>Vip1
                                     </div>
@@ -176,7 +176,7 @@
                             <el-table-column
                                 prop="name"
                                 label="等级名称">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <el-input  v-if="scope.$index == 0"  size="small" v-model="scope.row.name" placeholder="普卡"></el-input>
                                     <el-input  v-if="scope.$index == 1"  size="small" v-model="scope.row.name" placeholder="银卡"></el-input>
                                     <el-input  v-if="scope.$index == 2"  size="small" v-model="scope.row.name" placeholder="金卡"></el-input>
@@ -185,7 +185,7 @@
                             <el-table-column
                                 prop="address"
                                 label="等级标准">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <span v-if="scope.$index == 0" >授权领取</span>
                                     <div v-if="scope.$index == 1">
                                         <span>累计</span>
@@ -202,7 +202,7 @@
                             <el-table-column
                                 prop="all"
                                 label="会员积分获取权益">
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <span v-if="scope.$index == 0" >标准比率</span>
                                     <div v-if="scope.$index == 1">
                                         <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'times')" v-model="scope.row.times" placeholder="倍率"></el-input>
@@ -250,28 +250,28 @@
                         <el-table-column
                             prop="date"
                             label="店铺类型">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <div><span>{{scope.row.data1}}</span></div>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="name"
                             label="每消费金额(元)">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-input type="number" size="small" v-model="scope.row.data2" placeholder="金额"></el-input>
                             </template>
                           </el-table-column>
                         <el-table-column
                             prop="address"
                             label="获得积分">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-input type="number" size="small" v-model="scope.row.data3" placeholder="积分"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="all"
                             label="日积分消耗上限">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-input type="number" size="small" v-model="scope.row.data4" placeholder="无上限"></el-input>
                             </template>
                         </el-table-column>

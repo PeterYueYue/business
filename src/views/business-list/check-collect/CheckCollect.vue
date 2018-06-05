@@ -64,7 +64,7 @@
                     <el-table-column
                             label="门店"
                             width="240">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <div class="main_shop_name">{{scope.row.shopName}}</div>
                             </template>
                     </el-table-column>
@@ -83,7 +83,7 @@
                     <el-table-column
                             prop="cardnumber"
                             label="商家优惠(元)">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <div>
                                 <span class="width60">积分优惠 :</span>
                                 <span class="">{{ scope.row.integralDiscount.toFixed(2)}}</span>
