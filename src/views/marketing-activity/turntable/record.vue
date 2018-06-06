@@ -32,7 +32,7 @@
                     <el-table-column prop="total" label="抽奖次数">
                     </el-table-column>
                     <el-table-column label="已兑奖数量">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p>{{ scope.row.exchangeNum}}</p>
                             <router-link  :to="{path:'content',query:{id:scope.row.id}}">
                                 <el-button  type="text" size="small">查看明细</el-button>
@@ -40,7 +40,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="play" label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <router-link  :to="{path:'detail',query:{id:scope.row.id}}">
                                 <el-button  type="text" size="small">查看详情</el-button>
                             </router-link>    

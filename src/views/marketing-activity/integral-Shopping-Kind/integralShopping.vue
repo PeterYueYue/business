@@ -43,14 +43,14 @@
                     <el-table-column prop="name" label="商品名称" >
                     </el-table-column>
                     <el-table-column label="商品图片">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <div class="gift_table_imgbox">
                                 <img :src="scope.row.logo" alt="">
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column  label="商品类型">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.productSource == 'SELF'">自有券</p></p>
                             <p v-if="scope.row.productSource == 'OUTER'">外部导入</p></p>
                         </template>
@@ -60,20 +60,20 @@
                     <el-table-column prop="count" label="数量">
                     </el-table-column>
                     <el-table-column width="60" label="位置排序码">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <div>
                                 <el-input @blur="changeOrder(scope.row)" @change="showasdasd" size="small" :value="scope.row.showOrder" ></el-input>
                             </div>
                         </template>
                     </el-table-column>
                     <el-table-column label="状态">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.marketed == '1'">已上架</p></p>
                             <p v-if="scope.row.marketed == '0'">已下架</p></p>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button v-if="scope.row.status == 'start'" @click="soldoutgift_btn(scope.row.id)" type="text" size="small">下架</el-button>
                             <el-button v-if="scope.row.status == 'end'" @click="upshowgift_btn(scope.row.id)" type="text" size="small">上架</el-button>
                             <span style="color: #ddd">|</span>

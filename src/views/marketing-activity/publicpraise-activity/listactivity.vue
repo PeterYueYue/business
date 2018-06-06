@@ -40,18 +40,18 @@
                     <el-table-column prop="name" label="活动名称" >
                     </el-table-column>
                     <el-table-column prop="time" label="活动时间">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <span>{{scope.row.activeStartDate}}</span> - <span>{{scope.row.activeEndDate}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="type" label="活动类型">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <span v-if="scope.row.investmentType == 'PAYMENT_RESULT'">消费送券</span>
                             <span v-if="scope.row.investmentType == 'SHOP_DETAIL'">扫码送券</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="number_all" label="券核销数/券领取数(张)">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.investmentStatus == 0||scope.row.investmentStatus == 1">/</p>
                             <div v-if="scope.row.investmentStatus == 2||scope.row.investmentStatus == 3">
                                 <p>{{scope.row.verifyNum}} / {{scope.row.receiveNum}}</p>
@@ -60,7 +60,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="活动状态">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.investmentStatus == 0">招商进行中</p>
                             <p v-if="scope.row.investmentStatus == 1">招商结束,待开始</p>
                             <p v-if="scope.row.investmentStatus == 2">进行中</p>
@@ -68,7 +68,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="play" label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button v-if="scope.row.offline == '0' && scope.row.investmentStatus != 3 " @click="closeactive(scope.row.id)"  type="text" size="small">结束<span style="color:#333"> | </span></el-button>
                             <router-link :to="{path:'consumedetail',query:{id:scope.row.id}}">
                                 <el-button  type="text" size="small">查看活动详情</el-button>
@@ -109,12 +109,12 @@
                                 <el-table-column prop="voucherNum" label="发放数量">
                                 </el-table-column>
                                 <el-table-column prop="type" label="核销数/领取数">
-                                    <template scope="scope">
+                                    <template slot-scope="scope">
                                         <p>{{scope.row.verifyNum}} / {{scope.row.receiveNum}}</p>
                                     </template>
                                 </el-table-column>
                                 <el-table-column  prop="type" label="二维码">
-                                    <template scope="scope">
+                                    <template slot-scope="scope">
                                         <a  v-if="scope.row.qrUrl.length > 10"  @click="QRcode(scope.row.qrUrl)" href="javascript:;">查看二维码</a>
                                         <p  v-if="scope.row.qrUrl.length < 10">{{scope.row.qrUrl}}</p>
                                     </template>   

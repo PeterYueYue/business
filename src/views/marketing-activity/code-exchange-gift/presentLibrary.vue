@@ -32,7 +32,7 @@
                     <el-table-column prop="name" label="礼品名称" >
                     </el-table-column>
                     <el-table-column label="礼品图片">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <div class="gift_table_imgbox">
                                 <img :src="scope.row.logo" alt="">
                             </div>
@@ -41,7 +41,7 @@
                     <el-table-column prop="point" label="兑换所需积分">
                     </el-table-column>
                     <el-table-column label="礼品库存数量">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p>{{scope.row.totalNum - scope.row.exchangeNum}}</p>
                         </template>
                     </el-table-column>
@@ -50,13 +50,13 @@
                     <el-table-column prop="receiveNum" label="到店领取数量">
                     </el-table-column>
                     <el-table-column label="状态">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.status == 'start'">已上架</p></p>
                             <p v-if="scope.row.status == 'end'">已下架</p></p>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button v-if="scope.row.status == 'start'" @click="soldoutgift_btn(scope.row.id)" type="text" size="small">下架</el-button>
                             <el-button v-if="scope.row.status == 'end'" @click="upshowgift_btn(scope.row.id)" type="text" size="small">上架</el-button>
                             <span style="color: #ddd">|</span>

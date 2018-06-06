@@ -55,7 +55,7 @@
                 <el-table-column
                         prop="mobile"
                         label="手机号">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <span>{{ scope.row.mobile}} </span>
                             <img :class="{isshowicon:scope.row.isallphone}" @click="check_phone_f(scope.$index,scope.row.id)" class="check_phone_icon" src="../../../assets/images/check_phone.png" alt="">
                         </template>

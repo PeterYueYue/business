@@ -74,7 +74,7 @@
                     <!-- <el-table-column prop="exchangeDate" label="兑换时间">
                     </el-table-column>
                     <el-table-column label="领取时间">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <p v-if="scope.row.status == 'not_recevied'">未领取</p></p>
                             <p v-if="scope.row.status == 'already_recevied'">{{scope.row.receiveDate}}</p></p>
                         </template>
