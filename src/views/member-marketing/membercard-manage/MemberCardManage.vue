@@ -419,6 +419,7 @@
 					levels: '',
 					selfPoint: '',
 					layout: '',
+          tagUrl: []
 				},
 				rules_1: {
 					cardName: [
@@ -433,9 +434,9 @@
 					logoUrl: [
 						{required: true, message: ' ', trigger: 'blur'}
 					],
-					tagUrl: [
-						{required: false, message: ' ', trigger: 'blur'}
-					],
+          tagUrl: [
+            {type: 'array', required: false, message: ' ', trigger: 'blur'}
+          ],
 					memo: [
 						{required: true, message: ' ', trigger: 'blur'}
 					],
@@ -638,11 +639,12 @@
 				});
 				getmembercade().then(res => {
 					console.log(res)
-					if (res.content.id) {
-						this.form = res.content;
-					} else {
-						return;
-					}
+          if (res.content.id) {
+            Object.assign(this.form, res.content)
+            // this.form = res.content;
+          } else {
+            return;
+          }
 					if (res.content.sendPoint) {
 						this.form.sendPoint = res.content.sendPoint.toString();
 					}
@@ -736,6 +738,7 @@
 					this.lwlist[index].imageUrltag = URL.createObjectURL(file.raw);
 					this.lwlist[index].iconUrl = response.url;
 					this.lwlist[index].iconId = response.imageId;
+					this.form.tagUrl.push(response.url)
 				}
 				else if (response.error == 1) {
 					this.$message(response.url);
