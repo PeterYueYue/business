@@ -497,8 +497,8 @@
 				}
 
 				var user_id = getCookie("ENTITY_ID");
-				this.shopid.id = '297e8fd76383381401638342f4120000';
-//				this.shopid.id = user_id;
+				// this.shopid.id = '297e8fd76383381401638342f4120000';
+				this.shopid.id = user_id;
 			},
 			//验证
 			set_Membercard(form) {
