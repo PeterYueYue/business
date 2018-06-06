@@ -123,8 +123,10 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
-            <span style="padding-left:20px;">标签 : </span>
-            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
+            <span style="padding-left:20px;" v-if="listStyle">标签 : </span>
+            <el-input :maxlength="3" v-if="listStyle" style="display:inline-block;width:85px" size="small"
+                      v-model="tag1"
+                      placeholder="请填写标签" :disabled="tag2!==''||tag3!==''||tagStatus"></el-input>
           </div>
           <div style="margin-bottom: 10px;">
             <span>(2) </span><span>标题 : </span>
@@ -134,8 +136,10 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
-            <span style="padding-left:20px;">标签 : </span>
-            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
+            <span style="padding-left:20px;" v-if="listStyle">标签 : </span>
+            <el-input :maxlength="3" style="display:inline-block;width:85px" v-if="listStyle" size="small"
+                      v-model="tag2"
+                      placeholder="请填写标签" :disabled="tag1!==''||tag3!==''||tagStatus"></el-input>
           </div>
           <div style="margin-bottom: 10px;">
             <span>(3) </span><span>标题 : </span>
@@ -145,8 +149,10 @@
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1">隐藏</el-radio>
             </el-radio-group>
-            <span style="padding-left:20px;">标签 : </span>
-            <el-input style="display:inline-block;width:85px" size="small" v-model="tag" placeholder="请填写标签"></el-input>
+            <span style="padding-left:20px;" v-if="listStyle">标签 : </span>
+            <el-input :maxlength="3" style="display:inline-block;width:85px" v-if="listStyle" size="small"
+                      v-model="tag3"
+                      placeholder="请填写标签" :disabled="tag2!==''||tag1!==''||tagStatus"></el-input>
           </div>
           <!--<div style="margin-bottom: 10px;">-->
           <!--<span>(4) </span><span>标题 : </span>-->
@@ -156,7 +162,7 @@
           <!--<el-radio :label="1">隐藏</el-radio>-->
           <!--</el-radio-group>-->
           <!--</div>-->
-          <div style="margin-bottom: 10px;"   v-for="(item,index) in lwlist"   >
+          <div style="margin-bottom: 10px;" v-for="(item,index) in lwlist">
             <div>
               <span>({{index + 4}}) </span><span><i style="color:#ff4949;">* </i>标题 : </span>
               <el-input style="display:inline-block;width: 140px" size="small" v-model="item.title"
@@ -166,9 +172,15 @@
               <el-input style="display:inline-block;width: 140px" size="small" v-model="item.subTitle"
                         placeholder="请填写副标题"></el-input>
               &#X3000;
-              <span>标签 : </span>
-              <el-input style="display:inline-block;width: 85px" size="small" v-model="item.tag"
-                        placeholder="请填写标签"></el-input>
+              <span v-if="listStyle">标签 : </span>
+              <el-input :maxlength="3"
+                        v-if="listStyle"
+                        style="display:inline-block;width: 85px"
+                        size="small"
+                        v-model="item.tag"
+                        placeholder="请填写标签"
+                        :disabled="tag1!==''||tag2!==''||tag3!==''||(!item.tag && tagStatus)"
+                        @change="addTag"></el-input>
             </div>
             <div style="margin-top: 4px;">
               &#X3000; <span><i style="color:#ff4949;">* </i>链接 : </span>
@@ -176,7 +188,7 @@
                         placeholder="请填写链接地址,例:https://www.baidu.com"></el-input>
               <el-button size="small" type="text" @click="removeDomain(item)">删除</el-button>
             </div>
-            <el-form-item label="LOGO : " prop="tagUrl" style="margin-top: 5px;" label-width="67px">
+            <el-form-item label="LOGO : " prop="tagUrl" style="margin-top: 5px;" label-width="67px" v-if="listStyle">
               <el-upload
                 class="avatar-uploader"
                 action="/business/file!fileUpload.action"
@@ -186,7 +198,7 @@
                 :show-file-list="false"
                 :on-success="tagonsuccess"
                 :before-upload="tagbeforeAvatarUpload">
-                <img v-if="item.imageUrltag" :src="item.imageUrltag" class="avatar">
+                <img v-if="item.iconUrl" :src="item.iconUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
               <span class="ticket_tip color_888">备注 : 1M以内,格式png、jpg; 尺寸不小于500*500px的正方形; 请优先使用商家LOGO;</span>
@@ -370,7 +382,10 @@
 				isshow2: 1,
 				isshow3: 1,
 				// isshow4: 1,
-				tag: '',
+				tagStatus: false,
+				tag1: '',
+				tag2: '',
+				tag3: '',
 				gradetabledata: [
 					{name: '', point: '0', times: '1'},
 				],
@@ -419,7 +434,7 @@
 					levels: '',
 					selfPoint: '',
 					layout: '',
-          tagUrl: []
+					tagUrl: []
 				},
 				rules_1: {
 					cardName: [
@@ -434,9 +449,9 @@
 					logoUrl: [
 						{required: true, message: ' ', trigger: 'blur'}
 					],
-          tagUrl: [
-            {type: 'array', required: false, message: ' ', trigger: 'blur'}
-          ],
+					tagUrl: [
+						{type: 'array', required: false, message: ' ', trigger: 'blur'}
+					],
 					memo: [
 						{required: true, message: ' ', trigger: 'blur'}
 					],
@@ -503,7 +518,7 @@
 			},
 			//验证
 			set_Membercard(form) {
-        let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
+				let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
 				let sendPointRe = /^([1-9][0-9]*)$/
 				if (!nameRe.test(this.form.cardName)) {
 					this.$message.warning('钱包端名称填写不完整，请重新填写！');
@@ -516,7 +531,7 @@
 
 				// 验证栏位设置不能为空
 				for (let a = 0; a < this.lwlist.length; a++) {
-					if (this.lwlist[a].title == '' || this.lwlist[a].url == '' || this.lwlist[a].tag == '') {
+					if (this.lwlist[a].title == '' || this.lwlist[a].url == '') {
 						this.$message.warning('栏位设置第' + (a + 4) + '条填写不完整');
 						return;
 					}
@@ -564,7 +579,7 @@
 							console.log(this.form);
 							this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
 								'!!!' + this.lwlist[a].url + '!!!' + this.lwlist[a].iconId + '!!!' +
-                this.lwlist[a].iconUrl + '!!!' + this.lwlist[a].tag;
+								this.lwlist[a].iconUrl + '!!!' + this.lwlist[a].tag;
 							if (a < this.lwlist.length - 1) {
 								this.sumbit_columns = this.sumbit_columns + 'BBB';
 							}
@@ -639,12 +654,12 @@
 				});
 				getmembercade().then(res => {
 					console.log(res)
-          if (res.content.id) {
-            Object.assign(this.form, res.content)
-            // this.form = res.content;
-          } else {
-            return;
-          }
+					if (res.content.id) {
+						Object.assign(this.form, res.content)
+						// this.form = res.content;
+					} else {
+						return;
+					}
 					if (res.content.sendPoint) {
 						this.form.sendPoint = res.content.sendPoint.toString();
 					}
@@ -694,8 +709,12 @@
 								res.content.cardTemplateColumnList.splice(i, 1);
 								continue;
 							}
-
 						}
+						res.content.cardTemplateColumnList.map((items) => {
+							if (items.tag) {
+								this.tagStatus = true
+							}
+						});
 						this.lwlist = res.content.cardTemplateColumnList;
 					}
 					if (res.content.cardTemplateLevelList) {
@@ -734,7 +753,7 @@
 			tagonsuccess(response, file, fileList) {
 				if (response.error == 0) {
 					const index = response.index;
-          this.$message.success('上传LOGO图片成功!');
+					this.$message.success('上传LOGO图片成功!');
 					this.lwlist[index].imageUrltag = URL.createObjectURL(file.raw);
 					this.lwlist[index].iconUrl = response.url;
 					this.lwlist[index].iconId = response.imageId;
@@ -800,6 +819,9 @@
 			changeListStyle(val){
 				this.rules_1.tagUrl[0].required = val;
 			},
+			addTag(v){
+				this.tagStatus = !!v;
+			}
 		}
 	}
 
