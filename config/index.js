@@ -31,6 +31,7 @@ module.exports = {
             '/business': { //这里是我配置的名字
                 // 正式
                 target: 'http://b.tingzhijun.com',
+                // target: 'http://192.168.1.193:8080',
 
                 // 测试
                 // target:'http://192.168.1.179:8080',

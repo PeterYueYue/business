@@ -497,12 +497,12 @@
 				}
 
 				var user_id = getCookie("ENTITY_ID");
-				// this.shopid.id = '297e8fd76383381401638342f4120000';
-				this.shopid.id = user_id;
+				this.shopid.id = '297e8fd76383381401638342f4120000';
+				// this.shopid.id = user_id;
 			},
 			//验证
 			set_Membercard(form) {
-				let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
+        let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
 				let sendPointRe = /^([1-9][0-9]*)$/
 				if (!nameRe.test(this.form.cardName)) {
 					this.$message.warning('钱包端名称填写不完整，请重新填写！');
@@ -562,9 +562,8 @@
 						} else {
 							console.log(this.form);
 							this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
-								'!!!' + this.lwlist[a].iconUrl + '!!!' + '1n2qOXxNT1uhGS6ZiBaPbAAAACMAAQED' + '!!!' +
-								'https://oalipay-dl-django.alicdn.com/rest/1.0/image?fileIds=CJk7OYTtSD2IrYv66SVf8gAAACMAAQED&zoom=original' +
-								'!!!' + this.lwlist[a].iconId;
+								'!!!' + this.lwlist[a].url + '!!!' + this.lwlist[a].iconId + '!!!' +
+                this.lwlist[a].iconUrl + '!!!' + this.lwlist[a].tag;
 							if (a < this.lwlist.length - 1) {
 								this.sumbit_columns = this.sumbit_columns + 'BBB';
 							}
@@ -733,7 +732,7 @@
 			tagonsuccess(response, file, fileList) {
 				if (response.error == 0) {
 					const index = response.index;
-					this.$message.success('上传LOGO图片成功!');
+          this.$message.success('上传LOGO图片成功!');
 					this.lwlist[index].imageUrltag = URL.createObjectURL(file.raw);
 					this.lwlist[index].iconUrl = response.url;
 					this.lwlist[index].iconId = response.imageId;
