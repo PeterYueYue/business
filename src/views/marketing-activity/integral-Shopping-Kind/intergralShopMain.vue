@@ -3,7 +3,7 @@
         <div class="zj-header">
             <span @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">商品管理</span>
             <span @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">兑换记录</span>
-            <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}"> 商品核销 </span>
+            <!-- <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}"> 商品核销 </span> -->
         </div>
         <p class="zj-routerview">
             <transition name="fade" mode="out-in">

@@ -155,7 +155,7 @@
           <!--<el-radio :label="1">隐藏</el-radio>-->
           <!--</el-radio-group>-->
           <!--</div>-->
-          <div style="margin-bottom: 10px;" v-for="(item,index) in lwlist">
+          <div style="margin-bottom: 10px;"   v-for="(item,index) in lwlist"   >
             <div>
               <span>({{index+4}}) </span><span><i style="color:#ff4949;">* </i>标题 : </span>
               <el-input style="display:inline-block;width: 140px" size="small" v-model="item.title"

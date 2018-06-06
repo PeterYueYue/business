@@ -1,8 +1,6 @@
 <!--会员列表-->
 <template>
-    <div      class="sq_main">
-
-
+    <div  class="sq_main">
         <div class="tab_header padding_t_l_r_0">
             <el-input class="query_input" size="small" @keyup.enter.native="query" v-model="inputValue" placeholder="请输入会员姓名/手机号/会员卡号"></el-input>
             <el-button class="query_button" :disabled="disabled" size="small" type="primary" @click="query">搜 索</el-button>
