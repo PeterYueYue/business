@@ -41,15 +41,15 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="发放数量 :"  >
-                    <el-select size="small"   v-model="emitOption" placeholder="请选择">
+                    <!-- <el-select size="small"   v-model="emitOption" placeholder="请选择">
                         <el-option
                         v-for="item in optionsNumber"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
                         </el-option>
-                    </el-select>
-                    <el-input class="width_90"  v-model="emitNumber"     v-if="emitOption == '限制'" type="number" placeholder="请输入数量" size="small" ></el-input>
+                    </el-select> -->
+                    <el-input class="width_90"  v-model="emitNumber"    type="number" placeholder="请输入数量" size="small" ></el-input>
                 </el-form-item>
                 <el-form-item label="折扣力度 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="discount" placeholder="请输入"></el-input>
@@ -281,10 +281,10 @@
                 money: '',
                 showList: [],
                 emitNumber:'',
-                emitOption:'不限制',
+                emitOption:'99999',
                 optionsNumber:[
                     {
-                        value: '不限制',
+                        value: '99999',
                         label: '不限制'
                     },
                     {
@@ -494,6 +494,19 @@
             },
             saveMessage:function () {
 
+
+                //活动时间和有效期的限制
+                 if(this.finallyValidity1.length>1){
+                    if(this.time[0].getTime() > this.finallyValidity1[0].getTime()){
+                        this.$message("有效期开始时间必须大于活动开始时间")
+                        return
+                    }
+                    if(this.time[1].getTime() >= this.finallyValidity1[1].getTime()){
+                        this.$message("有效期结束时间必须大于活动结束时间")
+                        return
+                    }
+                 }
+                
                 
                 //券类型    
                 this.messageData.promo_type = 'RATE'   
@@ -566,13 +579,9 @@
                     return;
                 }
                 //数量
-                if(this.emitOption == "不限制"){
-
-                    this.messageData.quantity="9999"
-                }  
-                if(this.emitOption == "限制"){
-                    this.messageData.quantity=this.emitNumber;
-                } 
+                
+                this.messageData.quantity=this.emitNumber;
+                
                 
                 //使用条件 
                 if(this.form.uselimitselectvalue == 1){
@@ -793,10 +802,7 @@
                     this.form.needcode = '0'
                 }    
             }
-            
-
         },
-
     }
 </script>
 

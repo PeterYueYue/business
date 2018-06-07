@@ -15,8 +15,12 @@
             <span class="ticket_title_all">活动内容</span>
             <el-form ref="form" :model="form" label-width="140px">
                 <el-form-item class="ticket_title" label="活动名称 :">
+                    <el-input size="small"  v-model="form.voucherName" placeholder="请输入活动名称"></el-input>
+                    <span  v-if="form.voucherName.length > 30" class="wrongColor"> * 活动名称长度不能超过30个字符</span>
+                </el-form-item>
+                <el-form-item class="ticket_title" label="品牌名称 :">
                     <el-input size="small"  v-model="form.name" placeholder="请输入活动名称"></el-input>
-                    <span  v-if="form.name.length > 30" class="wrongColor"> * 活动名称长度不能超过30个字符</span>
+                    <span  v-if="form.name.length > 12" class="wrongColor"> * 品牌名称长度不能超过12个字符</span>
                 </el-form-item>
 
                 <el-form-item  label="出资人账号:" >
@@ -45,15 +49,15 @@
                     </div>
                 </el-form-item>
                 <el-form-item label="发放数量 :"  >
-                    <el-select size="small"   v-model="emitOption" placeholder="请选择">
+                    <!-- <el-select size="small"   v-model="emitOption" placeholder="请选择">
                         <el-option
                         v-for="item in optionsNumber"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
                         </el-option>
-                    </el-select>
-                    <el-input class="width_90"  v-model="emitNumber"     v-if="emitOption == '限制'" type="number" placeholder="请输入数量" size="small" ></el-input>
+                    </el-select> -->
+                    <el-input class="width_90"  v-model="emitNumber"   type="number" placeholder="请输入数量" size="small" ></el-input>
                 </el-form-item>
                 <el-form-item label="券面额 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="money" placeholder="请输入"></el-input>
@@ -222,7 +226,8 @@
                     number2: '',
                     limittime: '',
                     code_radio: '1',
-                    ways: []
+                    ways: [],
+                    voucherName:''
                 },
                 timelimitselectdata:[
                     {value: '1', label: '限制'},
@@ -383,12 +388,31 @@
                 });
             },
             saveMessage:function () {
+
+                //活动时间和有效期的限制
+                if(this.finallyValidity1.length>1){
+                    if(this.time[0].getTime() > this.finallyValidity1[0].getTime()){
+                        this.$message("有效期开始时间必须大于活动开始时间")
+                        return
+                    }
+                    if(this.time[1].getTime() >= this.finallyValidity1[1].getTime()){
+                        this.$message("有效期结束时间必须大于活动结束时间")
+                        return
+                    }
+                }
                 // 活动名称
                 if(this.form.name){
-                    this.messageData.brandName =this.form.name;
+                    this.messageData.voucherName =this.form.voucherName;
                 }else{
                     this.$message("活动名称不可为空且最大长度为32");
                     return;
+                }
+                //品牌名称
+                if(this.form.voucherName){
+                    this.messageData.brandName = this.form.name;
+                }else{
+                   this.$message("品牌名称不可为空且最大长度为12");
+                    return;     
                 }
                 //出资人账号
                 this.messageData.fundAccount = this.fundAccount;
@@ -422,7 +446,7 @@
                 }
                 if(this.validity == '绝对时间'){
                     // 绝对时间
-                    this.messageData.voucherDataType   	 = "FIXED";
+                    this.messageData.voucherDataType   	 = "ABSOLUTE";
                     this.finallyValidity = '';
                     this.messageData.duration  = "";
                     this.messageData.start = formateDate(this.finallyValidity1[0]).replace(/\//g,'-');
@@ -444,13 +468,8 @@
                     return;
                 }
                  //数量
-                if(this.emitOption == "不限制"){
-
-                    this.messageData.voucherQuantity="9999"
-                }  
-                if(this.emitOption == "限制"){
-                    this.messageData.voucherQuantity=this.emitNumber;
-                }               
+                this.messageData.voucherQuantity=this.emitNumber;
+                              
                 //使用条件 
                 if(this.form.uselimitselectvalue == 1){
                     if(this.numberX){
@@ -483,12 +502,8 @@
                         this.errorMessage = res.message;
                         this.$message(res.errorCode);
                     }
-
-                         
-
-
                         
-                    })
+                })
             },
             shopList: function () {
                 let data = this.qs.stringify({

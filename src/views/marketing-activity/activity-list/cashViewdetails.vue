@@ -16,6 +16,9 @@
                     <el-form-item class="ticket_title" label="活动名称 :">
                         <span>{{message.brandName}}</span>
                     </el-form-item>
+                    <el-form-item class="ticket_title" label="出资人账号 :">
+                        <span>{{message.fundAccount}}</span>
+                    </el-form-item>
                     <el-form-item class="ticket_downtype" label="现金抵价券 :">
                         抵扣 {{message.amount}} 元
                         <!-- <div v-if="message.voucher_type === '减至券'">
@@ -75,8 +78,8 @@
                         <el-button type="text" @click="clickmoregoods">点击查看</el-button>
                     </el-form-item>
                     <el-form-item class="ticket_number" label="券有效期 :">
-                        <span  v-if="message.duration" >领取后 {{message.valid_to_day}} 日内有效</span>
-                        <span v-if="!message.duration">{{message.start}} 至 {{message.end}}</span>
+                        <span  v-if="message.voucherDataType == 'RELATIVE'" >领取后 {{message.voucherQuantity}} 日内有效</span>
+                        <span v-if="message.voucherDataType == 'ABSOLUTE'">{{message.start}} 至 {{message.end}}</span>
                     </el-form-item>
                     <!-- <el-form-item class="ticket_number" v-if="message.min_cost == 0" label="使用条件 :">
                         <span>不限制</span>
@@ -100,7 +103,6 @@
                                     > 
                             </el-option>
                         </el-select>
-
                         <el-table
                                 :data="tableData"
                                 class="margin_t_20"
@@ -135,6 +137,9 @@
                     <el-form-item class="ticket_title" label="最低消费 :" v-if="message.floorAmount == 9999">
                         <span>不限制</span>
                     </el-form-item>
+                    <el-form-item class="ticket_title" label="使用说明 :">
+                        <span>{{message.voucherDescription}}</span>
+                    </el-form-item>
                     <el-form-item v-if="message.needExchange == '是'" label="兑换所需积分 :">
                         <span>{{message.binding_point}} 积分</span>
                     </el-form-item>
@@ -153,7 +158,6 @@
                         <a target="_blank" :href="message.confirmUri">支付</a>
                     </el-form-item>
                     <el-form-item>
-
                         <el-button class="bottom_button" @click="back" size="small">返 回</el-button>
                         <el-button class="bottom_button" @click="dialogVisible_xiajia = true" size="small"
                                    type="primary" v-if="offline == '草稿'">
@@ -199,6 +203,8 @@
             }
         },
         mounted: function () {
+
+
             let id = this.$route.query.id;
             let data = this.qs.stringify({
                 id: id
@@ -243,8 +249,6 @@
                             this.$router.push({path: '/login'});
                         }
                         this.message = res.content;
-
-                        console.log(this.message)
                         this.shops = res.content.shopName.split(',')
                     })
             },

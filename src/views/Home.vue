@@ -63,7 +63,7 @@
                         <el-menu-item index="/redPacket">现金红包</el-menu-item>
                         <el-menu-item index="/addbusiness">口碑招商活动</el-menu-item>
 						<el-menu-item index="/intergralShopMain">积分商城</el-menu-item>
-						<el-menu-item index="/codeGiftMain">积分换礼</el-menu-item>
+						<!-- <el-menu-item index="/codeGiftMain">积分换礼</el-menu-item> -->
 						<el-menu-item index="/turntableSetting">积分大转盘</el-menu-item>
 						<el-menu-item index="/active">活动创建</el-menu-item>
 						<el-menu-item index="/activityList">活动列表</el-menu-item>

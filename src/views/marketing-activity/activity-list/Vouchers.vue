@@ -27,7 +27,7 @@
                 <div class="pop-busarea-p">
                   <p><span></span></p>
                   <p><span>活动名称 :&nbsp;</span><span>{{message.active_title}}</span></p>
-                  <p><span>活动有效期 :&nbsp;</span><span>{{message.valid_start_date}} 至 {{message.valid_end_date}}</span></p>
+                  <p><span>活动时间 :&nbsp;</span><span>{{message.valid_start_date}} 至 {{message.valid_end_date}}</span></p>
                   <p><span>活动类型 :&nbsp;</span><span>{{message.voucher_type}}</span></p>
                   <p><span>适用门店 :&nbsp;</span><span>{{message.count}} 家门店</span></p>
                     <!--<p><span>隶属商圈 :</span><span>{{message.four}}</span></p>-->
@@ -83,6 +83,9 @@
                 preview: true,
                 data: ''
             }
+        },
+        created(){
+            console.log(this.message,"这是代金券")
         },
         methods: {
             clickTo: function () {

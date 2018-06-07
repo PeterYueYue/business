@@ -172,6 +172,18 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
                     }else if(res.errorCode == '10000'){
                         if(res.status == 'success'){
                             this.tableData = res.content.result;
+                            this.tableData.forEach(e =>{
+                                if(e.productType == 'CASH'){
+                                    e.productType = '现金抵价券'    
+                                } else if(e.productType == 'MONEY'){
+                                    e.productType = '代金券' 
+                                } else if(e.productType == 'RATE'){
+                                    e.productType = '折扣券' 
+                                } else if(e.productType == 'EXCHANGE'){
+                                    e.productType = '兑换券' 
+                                }
+                                return e;
+                            })
                             this.totalCount = res.content.totalCount;
                             this.statisticsData = res.content;
                         }else if(res.status == 'error'){

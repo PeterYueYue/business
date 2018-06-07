@@ -25,11 +25,17 @@
                     </el-option>
                 </el-select>
                 <span>商品名称 : </span>
-                <el-input class="width_150" size="small" v-model="queryacticvename" placeholder="请输入商品名称"></el-input>
+                <el-input class="width_150" size="small"  v-model="queryacticvename" placeholder="请输入商品名称"></el-input>
                 <el-button class="query_button" type="primary" size="small"  @click="query_gift_btn">搜 索</el-button>
             </div>
         </div>
-        <div class="tab_list">
+        <div class="tab_list"   
+        
+        v-loading="loading2"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+        >
             <div class="block">
                 <el-table
                 :data="tableData"
@@ -59,7 +65,7 @@
                     </el-table-column>
                     <el-table-column prop="count" label="数量">
                     </el-table-column>
-                    <el-table-column width="60" label="位置排序码">
+                    <el-table-column width="60" label="位置排序">
                         <template slot-scope="scope">
                             <div>
                                 <el-input @blur="changeOrder(scope.row)" @change="showasdasd" size="small" :value="scope.row.showOrder" ></el-input>
@@ -76,8 +82,10 @@
                         <template slot-scope="scope">
                             <el-button v-if="scope.row.status == 'start'" @click="soldoutgift_btn(scope.row.id)" type="text" size="small">下架</el-button>
                             <el-button v-if="scope.row.status == 'end'" @click="upshowgift_btn(scope.row.id)" type="text" size="small">上架</el-button>
-                            <span style="color: #ddd">|</span>
-                            <el-button @click="compilegift_btn(scope.row.id)" type="text" size="small">查看详情</el-button>
+                            <!-- <span style="color: #ddd">|</span> -->
+                            <!-- <el-button @click="compilegift_btn(scope.row.id)" type="text" size="small">查看详情</el-button> -->
+                            <span  v-if="scope.row.marketed == '1'"  @click="upOrLower(scope.row)" class="lowerFrame">下架</span>
+                            <span v-if="scope.row.marketed == '0'"  @click="upOrLower(scope.row)" class="lowerFrame">上架</span>
                             <span style="color: #ddd">|</span>
                             <el-button @click="removegift_btn(scope.row.id)" style="color:red;" type="text" size="small">删除</el-button>
                         </template>
@@ -159,8 +167,8 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item prop="movableValue"  v-if="addform.sourceValue != 'OUTER'" label="请选择活动">
-                    <el-select size="small"  v-model="addform.movableValue" @change="ticketId" placeholder="请选择">
+                <el-form-item prop="movableValue"    v-if="addform.sourceValue != 'OUTER'" label="请选择活动">
+                    <el-select size="small" class="movableValue"  v-model="addform.movableValue" @change="ticketId" placeholder="请选择">
                         <el-option
                         v-for="item in movableOpction"
                         :key="item.value"
@@ -178,7 +186,7 @@
                     <el-input size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
                 </el-form-item>
                 <el-form-item 
-                        v-if="addform.sourceValue == 'OUTER'||addform.sourceValue == 'SELF'" 
+                        v-if="addform.sourceValue == 'OUTER'" 
                         v-show="addform.typeOptionsValue == 'RATE'"
                         label="最高优惠金额 : " 
                         prop="maxPreAmount">
@@ -233,7 +241,7 @@
                     </el-select>
                     <el-date-picker
                         class="validityTypeInline width_150"
-                        v-if="validityType == '1' "
+                        v-if="validityType == 'FIXED' "
                         size="small"
                         v-model="value7"
                         type="daterange"
@@ -243,7 +251,7 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
                     </el-date-picker>
-                    <span v-if="validityType == '2' "  > 领取后 <el-input v-model="validDays"  class="width_50" placeholder="天数" type="number" size="small" ></el-input> 天内有效</span>
+                    <span v-if="validityType == 'RELATIVE' "  > 领取后 <el-input v-model="validDays"  class="width_50" placeholder="天数" type="number" size="small" ></el-input> 天内有效</span>
                 </el-form-item>
 
 
@@ -348,10 +356,6 @@
                     <el-button  v-if="instructions.length <= 4"   @click="addinstructions" size="small" type="primary" round>新增</el-button>
                 </el-form-item>
 
-                
-
-
-
 
                 <el-form-item label="商品名称 : " prop="name">
                     <el-input class="width_300" size="small" placeholder="请输入商品名称" v-model="addform.name"></el-input>
@@ -396,7 +400,7 @@
 
 
                 <el-form-item label="位置排序 : " >
-                    <el-input size="small" type="number" class="width_150" placeholder="请输入位置排序码" v-model="weightLive"></el-input>
+                    <el-input size="small" type="number" class="width_150" placeholder="请输入位置排序码" @blur="reviseWeighLive"  v-model="weightLive"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品周期 : " >
@@ -417,10 +421,10 @@
                     <el-checkbox-group v-model="exchangeValue">
                         <el-checkbox class="margin_bottom15" v-for="item in exchangeOpction" @change="exchangeGrade(item)" :key="item.id"  :label="item.name"></el-checkbox>
                     </el-checkbox-group >
-                    积分：<el-input size="small" v-model="integralValue" class="width_50" type="number"  ></el-input>  金额：<el-input class="width_50"   v-model="moneyValue" size="small" type="number"  ></el-input>
-                    <span class="color_888"> *小提示：金额非必填，不填默认仅需积分兑换</span>
-                   
-
+                    积分：<el-input size="small" v-model="integralValue" @blur="reviseIntegralValue" class="width_50" type="number"  >
+                    </el-input> 
+                     <!-- 金额：<el-input class="width_50"  @blur="reviseMoneyValue"  v-model="moneyValue" size="small" type="number"  ></el-input>
+                    <span class="color_888"> *小提示：金额非必填，不填默认仅需积分兑换</span> -->
                 </el-form-item>
                 <el-form-item label="兑换限制">
                     <el-select size="small" v-model="exchangeAstrictValue" placeholder="请选择">
@@ -433,6 +437,8 @@
                     </el-select>
                     <span  v-if="exchangeAstrictValue != 'N'" >
                         <el-input  
+                        @blur="reviseExchangeAstrictCount"
+                        type="number"
                         class="width_70px" 
                         v-model="exchangeAstrictCount" 
                         placeholder="请输入" size="small" >
@@ -441,13 +447,6 @@
                     </span>
 
                 </el-form-item>
-
-                
-
-
-
-
-
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="addgift_true_btn">确 定</el-button>
@@ -601,10 +600,10 @@
                     {value: '1', label: '限制'},
                     {value: '2', label: '不限制'},
                 ],
-                validityType:'1',
+                validityType:'RELATIVE',
                 validityselectdata:[
-                    {value: '1', label: '指定时间'},
-                    {value: '2', label: '相对时间'},
+                    {value: 'FIXED', label: '指定时间'},
+                    {value: 'RELATIVE', label: '相对时间'},
                 ],
 
                 typeSelectData:[
@@ -626,7 +625,7 @@
                     status:'start',
                     totalNum:'',
                     point:'',
-                    // logo:'',
+                    logo:'',
                     typeOptionsValue:'',
                     sourceValue:'',
                     movableValue:'',
@@ -650,27 +649,27 @@
                 },
                 addrule:{
                     name:[
-                        { required: false, message: '请输入礼品名称', trigger: 'blur' },
+                        { required: false, message: '请输入商品名称', trigger: 'blur' },
                         { max: 15, message: '礼品名称长度大于15个字符', trigger: 'blur' },
                     ],
                     totalNum:[
-                        { required: true, message: '请输入礼品库存数量', trigger: 'blur' },
+                        { required: false, message: '请输入礼品库存数量', trigger: 'blur' },
                         {validator: totalNumvalidate, trigger: 'blur'},
                     ],
                     point:[
-                        { required: true, message: '请输入商品数量', trigger: 'blur' },
+                        { required: false, message: '请输入商品数量', trigger: 'blur' },
                     ],
                     maxPreAmount:[
-                        { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
+                        { required: false, message: '请输入最高优惠金额', trigger: 'blur' },
                     ],
                     money:[
-                        { required: true, message: '请输入最低消费金额', trigger: 'blur' },
+                        { required: false, message: '请输入最低消费金额', trigger: 'blur' },
                     ],
                     money1:[
-                        { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
+                        { required: false, message: '请输入最高优惠金额', trigger: 'blur' },
                     ],
                     logo:[
-                        // { required: true, message: '请上传图片', trigger: 'blur' },
+                        { required: false, message: '请上传图片', trigger: 'blur' },
                     ],
                     typeOptionsValue:[
                         { required: false, message: '请选择类型', trigger: 'change' },
@@ -695,7 +694,6 @@
                         {validator: totalNumvalidate, trigger: 'blur'},
                         { max: 10, message: '长度小于10个字符', trigger: 'blur' },
                     ],
-                    
                     point:[
                         { required: true, message: '请输入兑换所需积分', trigger: 'blur' },
                         {validator: pointvalidate, trigger: 'blur'},
@@ -708,7 +706,7 @@
                         { required: true, message: '请输入最高优惠金额', trigger: 'blur' },
                     ],
                     logo:[
-                        // { required: true, message: '请上传图片', trigger: 'blur' },
+                        { required: true, message: '请上传图片', trigger: 'blur' },
                     ],
                     typeOptionsValue:[
                         { required: true, message: '请选择类型', trigger: 'change' },
@@ -816,7 +814,7 @@
                         label: '总数限制'
                     }
                 ],
-                exchangeAstrictValue:'不限制',
+                exchangeAstrictValue:'N',
                 integralValue:'',
                 moneyValue:'',
                 addTimeValue:'',
@@ -839,7 +837,9 @@
                     }
                 ],
                 addcondition:'',
-                grade:[]
+                grade:[],
+                loading2: false,
+                isChangeSort:''
 
             }
         },
@@ -876,6 +876,8 @@
                     pageSize:this.pageSize,
                 });
                 integralStoreList(data).then(res => {
+
+                    console.log(res)
                     if(res.errorCode == '30005'){
                         this.$router.push({path: '/login'});
                     }
@@ -887,6 +889,7 @@
                                 return e;
                             })
                             this.totalCount = res.content.totalCount;
+                           
                         }else if(res.status == 'error'){
                             this.$message.error(res.message);
                         }
@@ -1011,14 +1014,7 @@
 
 
                 addCondition().then(res =>{
-
                     this.exchangeOpction = res.content;
-
-
-                    
-                     console.log(res)   
-
-
                 })
                 this.addgift_dialog = true;
                 this.addform.name = '';
@@ -1034,9 +1030,79 @@
             },
             //添加商品弹窗内,点击确定
             addgift_true_btn(){
-                
+
+                if(!this.addform.typeOptionsValue ){
+                    this.$message('请选择商品类型');
+                    return;
+                } 
+                if(!this.addform.sourceValue){
+                    this.$message('请选择商品来源');
+                    return;
+                }
+                if(!this.addform.movableValue){
+                    this.$message('请选择活动');
+                    return;
+                }
+                if(!this.addform.name){
+                    this.$message('请填写商品名称');
+                    return;
+                }
+                if(!this.addform.logo){
+                    this.$message('请上传图片LOGO');
+                    return;
+                }
+                if(!this.addform.textarea){
+                    this.$message('请输入商品信息');
+                    return;
+                }
+                if(!this.weightLive){
+                    this.$message('请填写位置排序数字等级')
+                    return;
+                }
+                if(!this.addTimeValue){
+                    this.$message('请选择商品周期范围')
+                    return;
+                }
+                if(this.exchangeValue.length<'1'){
+                   this.$message('请选择兑换条件')
+                    return; 
+                }
+                if(!this.integralValue){
+                   this.$message('请填写积分')
+                    return;  
+                }
+
+                // 其他渠道
+                if(this.addform.sourceValue == 'OUTER'){
+
+                    //代金券
+                    if(this.typeSelect == 'MONEY'){
+
+
+
+
+                    }
+                    //折扣券
+                    if(this.typeSelect == 'RATE'){
+
+
+
+
+                    }
+                    //现金抵换券
+                    if(this.typeSelect == 'CASH'){
+
+
+
+
+
+                    }
+
+
+                }
 
                 
+
                 this.$refs['addform'].validate((valid) => {
                     if (valid) {
                         this.start_addgift();
@@ -1049,8 +1115,6 @@
             start_addgift(){
 
 
-                      
-
 
                 let ObjectDate ={
                     //*****其他渠道*******
@@ -1060,7 +1124,7 @@
                     itemId:this.outerId,                            //券ID
                     name:this.addform.name,                         // 商品名称
                     count:this.addform.point,                       //数量  
-                    // logo:this.imageUrltologo,                    //商品图片
+                    logo:this.addform.logo,                         //商品图片
                     memo:'',                                        //使用说明
                     pickStartDate:this.addTimeValue[0],             //领取开始时间
                     pickEndDate:this.addTimeValue[1],               //领取结束日期
@@ -1078,23 +1142,23 @@
                     validDays:this.validDays,                       //领取后N天有效
                     validType:this.validityType,                    //券有效期类型
                     minCost:this.addform.money ,                    //满金额
-                    grade:this.grade.toString(),                               //可领取级别
-                    gradeCN:this.exchangeValue.toString(),                     //可领取级别中文
+                    grade:this.grade.toString(),                    //可领取级别
+                    gradeCN:this.exchangeValue.toString(),          //可领取级别中文
                     goodDetails:this.addform.textarea,              //文本框输入信息
                     maxAmount:this.addform.money1,                  //最高优惠金额，折扣券有效
+                    marketed:'1',                                   //上架 0否1是
+                    id:this.ticketItemID
 
-                    discount:'',                                    //折扣力度
-                    isShare:'',                                     //是否可转赠 true 为可转赠
-                    categoryType:'',                                //行业分类
-                    exchangeWeek:'',                                //可积分兑换的星期，存星期几逗号隔开 1,3,7
-                    exchangeTime:'',                                //可积分兑换的时间支持多个 开始结束逗号分隔，多个时间之间^分割 如：16:00:00,20:00:00^21:00:00,22:00:00
-                    forbiddenExchangeDate:'',                       //不可积分兑换日期：开始结束逗号分隔，多个时间之间^分割 如：2016-03-03,2016-03-08^2016-10-01,2016-10-01
-                    marketed:'1',                                    //上架 0否1是
-                    amount:'',                                      //优惠券面额
+
+                    // discount:'',                                    //折扣力度
+                    // isShare:'',                                     //是否可转赠 true 为可转赠
+                    // categoryType:'',                                //行业分类
+                    // exchangeWeek:'',                                //可积分兑换的星期，存星期几逗号隔开 1,3,7
+                    // exchangeTime:'',                                //可积分兑换的时间支持多个 开始结束逗号分隔，多个时间之间^分割 如：16:00:00,20:00:00^21:00:00,22:00:00
+                    // forbiddenExchangeDate:'',                       //不可积分兑换日期：开始结束逗号分隔，多个时间之间^分割 如：2016-03-03,2016-03-08^2016-10-01,2016-10-01
+                    // amount:'',                                      //优惠券面额
                     
                 }
-
-
                 
                 //使用说明
                 let str = [];
@@ -1311,7 +1375,6 @@
                     this.imageUrltologo = URL.createObjectURL(file.raw);
                     this.addform.logo = response.url;
 
-                    console.log(this.imageUrltologo)
                     this.addform.logoId = response.imageId;
                 }
                 else if(response.error == 1){
@@ -1346,20 +1409,27 @@
                 this.multipleSelection = val;
             },
             changeOrder(row){
+                let old = this.isChangeSort
+                this.isChangeSort = this.showOrder;
+                if(this.isChangeSort != old){
+                    let data = this.qs.stringify({
+                        productId:row.id,
+                        showOrder:this.showOrder,
+                    });
+                    sort(data).then(res => {
+                        this.handleCurrentChange()
+                        
+                        if(res.errorCode == '30005'){
+                            this.$router.push({path: '/login'});
+                        }
+                        
+                    })
 
-                let data = this.qs.stringify({
-                    productId:row.id,
-                    showOrder:this.showOrder,
-                    
-                });
-                sort(data).then(res => {
-                    this.handleCurrentChange()
-                    console.log(res)
-                    if(res.errorCode == '30005'){
-                        this.$router.push({path: '/login'});
-                    }
-                    
-                })
+                }
+
+
+
+                
 
             },
             showasdasd(ss){
@@ -1489,7 +1559,69 @@
                     })
                 })
 
+            },
+            upOrLower(e){
+
+
+                //判断上下架？
+                let port = {};
+                if(e.marketed == "0"){
+                    port = upPutAway;
+                } else if(e.marketed == "1"){
+                    port = downSoldOut
+                }
+                let data = this.qs.stringify({
+                    productIds:e.id,
+                }); 
+                port(data).then(res => {
+                    if(res.errorCode == '30005'){
+                        this.$router.push({path: '/login'});
+                    }
+                    else if(res.errorCode == '10000'){
+                        if(res.status == 'success'){
+                            if(e.marketed == 1){
+                                this.$message.success('成功下架选中礼品');
+                                this.soldoutgift_dialog = false;
+                            }else if(e.marketed == 0){
+                                this.$message.success('成功上架选中礼品');
+                                this.upshowgift_dialog = false;
+                            }
+                            this.queryacticvename='';
+                            this.getGiftList();
+                        }else if(res.status == 'error'){
+                            this.$message.error(res.message);
+                        }
+                    }
+                })
+            },
+            reviseIntegralValue(){
+                this.integralValue = Math.abs(this.integralValue)
+                this.integralValue = this.integralValue.toFixed()
+                if(this.integralValue == "0.00"){
+                    this.integralValue = ''
+                }
+            },
+            reviseMoneyValue(){
+                this.moneyValue = Math.abs(this.moneyValue);
+                this.moneyValue = this.moneyValue.toFixed(2)
+                if(this.moneyValue == '0.00'){
+                    this.moneyValue = ''
+                }
+            },
+            reviseWeighLive(){
+                this.weightLive = Math.abs(this.weightLive);
+                this.weightLive = this.weightLive.toFixed();
+                
+            },
+            reviseExchangeAstrictCount(){
+                this.exchangeAstrictCount = Math.abs(this.exchangeAstrictCount);
+                this.exchangeAstrictCount = this.exchangeAstrictCount.toFixed();
+                if(this.exchangeAstrictCount == '0.00'){
+                    this.exchangeAstrictCount = ''
+                }
+
             }
+
             
         }
     }
@@ -1537,5 +1669,12 @@
     .margin_bottom15{
         margin-bottom: 15px;
     }
+    .lowerFrame{
+        cursor: pointer;
+        color: #20a0ff;
+    }
+   .width_300px{
+       width: 500px !important;
+   }
    
 </style>

@@ -115,9 +115,6 @@
                     pageNumber: val
                 });
                 this.getGoldLists(datad);
-
-
-
             }
         },
         components: {
