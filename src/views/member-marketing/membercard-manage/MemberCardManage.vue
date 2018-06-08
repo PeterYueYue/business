@@ -559,6 +559,7 @@
 
 				this.form.selfPoint = this.pointsmethod;
 				this.form.layout = this.listStyle === 0 ? 'list' : 'grid';
+				this.form.tags = this.tag1+ '!!!' + this.tag2 + '!!!' + this.tag3;
 				for (let i = 0; i < this.checkedCities1.length; i++) {
 					if (this.checkedCities1[i] == '积分') {
 						this.sumbit_fieldList = this.sumbit_fieldList + 'POINT' + ',';
@@ -669,7 +670,10 @@
 					this.bgimgurl = res.content.bgUrl;
 					// this.pointsmethod = res.content.selfPoint;
 					this.listStyle = res.content.layout === 'list' ? 0 : 1;
-					this.imageUrltobg = res.content.bgUrl;
+					this.tag1 = res.content.tags.split(",")[0];
+					this.tag2 = res.content.tags.split(",")[1];
+					this.tag3 = res.content.tags.split(",")[2];
+          this.imageUrltobg = res.content.bgUrl;
 					this.imageUrltag = res.content.cardTemplateColumnList.iconUrl;
 					if (res.content.fieldList == 'POINT') {
 						this.checkedCities1 = ['积分'];
