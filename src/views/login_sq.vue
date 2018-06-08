@@ -114,7 +114,7 @@
                         let user = '0';
                         sessionStorage.setItem('user', JSON.stringify(user));
                         this.$router.push({path: '/Accredit'});
-                        let imgContent = 'http://139.196.177.162:8080';
+                        let imgContent = 'http://b.tingzhijun.com';
                         let url = res.content;
                         let img_url = imgContent + url;
                         sessionStorage.setItem("key", img_url);
