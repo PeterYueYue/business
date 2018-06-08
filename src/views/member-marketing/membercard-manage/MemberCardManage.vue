@@ -705,10 +705,10 @@
 								res.content.cardTemplateColumnList.splice(i, 1);
 								continue;
 							}
-							if (res.content.cardTemplateColumnList[i].title == '积分换礼品') {
-								res.content.cardTemplateColumnList.splice(i, 1);
-								continue;
-							}
+							// if (res.content.cardTemplateColumnList[i].title == '积分换礼品') {
+							// 	res.content.cardTemplateColumnList.splice(i, 1);
+							// 	continue;
+							// }
 						}
 						res.content.cardTemplateColumnList.map((items) => {
 							if (items.tag) {
