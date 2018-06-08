@@ -209,7 +209,7 @@
                 </el-form-item>
 
 
-                <el-form-item v-if="addform.sourceValue == 'OUTER' "  label="最低消费金额 : " >
+                <el-form-item v-if="addform.sourceValue == 'OUTER' "  v-show="addform.typeOptionsValue!= 'EXCHANGE'"   label="最低消费金额 : " >
                     <el-select v-model="minPreAmount" class="validityTypeInline" placeholder="请选择" size="small">
                         <el-option
                         v-for="item in minPreAmountselect"
@@ -751,9 +751,14 @@
                     label: '折扣券'
                     },
                     {
+                    label:'兑换券',
+                    value:'EXCHANGE'
+                    },
+                    {
                     value: 'CASH',
                     label: '现金抵换券'
                     },
+                    
 
                 ],
                 typeOptionsValue:'',

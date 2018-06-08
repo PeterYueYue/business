@@ -54,7 +54,7 @@
                 <el-form-item label="折扣力度 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="discount" placeholder="请输入"></el-input>
                     折
-                    <!-- <span v-if="jmeIsOk == false"  class="wrongColor">/*劵面额只能为大于0的数字，且长度小于8位</span> -->
+                    <span class="color_888">/*折扣力度范围：( 1.1--9.9  ) </span>
                 </el-form-item>
                 <el-form-item label="最高优惠金额 :">
                     <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="money" placeholder="请输入"></el-input>
