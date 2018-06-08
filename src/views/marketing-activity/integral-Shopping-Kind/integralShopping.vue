@@ -1,3 +1,14 @@
+
+<style>
+
+.padding_16 .el-input--small,.padding_16 .el-select{
+    width: 100px !important;
+}
+.margin_r_10{
+    margin-right: 10px;
+}
+</style>
+
 <template>
     <div class="padding_16">
         <div class="tab_header padding_t_l_r_0">
@@ -7,7 +18,7 @@
             <!--<el-button type="primary"  @click="showallgifts">显示所有已上架礼品</el-button>-->
             <div class="f_r">
                 <span>商品类型 : </span>
-                <el-select v-model="typeSelect" placeholder="请选择" size="small" class=" margin_r_10" @change="selectChange">
+                <el-select v-model="typeSelect" class="margin_r_10"  placeholder="请选择" size="small" @change="selectChange">
                     <el-option
                     v-for="item in typeSelectData"
                     :key="item.type"
@@ -16,8 +27,9 @@
                     </el-option>
                 </el-select>
                 <span>商品状态 : </span>
-                <el-select v-model="selectvalue" placeholder="请选择" size="small" class=" margin_r_10" @change="selectChange">
+                <el-select v-model="selectvalue" class="margin_r_10" placeholder="请选择" size="small"  @change="selectChange">
                     <el-option
+                    
                     v-for="item in selectdata"
                     :key="item.type"
                     :label="item.text"
@@ -25,7 +37,7 @@
                     </el-option>
                 </el-select>
                 <span>商品名称 : </span>
-                <el-input class="width_150" size="small"  v-model="queryacticvename" placeholder="请输入商品名称"></el-input>
+                <el-input class="width_150" size="small"  v-model="queryacticvename" placeholder="请输入商品名"></el-input>
                 <el-button class="query_button" type="primary" size="small"  @click="query_gift_btn">搜 索</el-button>
             </div>
         </div>
@@ -57,7 +69,10 @@
                     </el-table-column>
                     <el-table-column  label="商品类型">
                         <template slot-scope="scope">
-                            <p v-if="scope.row.productSource == 'SELF'">自有券</p></p>
+                            <p v-if="scope.row.productSource == 'SELF'&&scope.row.productType == 'MONEY'">代金券</p></p>
+                            <p v-if="scope.row.productSource == 'SELF'&&scope.row.productType == 'RATE'">折扣券</p></p>
+                            <p v-if="scope.row.productSource == 'SELF'&&scope.row.productType == 'EXCHANGE'">兑换券</p></p>
+                            <p v-if="scope.row.productSource == 'SELF'&&scope.row.productType == 'CASH'">现金抵价券</p></p>
                             <p v-if="scope.row.productSource == 'OUTER'">外部导入</p></p>
                         </template>
                     </el-table-column>
@@ -183,7 +198,7 @@
                 </el-form-item>
                 <!-- 其他渠道 -->
                 <el-form-item v-if="addform.sourceValue == 'OUTER'" label="券 ID : " prop="">
-                    <el-input size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
+                    <el-input type="number" size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
                 </el-form-item>
                 <el-form-item 
                         v-if="addform.sourceValue == 'OUTER'" 
@@ -295,6 +310,7 @@
                                     <el-time-picker
                                         is-range
                                         v-model="time.value"
+                                        @change="changeTimes"
                                         placeholder="选择时间范围">
                                     </el-time-picker>
                                     <el-button type="danger" v-if="index != 0" @click.prevent="removeDomain(time)">删除</el-button>
@@ -610,6 +626,7 @@
                     {text:'全部',type:''},
                     {text:'代金券',type:'MONEY'},
                     {text:'折扣券',type:'RATE'},
+                    {text:'兑换券',type:'EXCHANGE'},
                     {text:'现金抵价券',type:'CASH'},
                 ],
                 typeSelect:'',
@@ -844,7 +861,8 @@
                 addcondition:'',
                 grade:[],
                 loading2: false,
-                isChangeSort:''
+                isChangeSort:'',
+                isTimes:false,
 
             }
         },
@@ -1036,6 +1054,64 @@
             //添加商品弹窗内,点击确定
             addgift_true_btn(){
 
+
+                // 其他渠道
+                if(this.addform.sourceValue == 'OUTER'){
+                    this.instructions.forEach((e,i) => {
+                        if(!e.val){
+                            this.$message(`使用说明第${i+1}条不能为空`)
+                            return;
+                        }
+                        
+                    })
+                    if(!this.outerId){
+                        this.$message('请输入券ID')
+                        return;
+                    }
+                    if(this.validityType == 'FIXED'){
+                            if(!this.addTimeValue1){
+                                this.$message('请输入券有效期')
+                                return;
+                            }
+                    } else if(this.validityType == 'RELATIVE'){
+                        if(!this.validDays){
+                            this.$message('请选择券有效期')
+                            return;
+                        }
+                    }
+                    if(!this.checkedshopstrue){
+                        this.$message('门店信息不能为空')
+                        return;
+                    }
+                    //代金券
+                    if(this.addform.typeOptionsValue == 'MONEY'){
+                        if(!this.addform.money && this.minPreAmount == '1'){
+                            this.$message('请输入最低消费金额')
+                            return;
+                        }
+                    }
+                    //折扣券
+                    if(this.typeSelect == 'RATE'){
+                        if(!this.addform.money1 && this.addform.maxPreAmount == '1'){
+                            this.$message('请输入高优惠金额')
+                            return;
+                        }
+                        if(!this.addform.money && this.minPreAmount == '1'){
+                            this.$message('请输入最低消费金额')
+                            return;
+                        }
+                    }
+                    //现金抵换券
+                    if(this.typeSelect == 'CASH'){
+                        if(!this.addform.money && this.minPreAmount == '1'){
+                            this.$message('请输入最低消费金额')
+                            return;
+                        }
+                    }
+
+
+                }
+
                 if(!this.addform.typeOptionsValue ){
                     this.$message('请选择商品类型');
                     return;
@@ -1044,18 +1120,18 @@
                     this.$message('请选择商品来源');
                     return;
                 }
-                if(!this.addform.movableValue){
-                    this.$message('请选择活动');
-                    return;
-                }
+                // if(!this.addform.movableValue){
+                //     this.$message('请选择活动');
+                //     return;
+                // }
                 if(!this.addform.name){
                     this.$message('请填写商品名称');
                     return;
                 }
-                if(!this.addform.logo){
-                    this.$message('请上传图片LOGO');
-                    return;
-                }
+                // if(!this.addform.logo){
+                //     this.$message('请上传图片LOGO');
+                //     return;
+                // }
                 if(!this.addform.textarea){
                     this.$message('请输入商品信息');
                     return;
@@ -1076,35 +1152,7 @@
                    this.$message('请填写积分')
                     return;  
                 }
-
-                // 其他渠道
-                if(this.addform.sourceValue == 'OUTER'){
-
-                    //代金券
-                    if(this.typeSelect == 'MONEY'){
-
-
-
-
-                    }
-                    //折扣券
-                    if(this.typeSelect == 'RATE'){
-
-
-
-
-                    }
-                    //现金抵换券
-                    if(this.typeSelect == 'CASH'){
-
-
-
-
-
-                    }
-
-
-                }
+                
 
                 
 
@@ -1625,6 +1673,9 @@
                     this.exchangeAstrictCount = ''
                 }
 
+            },
+            changeTimes(val){
+               this.isTimes = true;
             }
 
             
@@ -1681,5 +1732,7 @@
    .width_300px{
        width: 500px !important;
    }
+   
+   
    
 </style>

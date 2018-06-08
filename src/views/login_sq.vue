@@ -90,11 +90,13 @@
             handleSubmit2() {
                 let loginParams = this.qs.stringify(this.form);
                 requestLogin(loginParams).then(res => {
+
                     if (res.errorCode == 10000) {
                         //成功
                         let user = res.content;
                         sessionStorage.setItem('user', JSON.stringify(user));
                         this.$router.push({path: '/memberCardManage'});
+                        return
                     } else if (res.errorCode == 30002) {
                         //账户名或者密码错误!
                         this.message = res.message;

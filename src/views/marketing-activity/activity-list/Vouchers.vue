@@ -15,7 +15,7 @@
                             <span></span>
                         </div>
                         <div class="pop-word pop-m-word">
-                            <span>{{message.amount}}</span><span> 元&#160;{{message.voucher_type}}</span>
+                            <span>{{message.amount*10}}</span><span> 折&#160;{{message.voucher_type}}</span>
                             <!--<p class="pop-download"><span>二维码</span><span>下载</span></p>-->
                         </div>
                     </div>

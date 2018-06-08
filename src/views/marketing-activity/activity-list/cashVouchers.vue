@@ -42,27 +42,29 @@
                 </div>
               </span>
                 <span>
-                    <button @click="getWaters(message.voucher_id)">查看流水</button>
+                    <button @click="getWaters(message.templateId)">查看流水</button>
                 </span>
                 
                 </div>
                 <div class="pop-busarea-bottom" v-show="!preview">
                <span>
                  <div class="pop-busarea-ps">
-                     <p><svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-qiaquan"></use>
-              </svg>券领取数: <span>{{data.receiveNum}}</span></p>
-                     <p><svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-jiangquanhexiao"></use>
-              </svg>券核销数: <span>{{data.afterNum}}</span></p>
-                     <!--<p><svg class="icon" aria-hidden="true">-->
-                <!--<use xlink:href="#icon-icon01"></use>-->
-              <!--</svg>营销收入:<span>100.00</span></p>-->
                     <p><svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-iconfonthaitaobi"></use>
-              </svg>优惠金额: <span>{{data.voucherDiscount}}</span></p>
+                    <use xlink:href="#icon-qiaquan"></use>
+                    </svg>已发放张数: <span>{{data.publishCount}}</span></p>
+                            <p><svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-jiangquanhexiao"></use>
+                    </svg>已发放总金额: <span>{{data.publishAmount}}</span></p>
+                            <p><svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-icon01"></use>
+                    </svg>已使用张数:<span>{{data.usedCount}}</span></p>
+                            <p><svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-iconfonthaitaobi"></use>
+                    </svg>已使用总金额: <span>{{data.usedAmount }}</span></p>
+                    <p><svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-iconfonthaitaobi"></use>
+                    </svg>退回金额: <span>{{data.recycleAmount  }}</span></p>
                  </div>
-
               </span>
                     <span>
                 <button @click="preview = !preview">返回</button>
@@ -77,7 +79,7 @@
 </template>
 
 <script>
-    import {getWater} from '../../../api/api'
+    import {getWater,lookFlows} from '../../../api/api'
 
     export default {
         props: ["message"],
@@ -97,10 +99,11 @@
             getWaters: function (data) {
                 this.preview = !this.preview;
                 let message=this.qs.stringify({
-                    active_id:data
+                    templateId:data
                 });
-                getWater(message)
+                lookFlows(message)
                     .then(res => {
+                        console.log(res,'22     ')
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }else{

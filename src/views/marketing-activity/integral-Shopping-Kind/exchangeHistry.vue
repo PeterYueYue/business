@@ -151,7 +151,7 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
             }
         },
         mounted: function() {
-            // this.query_btn();
+            this.query_btn();
         },
         methods: {
             //搜索

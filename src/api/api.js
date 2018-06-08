@@ -387,3 +387,7 @@ export const addStiorInfo= params => {
 export const addCondition= params => {
     return axios.post(`${base}/business/business_product!getCardTemplateLevel.action`,params).then(res => res.data);
 }
+//活动列表-查看流水
+export const lookFlows = params =>{
+    return axios.post(`${base}/business/get/template/water.jhtml`,params).then(res => res.data)
+}

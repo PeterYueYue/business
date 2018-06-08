@@ -54,6 +54,8 @@
             var that=this;
             var timer = setInterval(function(){
                 queryAccredit().then(res=>{
+
+                        console.log(res)
                     if(res.status == true){
                         that.$router.push({ path: '/memberCardManage' });
                         clearInterval(timer);
