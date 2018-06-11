@@ -372,7 +372,7 @@
 			return {
 				personaldata: [],
 				pointsmethod: 0,
-				listStyle: 1,
+				listStyle: 0,
 				readonly: true,
 				checksuredisabled: false,
 				disabled: false,

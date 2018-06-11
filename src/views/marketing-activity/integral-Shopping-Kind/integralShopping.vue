@@ -1,7 +1,7 @@
 
 <style>
 
-.padding_16 .el-input--small,.padding_16 .el-select{
+.padding_16 .f_r .el-input--small,.padding_16 .f_r .el-select{
     width: 100px !important;
 }
 .margin_r_10{
@@ -89,8 +89,7 @@
                     </el-table-column>
                     <el-table-column label="状态">
                         <template slot-scope="scope">
-                            <p v-if="scope.row.marketed == '1'">已上架</p></p>
-                            <p v-if="scope.row.marketed == '0'">已下架</p></p>
+                            <p >{{scope.row.voucherStatus}}</p>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -115,9 +114,9 @@
                 </el-pagination>
             </div>
         </div>
-        <!--下架礼品-->
+        <!--下架商品-->
         <el-dialog
-            title="下架礼品"
+            title="下架商品"
             v-model="soldoutgift_dialog"
             size="tiny"
             top="30%">
@@ -128,9 +127,9 @@
                 <el-button @click="soldoutgift_dialog = false">取 消</el-button>
             </span>
         </el-dialog>
-        <!--上架礼品-->
+        <!--上架商品-->
         <el-dialog
-            title="上架礼品"
+            title="上架商品"
             v-model="upshowgift_dialog"
             size="tiny"
             top="30%">
@@ -141,9 +140,9 @@
                 <el-button @click="upshowgift_dialog = false">取 消</el-button>
             </span>
         </el-dialog>
-        <!--删除礼品-->
+        <!--删除商品-->
         <el-dialog
-            title="删除礼品"
+            title="删除商品"
             v-model="removegift_dialog"
             size="tiny"
             top="30%">
@@ -154,8 +153,10 @@
                 <el-button @click="removegift_dialog = false">取 消</el-button>
             </span>
         </el-dialog>
-        <!--添加礼品-->
+        <!--添加商品-->
         <el-dialog
+
+            :close-on-click-modal="false"
             title="添加商品"
             class="addgift_c"
             v-model="addgift_dialog"
@@ -543,6 +544,7 @@
     import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,DateLong} from '../../../api/CommonMethods'
     export default {
         data() {
+            
             var totalNumvalidate=(rule, value, callback) => {
                 let reg = /^[0-9]\d*$/;
                 if (!reg.test(value)) {
@@ -634,7 +636,7 @@
                     {text:'全部',type:''},
                     {text:'已上架',type:'up'},
                     {text:'已下架',type:'down'},
-                    {text:'已结束',type:'over'},
+                    {text:'已过期',type:'over'},
                 ],
                 selectvalue:'',
                 addform:{
@@ -889,7 +891,7 @@
             selectChange(){
                 this.getGiftList(); 
             },
-            //获取礼品库列表
+            //获取商品库列表
             getGiftList(){
                 let data = this.qs.stringify({
                     status:this.selectvalue,
