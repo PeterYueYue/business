@@ -2,7 +2,9 @@
 <template>
     <div  class="sq_main">
         <div class="tab_header padding_t_l_r_0">
-            <el-input class="query_input" size="small" @keyup.enter.native="query" v-model="inputValue" placeholder="请输入会员姓名/手机号/会员卡号"></el-input>
+            会员姓名：<el-input class="query_input" size="small" @keyup.enter.native="query" v-model="inputValue" placeholder="会员姓名"></el-input>
+            &nbsp;&nbsp;会员卡号：<el-input class="query_input" size="small" v-model="cardNumber" placeholder="会员卡号"></el-input>
+            &nbsp;&nbsp;手机号：<el-input class="query_input" size="small" v-model="iphone" placeholder="手机号"></el-input>
             <el-button class="query_button" :disabled="disabled" size="small" type="primary" @click="query">搜 索</el-button>
 
             <!--<el-select v-model="selectvalue" @change="memberkindschange" placeholder="请选择" size="small"-->
@@ -59,7 +61,7 @@
                         label="会员姓名">
                 </el-table-column>
                 <el-table-column
-                        prop="memberSex"
+                        prop="sex"
                         label="性别">
                 </el-table-column>
                 <el-table-column
@@ -71,16 +73,16 @@
                         </template>
                 </el-table-column>
                 <el-table-column
-                        prop="memberSn"
+                        prop="cardNo"
                         min-width="150"
                         label="会员卡号">
                 </el-table-column>
                 <el-table-column
-                        prop="integral"
+                        prop="point"
                         label="卡积分">
                 </el-table-column>
                  <el-table-column
-                        prop="level"
+                        prop="grade"
                         label="级别">
                 </el-table-column>
             </el-table>
@@ -97,7 +99,7 @@
 </template>
 
 <script>
-    import {menberList,gettruephone} from '../../../api/api';
+    import {menberList,gettruephone,getCircleMemberList} from '../../../api/api';
 
     export default {
         data() {
@@ -118,6 +120,9 @@
                 },
                 tableData1: [],
                 tableData2: [],
+                cardNumber:'',
+                iphone:''
+
                 
             }
         },
@@ -128,7 +133,7 @@
                 member: '',
                 real: this.selectvalue
             });
-            this.getList(data);
+            // this.getList(data);
         },
         methods: {
             //点击眼睛看
@@ -142,7 +147,7 @@
                     }
                     else if(res.errorCode == '10000'){
                         if(res.status == 'success'){
-                            this.tableData2[index].mobile = res.content.mobile;
+                            this.tableData2[index].mobile = res.content.moible;
                             this.tableData2[index].isallphone = true;
                         }else if(res.status == 'error'){
                             this.$message.error(res.message);
@@ -157,60 +162,57 @@
             ViewDetails(index) {
             },
             handleCurrentChange(val) {
+
                 let data = this.qs.stringify({
-                    page: val,
-                    count: '10',
-                    menber: this.inputValue,
-                    real: this.selectvalue
+                    pageNumber: val,
+                    name:this.inputValue,
+                    cardNo:this.cardNumber,
+                    mobile:this.iphone,
+                   
                 });
                 this.getList(data);
             },
             memberkindschange: function () {
-
                 if (this.selectvalue == 1) {
                     var data = this.qs.stringify({
-                        page: '1',
-                        count: '10',
-                        member: '',
-                        real: '1'
+                        pageNumber: '1',
+                        name:this.inputValue,
+                        cardNo:this.cardNumber,
+                        mobile:this.iphone,
                     });
                     this.memberkinds.name_true = true;
                     this.memberkinds.name_false = false;
-                }
-                ;
+                };
                 if (this.selectvalue == 0) {
                     var data = this.qs.stringify({
-                        page: '1',
-                        count: '10',
-                        member: '',
-                        real: '0'
+                        pageNumber: '1',
+                        name:this.inputValue,
+                        cardNo:this.cardNumber,
+                        mobile:this.iphone,
                     });
                     this.memberkinds.name_true = false;
                     this.memberkinds.name_false = true;
-                }
-                ;
+                };
                 this.getList(data);
             },
             getList(data) {
-
-
                 this.$store.dispatch('changeLoding')
-                menberList(data).then(res => {
+                getCircleMemberList(data).then(res => {
+
+                    console.log(res)
+
                     this.$store.dispatch('closeLoding')
-                    
                     this.disabled = false;
                     this.$message.closeAll();
                     if (res.errorCode == 30005) {
                         this.$router.push({path: '/login'});
                     } else {
                         if (this.selectvalue == 1) {
-                            this.tableData2 = res.content.list;
-                            this.totalPage = res.content.num;
-
-                            console.log(res.content)
+                            this.tableData2 = res.content.result;
+                            this.totalPage = res.content.total;
                         } else {
-                            this.tableData1 = res.content.list;
-                            this.totalPage = res.content.num;
+                            this.tableData1 = res.content.result;
+                            this.totalPage = res.content.total;
                         }
                     }
 
@@ -221,13 +223,12 @@
                 this.disabled = true;
                 this.$message('搜索中...');
                 let data = this.qs.stringify({
-                    page: '1',
-                    count: '10',
-                    member: this.inputValue,
-                    real: this.selectvalue
+                    pageNumber: '1',
+                    name:this.inputValue,
+                    cardNo:this.cardNumber,
+                    mobile:this.iphone,
                 });
 
-                console.log(data)
                 this.getList(data);
             }
         }
@@ -248,5 +249,8 @@
     }
     .isshowicon{
         display: none !important;
+    }
+    .query_input{
+        width: 100px;
     }
 </style>

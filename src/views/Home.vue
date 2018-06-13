@@ -42,7 +42,7 @@
 						</template>
 						<el-menu-item index="/memberCardManage">会员卡管理</el-menu-item>
 						<el-menu-item index="/memberList">会员管理</el-menu-item>
-						<!-- <el-menu-item index="/integralManage">会员积分管理</el-menu-item> -->
+						<!-- <el-menu-item index="/integralManage">积分管理员</el-menu-item> -->
 					</el-submenu>
 					<el-submenu index="2">
 						<template slot="title">

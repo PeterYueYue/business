@@ -198,14 +198,15 @@
                     <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button
-                        class="handlBtn"
-                        size="mini"
-                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button
                         size="mini"
                         type="danger"
                         class="deleteBtn"
                         @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button
+                        class="handlBtn"
+                        size="mini"
+                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        
                     </template>
                     </el-table-column>
                     
@@ -262,9 +263,9 @@
                         <div class="title">
                             积分管理员编辑
                         </div>
-                        <el-form  :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+                        <el-form  :label-position="labelPosition" label-width="80px" :model="compileForm">
                             <el-form-item label="姓名">
-                                <el-input class="inputany" size="small" v-model="formLabelAlign.name"></el-input>
+                                <el-input class="inputany" size="small" v-model="compileForm.name"></el-input>
                             </el-form-item>                          
                             <el-form-item label="性别">
                                 <!-- <el-input size="small" v-model="formLabelAlign.region"></el-input> -->
@@ -278,19 +279,19 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="手机号">
-                                <el-input  class="inputany" size="small" v-model="formLabelAlign.mobil"></el-input>
+                                <el-input disabled="true"  class="inputany" size="small" v-model="compileForm.mobil"></el-input>
                             </el-form-item>
                             <el-form-item label="密码">
-                                <el-input  class="inputany" size="small" v-model="formLabelAlign.password1"></el-input>
+                                <el-input  class="inputany" size="small" v-model="compileForm.password1"></el-input>
                             </el-form-item>
                             <el-form-item label="确认密码">
-                                <el-input  class="inputany" size="small" v-model="formLabelAlign.password2"></el-input>
+                                <el-input  class="inputany" size="small" v-model="compileForm.password2"></el-input>
                             </el-form-item>
                             <el-form-item label="启用状态">
-                                <el-switch  v-model="formLabelAlign.delivery"></el-switch>
+                                <el-switch  v-model="compileForm.delivery"></el-switch>
                             </el-form-item>
                             <el-form-item class="buttons"  >
-                                <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
+                                <el-button size="small" type="primary" @click="compile">提交</el-button>
                                 <el-button size="small" @click="isShowRedactBox = false"  >返回</el-button>
                             </el-form-item>
                         </el-form>
@@ -302,7 +303,7 @@
 </template>
 
 <script>
-import {getintegralManagelist,disablePointer,addvipUser,enablePointer,deletevipUser} from '@/api/api.js'
+import {getintegralManagelist,disablePointer,addvipUser,enablePointer,deletevipUser,redactUser} from '@/api/api.js'
 export default {    
     data(){
         return{
@@ -320,6 +321,13 @@ export default {
             password2: '',
             delivery:false
             },
+            compileForm:{
+                name: '',
+                mobil: '',
+                password1: '',
+                password2: '',
+                delivery:false
+            },
             options: [{
             sex: '男',
             label: '男'
@@ -329,18 +337,26 @@ export default {
             }],
             sex: '男',
             isShowpopupBox:false,
-            isShowRedactBox:false
+            isShowRedactBox:false,
+            userMessage:'',
+
         }
     },
     mounted(){
         this.getDataList()
     },
     methods:{
-        handleEdit(){
+        handleEdit(index,row){
+
+            this.userMessage = row;
+            this.compileForm.name = row.name;
+            this.compileForm.mobil = row.mobile;
+            this.sex  = row.sex;
+            this.compileForm.password = row.password;
             this.isShowRedactBox = true;
         },
         handleDelete(index,row){
-            console.log(index)
+            console.log(index,"222")
             console.log(this.list[index].id)
             var data = this.qs.stringify({
                 id: this.list[index].id,
@@ -362,6 +378,19 @@ export default {
                 this.getDataList()
                 this.isShowpopupBox = false;
             })
+        },
+        compile(){ //编辑
+            console.log(this.userMessage)
+
+
+            var data = this.qs.stringify({
+                pointerInfo:`${this.formLabelAlign.mobil}AAA${this.formLabelAlign.password1}AAA${this.formLabelAlign.name}AAA${this.sex}`          
+            });
+            redactUser(data).then(res => {
+                console.log(res)
+            })
+
+
         },
         changeState(scope){
 

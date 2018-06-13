@@ -275,7 +275,7 @@ export const afterGifts = params =>{
 }
 //获取完整的号码
 export const gettruephone = params =>{
-    return axios.post(`${base}/business/business_circle!members.action`, params).then(res => res.data);
+    return axios.post(`${base}/business/business_member!getMobile.action`, params).then(res => res.data);
 }
 //获取商圈行业积分比例
 export const getRateByCircle = params =>{
@@ -324,6 +324,11 @@ export const addvipUser = params =>{
 export const deletevipUser = params =>{
     return axios.post(`${base}/business/business_pointer!delPointer.action`,params).then(res => res.data);
 }
+//积分管理员表 编辑
+export const redactUser = params =>{
+    return axios.post(`${base}/business/business_pointer!getPointer.action`,params).then(res => res.data)
+}
+
 /////////////
 // 营销活动 现金抵价券 创建
 export const creatCashDuctible = params =>{
@@ -390,4 +395,8 @@ export const addCondition= params => {
 //活动列表-查看流水
 export const lookFlows = params =>{
     return axios.post(`${base}/business/get/template/water.jhtml`,params).then(res => res.data)
+}
+//会员管理-列表-查询
+export const getCircleMemberList = params =>{
+    return axios.post(`${base}/business/business_member!getCircleMemberList.action`,params).then(res =>res.data)
 }

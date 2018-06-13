@@ -234,6 +234,7 @@
             let data = this.qs.stringify({
                 voucherId: id
             });
+
             this.getDetail(data);
 
             
@@ -274,15 +275,11 @@
             getDetail: function (data) {
                 getProductDetail(data)
                     .then(res => {
-
-
                         console.log(res)
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }
                         this.message = res.content;
-
-                        console.log(this.message,"1111")
                         this.shops = res.content.shopList;
                         this.shopsLength = res.content.shopList.length;
                         this.tableData = res.content.goodsList;

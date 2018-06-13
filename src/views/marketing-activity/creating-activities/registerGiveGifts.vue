@@ -167,8 +167,7 @@ import {submitRegister} from '../../../api/api';
             { required: true, message: '请填写活动形式', trigger: 'blur' }
           ],
           itemId:[
-            {  required: true,message: '请填写券id 长度在 3 到 15 个字符', trigger: 'blur'},
-            { min: 3, max: 15, message: '长度在 3 到 15 个字符',trigger: 'blur' }
+            {  required: true,message: '请填写券id 长度在 3 到 50 个字符', trigger: 'blur'},
           ],
           lowLimit:[
             { required: true,message: '请填写最低消费金额', trigger: 'blur'},

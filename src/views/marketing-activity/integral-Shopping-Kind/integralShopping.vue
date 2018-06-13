@@ -901,8 +901,6 @@
                     pageSize:this.pageSize,
                 });
                 integralStoreList(data).then(res => {
-
-                    console.log(res)
                     if(res.errorCode == '30005'){
                         this.$router.push({path: '/login'});
                     }
@@ -1177,7 +1175,7 @@
                     productSource:this.addform.sourceValue,         //商品来源
                     activeId :this.ticketItemID,                    //活动id
                     itemId:this.outerId,                            //券ID
-                    name:this.addform.name,                         // 商品名称
+                    name:this.addform.name,                         //商品名称
                     count:this.addform.point,                       //数量  
                     logo:this.addform.logo,                         //商品图片
                     memo:'',                                        //使用说明
@@ -1301,8 +1299,6 @@
                         ObjectDate.forbiddenUseDate = this.forbidden_use_date.toString().replace('^,','^').slice(0,-1)
                     }
                 }
-
-                console.log(ObjectDate)
 
                 let data = this.qs.stringify(ObjectDate);
                 addStiorInfo(data).then(res => {
@@ -1473,7 +1469,6 @@
                     });
                     sort(data).then(res => {
                         this.handleCurrentChange()
-                        
                         if(res.errorCode == '30005'){
                             this.$router.push({path: '/login'});
                         }
@@ -1481,11 +1476,6 @@
                     })
 
                 }
-
-
-
-                
-
             },
             showasdasd(ss){
                 this.showOrder = ss
@@ -1501,11 +1491,10 @@
 
                     this.ypeOptionsList.forEach(e =>{
                         e.value = e.id;
-                        e.label = e.brandName;
+                        e.label = e.voucherName;
                         return e
                     })
                     this.movableOpction = this.ypeOptionsList
-                    console.log(this.ypeOptionsList)
                     if(res.errorCode == '30005'){
                         this.$router.push({path: '/login'});
                     }
@@ -1520,7 +1509,6 @@
                         id : this.ticketItemID
                     });
                     ticketInfo(data).then(res => {
-                        console.log(res,"详情信息")
                         if(res.errorCode == '30005'){
                             this.$router.push({path: '/login'});
                         }
