@@ -326,7 +326,11 @@ export const deletevipUser = params =>{
 }
 //积分管理员表 编辑
 export const redactUser = params =>{
-    return axios.post(`${base}/business/business_pointer!getPointer.action`,params).then(res => res.data)
+    return axios.post(`${base}/business/business_pointer!updatePointer.action`,params).then(res => res.data)
+}
+//积分操作记录 列表
+export const getIntegraList = params =>{
+    return axios.post(`${base}/business/business_pointer_log!pointerLogList.action`,params).then(res => res.data)
 }
 
 /////////////
@@ -399,4 +403,8 @@ export const lookFlows = params =>{
 //会员管理-列表-查询
 export const getCircleMemberList = params =>{
     return axios.post(`${base}/business/business_member!getCircleMemberList.action`,params).then(res =>res.data)
+}
+//营销活动-积分操作记录-导出
+export const exportWater = params =>{
+    return axios.post(`${base}/business/business_product_log!exportCashLog.action`,params).then(res =>res.data)
 }

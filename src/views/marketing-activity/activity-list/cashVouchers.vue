@@ -42,7 +42,9 @@
                 </div>
               </span>
                 <span>
-                    <button @click="getWaters(message.templateId)">查看流水</button>
+
+                    <button class="exportButton"  v-if="message.templateStatus == '生效'"   @click="exportWaterAction(message.templateId)">导出明细</button>
+                    <button  v-if="message.templateStatus == '生效'"   @click="getWaters(message.templateId)">查看流水</button>
                 </span>
                 
                 </div>
@@ -80,7 +82,6 @@
 
 <script>
     import {getWater,lookFlows} from '../../../api/api'
-
     export default {
         props: ["message"],
         data() {
@@ -88,9 +89,6 @@
                 preview: true,
                 data: ''
             }
-        },
-        created(){
-            console.log(this.message)
         },
         methods: {
             clickTo: function () {
@@ -103,13 +101,15 @@
                 });
                 lookFlows(message)
                     .then(res => {
-                        console.log(res,'22     ')
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }else{
                             this.data = res.content;
                         }
                     })
+            },
+            exportWaterAction(data){
+                window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
             }
         }
     }
@@ -119,5 +119,8 @@
         display: inline-block;
         /*outline:1px solid red;*/
         /*margin-top: 15px;*/
+    }
+    .exportButton{
+        top: 30px;
     }
 </style>

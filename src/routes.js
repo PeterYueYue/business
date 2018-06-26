@@ -13,6 +13,7 @@ import MemberCardManage from './views/member-marketing/membercard-manage/MemberC
 import MemberList from './views/member-marketing/member-list/MemberList.vue';
 // 会员积分管理
 import IntegralManage from './views/member-marketing/integralManage/integralManage.vue';
+import IntegralManageList from './views/member-marketing/integralManage/integralManageList.vue';
 
 
 /*商圈用户管理*/
@@ -118,7 +119,9 @@ let routes = [{
         children: [
             {path: '/memberCardManage', component: MemberCardManage, name: '会员卡管理'},
             {path: '/memberList', component: MemberList, name: '会员列表'},
-            {path: '/integralManage', component: IntegralManage, name: '会员积分管理'}
+            {path: '/integralManage', component: IntegralManage, name: '会员积分管理'},
+            {path: '/integralManageList', component: IntegralManageList, name: '积分操作记录'}
+            
         ]
     },
     {
@@ -127,6 +130,7 @@ let routes = [{
         name: '商圈用户管理',
         iconCls: 'el-icon-setting',
         children: [
+            {path: '/dealMessage', component: DealMessage, name: '支付宝交易通知'},
             {path: '/businessList', component: BusinessList, name: '商户列表'},
             // { path: '/inviteRecord', component: InviteRecord, name: '邀请记录' },
         ]
@@ -251,7 +255,6 @@ let routes = [{
         children: [
             {path: '/activityWater', component: ActivityWater, name: '活动流水'},
             {path: '/checkCollect', component: CheckCollect, name: '账单汇总'},
-            {path: '/dealMessage', component: DealMessage, name: '支付宝交易通知'}
         ]
     },
     {

@@ -192,6 +192,7 @@
                         :value="item.value">
                         </el-option>
                     </el-select>
+                    <span class="colorRed" v-if="!enterNo">该活动已被上架为商品</span>
                 </el-form-item>
                 <!-- 积分商城券池 -->
                 <el-form-item v-if="addform.sourceValue == 'SELF'" label="券 ID : " prop="">
@@ -534,7 +535,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                <el-button type="primary" @click="queryshops_btn">确 定</el-button>
+                <el-button type="primary" :disabled="enterNo" @click="queryshops_btn">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -796,14 +797,7 @@
                 sourceValue:'',
                 ticketItemID:'',
                 movableOpction:[
-                    {
-                    value: '选项1',
-                    label: '活动1' 
-                    },
-                    {
-                    value: '选项2',
-                    label: '活动2' 
-                    }
+                    
                 ],
                 movableValue:'',
                 textarea:'',
@@ -865,6 +859,7 @@
                 loading2: false,
                 isChangeSort:'',
                 isTimes:false,
+                enterNo:true,
 
             }
         },
@@ -1481,7 +1476,8 @@
                 this.showOrder = ss
             },
             selectType(){
-
+                  this.addform.movableValue= ''; 
+                  this.enterNo = true;
                  let data = this.qs.stringify({
                     voucherType:this.addform.typeOptionsValue,
                     
@@ -1490,8 +1486,13 @@
                     this.ypeOptionsList = res.content;
 
                     this.ypeOptionsList.forEach(e =>{
+
+                        console.log(e)
                         e.value = e.id;
-                        e.label = e.voucherName;
+                        e.label = e.brandName;
+                        if(e.voucherType =='FIX_VOUCHER'){
+                            e.label = e.voucherName;
+                        }
                         return e
                     })
                     this.movableOpction = this.ypeOptionsList
@@ -1509,6 +1510,12 @@
                         id : this.ticketItemID
                     });
                     ticketInfo(data).then(res => {
+                        if(res.errorCode == '该活动已被上架为商品'){
+                            this.enterNo = false;
+                        }
+                        if(res.errorCode == '10000'){
+                            this.enterNo = true;
+                        }
                         if(res.errorCode == '30005'){
                             this.$router.push({path: '/login'});
                         }
@@ -1721,6 +1728,9 @@
     }
    .width_300px{
        width: 500px !important;
+   }
+   .colorRed{
+       color:red;
    }
    
    

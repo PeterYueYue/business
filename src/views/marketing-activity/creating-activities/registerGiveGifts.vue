@@ -41,7 +41,7 @@
                 </el-col> -->
             </el-form-item>
             <el-form-item class="registerType" label="券id" prop="itemId">
-                <el-input v-model="ruleForm.itemId"  type="number"  @blur="reviseItemId"   size="small" class="regsternameInput"   ></el-input>
+                <el-input v-model="ruleForm.itemId"    size="small" class="regsternameInput"   ></el-input>
             </el-form-item>
 
             <el-form-item  class="registerType" label="券类型" prop="region"    >

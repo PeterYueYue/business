@@ -25,6 +25,7 @@
 
 
             <el-date-picker
+            size="small"
             v-model="times"
             placeholder="请选择时间范围"
             type="daterange"

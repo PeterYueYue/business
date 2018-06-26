@@ -131,16 +131,29 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
                 },
                 value6: '',
                 value7: '',
-                options: [{
+                options: [
+                {
                 value: '',
                 label: '全部'
-                }, {
+                }, 
+                {
                 value: 'MONEY',
                 label: '代金券'
-                }, {
+                }, 
+                {
                 value: 'RATE',
                 label: '折扣券'
-                }],
+                },
+                {
+                label:'兑换券',
+                value:'EXCHANGE'
+                },
+                {
+                value: 'CASH',
+                label: '现金抵换券'
+                },
+                
+                ],
                 value: '',
                 name:'',
                 carCode:'',
@@ -225,7 +238,7 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
     margin-left: 11px;
 }
 .duihuanjifen .inputWidth{
-    width: 150px !important;
+    width: 200px !important;
 }
 .dataBoard{
     text-align: center;

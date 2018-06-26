@@ -64,6 +64,10 @@
                     元 
                     <!-- <span v-if="jmeIsOk == false"  class="wrongColor">/*劵面额只能为大于0的数字，且长度小于8位</span> -->
                 </el-form-item>
+                <el-form-item label="商圈首页售价 :">
+                    <el-input class="width_90"  type="number"   @blur="reviseCost" size="small" v-model="cost" placeholder="请输入"></el-input>
+                    元 
+                </el-form-item>
                 <el-form-item class="ticket_limit " label="最低消费 :">
                     <el-select class="margin_bto10" v-model="form.uselimitselectvalue" placeholder="请选择" size="small">
                         <el-option
@@ -289,7 +293,8 @@
                 forbidden_use_date:[],
                 fundAccount:'',
                 isSubmit:true,
-                payUrl:''
+                payUrl:'',
+                cost:''
                 
             }
         },
@@ -459,7 +464,14 @@
                     return;
                 }else{
                     this.messageData.amount=this.money;
-                }   
+                } 
+                //商圈首页售价
+                if(!this.cost){
+                    this.$message("商圈首页售价不正确");
+                    return; 
+                }else{
+                   this.messageData.cost=this.cost;     
+                }
                 //门店信息
                 if(this.checkedshopstrue){
                     this.messageData.STORE = this.checkedshops.toString();
@@ -532,8 +544,6 @@
                 let checkedCount = value.length;
                 this.checkAll = checkedCount === this.Objects.length;
                 this.isIndeterminate = checkedCount > 0 && checkedCount < this.hhddatas2.length;
-
-                
             },
             againchooseshop() {
                 this.dialogVisible_queryshops = true;
@@ -552,14 +562,12 @@
                         } 
                     })
                 })
-                
             },
             changeTime: function () {
                 this.startTime = formateDate(this.time[0]);
                 this.endTime = formateDate(this.time[1]);
                 this.firstTime = formDateSecond(this.time[0]);
                 this.lastTime = formDateSecond59(this.time[1]);
-                
             },
             selectChange: function () {
             },
@@ -595,7 +603,6 @@
                 this.form.numbers = parseInt(this.form.numbers);
                 if(this.form.numbers  == '0.00'||this.form.numbers.toString().length > '8'){
                     this.form.numbers = ''
-                    
                 }
             },
             reviseNumberX(){
@@ -604,6 +611,13 @@
                 if(this.numberX == '0.00' || this.numberX.toString().length > '11'){
                     this.numberX = ''
                 }
+            },
+            reviseCost(){
+                this.cost = Math.abs(this.cost);
+                this.cost = this.cost.toFixed(2);
+                if(this.cost == '0.00'||this.cost.toString().length > '8'){
+                    this.cost = ''
+                }   
             }
             
            

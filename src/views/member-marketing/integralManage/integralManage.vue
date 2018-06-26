@@ -70,6 +70,9 @@
     z-index: 2;
 
 }
+.colorRead{
+    color: red;
+}
 .addnewproject{
     width: 800px;
     background-color: #fff;
@@ -136,7 +139,7 @@
 
         <header class="head">
             <div class="businessInformation ">
-                会员积分业务页面链接：http://********.com 
+                会员积分业务页面链接：http://t.cn/RBJUbV8 
                 <span  
                 v-clipboard:copy="message"
                 v-clipboard:success="onCopy"
@@ -153,7 +156,7 @@
             <div class="searchbox">
                 姓名：<el-input v-model="searchName" size="small" placeholder="请输入内容"></el-input>
                 手机号：<el-input v-model="searchPhone" size="small" placeholder="请输入内容"></el-input>
-                <el-button size="small" type="primary">搜索</el-button>
+                <el-button size="small"   @click="searchAction" type="primary">搜索</el-button>
                 <el-button class="addAnyting" @click="isShowpopupBox = true" size="small" type="primary">＋新增</el-button>
             </div>
             <div class="tableList">
@@ -248,12 +251,12 @@
                             <el-form-item label="确认密码">
                                 <el-input  class="inputany" size="small" v-model="formLabelAlign.password2"></el-input>
                             </el-form-item>
-                            <el-form-item label="启用状态">
+                            <!-- <el-form-item label="启用状态">
                                 <el-switch  v-model="formLabelAlign.delivery"></el-switch>
-                            </el-form-item>
+                            </el-form-item> -->
                             <el-form-item class="buttons"  >
                                 <el-button size="small" type="primary" @click="onSubmit">提交</el-button>
-                                <el-button size="small" @click="isShowpopupBox = false"  >返回</el-button>
+                                <el-button size="small" @click="popuBack"  >返回</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -265,7 +268,7 @@
                         </div>
                         <el-form  :label-position="labelPosition" label-width="80px" :model="compileForm">
                             <el-form-item label="姓名">
-                                <el-input class="inputany" size="small" v-model="compileForm.name"></el-input>
+                                <el-input class="inputany" size="small" v-model="userMessage.name"></el-input>
                             </el-form-item>                          
                             <el-form-item label="性别">
                                 <!-- <el-input size="small" v-model="formLabelAlign.region"></el-input> -->
@@ -279,14 +282,16 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="手机号">
-                                <el-input disabled="true"  class="inputany" size="small" v-model="compileForm.mobil"></el-input>
+                                <el-input :disabled="true"  class="inputany" size="small" v-model="compileForm.mobil"></el-input>
                             </el-form-item>
                             <el-form-item label="密码">
-                                <el-input  class="inputany" size="small" v-model="compileForm.password1"></el-input>
+                                <el-input  class="inputany"  type="password" @blur="revisePass" size="small" v-model="compileForm.password1"></el-input>
                             </el-form-item>
                             <el-form-item label="确认密码">
-                                <el-input  class="inputany" size="small" v-model="compileForm.password2"></el-input>
+                                <el-input  class="inputany" type="password" size="small" v-model="compileForm.password2"></el-input>
+                                <span  v-if="revisePass() == false" class="colorRead"> 两次密码不一致</span>
                             </el-form-item>
+
                             <el-form-item label="启用状态">
                                 <el-switch  v-model="compileForm.delivery"></el-switch>
                             </el-form-item>
@@ -346,6 +351,13 @@ export default {
         this.getDataList()
     },
     methods:{
+        popuBack(){
+            this.isShowpopupBox = false;
+            this.formLabelAlign.mobil = '';
+            this.formLabelAlign.password1='';
+            this.formLabelAlign.password2='';
+            this.formLabelAlign.name = '';
+        },
         handleEdit(index,row){
 
             this.userMessage = row;
@@ -356,8 +368,6 @@ export default {
             this.isShowRedactBox = true;
         },
         handleDelete(index,row){
-            console.log(index,"222")
-            console.log(this.list[index].id)
             var data = this.qs.stringify({
                 id: this.list[index].id,
             });
@@ -374,28 +384,50 @@ export default {
                 pointerInfo:`${this.formLabelAlign.mobil}AAA${this.formLabelAlign.password1}AAA${this.formLabelAlign.name}AAA${this.sex}`          
             });
             addvipUser(data).then(res =>{
+                if(res.errorCode == '1'){
+                    this.$message(res.message)
+                    return;
+                };
                 this.$message('提交成功');
                 this.getDataList()
                 this.isShowpopupBox = false;
+                this.formLabelAlign.mobil = '';
+                this.formLabelAlign.password1='';
+                this.formLabelAlign.password2='';
+                this.formLabelAlign.name = '';
+
+
+
+
             })
         },
         compile(){ //编辑
-            console.log(this.userMessage)
-
-
+            let password = '';
+            if(this.revisePass() == true){
+                password = this.compileForm.password2;
+            }
+            if(this.compileForm.password1 == '' && this.compileForm.password2 == ''){
+                password = this.userMessage.password;
+            }
+            if(this.revisePass() == false) {
+                this.$message('密码不正确')
+                return 
+            }
+            if(password == ''){
+                this.userMessage.mobile = '';
+            }
             var data = this.qs.stringify({
-                pointerInfo:`${this.formLabelAlign.mobil}AAA${this.formLabelAlign.password1}AAA${this.formLabelAlign.name}AAA${this.sex}`          
+                pointerInfo:`${this.userMessage.mobile}AAA${password}AAA${this.userMessage.name}AAA${this.sex}AAA${this.userMessage.id}`          
             });
             redactUser(data).then(res => {
-                console.log(res)
+                this.getDataList()
+                this.isShowRedactBox = false;
+                
             })
 
 
         },
         changeState(scope){
-
-
-            console.log(scope)
             var data = this.qs.stringify({
                 id: this.list[scope.$index].id,
             });
@@ -429,6 +461,27 @@ export default {
         },
         onError: function (e) {
         alert('Failed to copy texts')
+        },
+        revisePass(){
+            if(this.compileForm.password2.length>'0' && this.compileForm.password1.length>'0'){
+                if(this.compileForm.password2 !== this.compileForm.password1){
+                    return false;
+                }
+            }
+        },
+        searchAction(){
+            var data = this.qs.stringify({
+                pageNumber: '1',
+                name: this.searchName,
+                mobile: this.searchPhone,               
+            });          
+            getintegralManagelist(data).then(res =>{
+                this.list = res.content.result;
+                this.list.forEach((e,i) =>{
+                    e.index = (i+1)
+                })
+            })
+
         }
     }
 }

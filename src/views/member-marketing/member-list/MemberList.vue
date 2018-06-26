@@ -85,6 +85,10 @@
                         prop="grade"
                         label="级别">
                 </el-table-column>
+                <el-table-column
+                        prop="sendDate"
+                        label="领卡日期">
+                </el-table-column>
             </el-table>
             <el-pagination
                     @size-change="handleSizeChange"
@@ -251,6 +255,6 @@
         display: none !important;
     }
     .query_input{
-        width: 100px;
+        width: 200px;
     }
 </style>

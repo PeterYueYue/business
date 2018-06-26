@@ -42,7 +42,8 @@
 						</template>
 						<el-menu-item index="/memberCardManage">会员卡管理</el-menu-item>
 						<el-menu-item index="/memberList">会员管理</el-menu-item>
-						<!-- <el-menu-item index="/integralManage">积分管理员</el-menu-item> -->
+						<el-menu-item index="/integralManage">积分管理员</el-menu-item>
+						<el-menu-item index="/integralManageList">积分操作记录</el-menu-item>
 					</el-submenu>
 					<el-submenu index="2">
 						<template slot="title">
@@ -52,6 +53,8 @@
 						商圈用户管理
 						</template>
 						<el-menu-item index="/businessList">商户列表</el-menu-item>
+						<el-menu-item index="/dealMessage">支付宝交易通知</el-menu-item>
+						
 					</el-submenu>
 					<el-submenu index="3">
 						<template slot="title">
@@ -77,7 +80,6 @@
 						</template>
 						<el-menu-item index="/activityWater">活动流水</el-menu-item>
 						<el-menu-item index="/checkCollect">账单汇总</el-menu-item>
-						<el-menu-item index="/dealMessage">支付宝交易通知</el-menu-item>
 					</el-submenu>
 			</el-menu>
 				<!--导航菜单-->
