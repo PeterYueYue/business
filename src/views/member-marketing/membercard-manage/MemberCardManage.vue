@@ -654,7 +654,6 @@
 					}
 				});
 				getmembercade().then(res => {
-					console.log(res)
 					if (res.content.id) {
 						Object.assign(this.form, res.content)
 						// this.form = res.content;
@@ -684,8 +683,9 @@
 					if (res.content.fieldList == 'POINT,BALANCE') {
 						this.checkedCities1 = ['积分', '余额'];
 					}
-
-					res.content.selfPoint.charAt(0) == '0' ? this.pointsmethod = 0 : this.pointsmethod = 1;
+          if(res.content.selfPoint){
+					  res.content.selfPoint.charAt(0) == '0' ? this.pointsmethod = 0 : this.pointsmethod = 1;
+          }
 					res.content.hiddens.charAt(0) == '0' ? this.isshow1 = 0 : this.isshow1 = 1;
 					res.content.hiddens.charAt(1) == '0' ? this.isshow2 = 0 : this.isshow2 = 1;
 					res.content.hiddens.charAt(2) == '0' ? this.isshow3 = 0 : this.isshow3 = 1;

@@ -16,7 +16,7 @@
                     <el-form-item class="ticket_title" label="活动名称 :">
                         <span>{{message.active_title}}</span>
                     </el-form-item>
-                    <el-form-item class="ticket_downtype" :label="message.voucher_type+':'">
+                    <el-form-item class="ticket_downtype"  v-if="message.voucher_type != '减至券'"  :label="message.voucher_type+':'">
                         <!-- <div v-if="message.voucher_type === '减至券'">
                             <el-radio v-model="form.radio" label="选中">减到固定金额</el-radio>
                             <br>
@@ -89,7 +89,7 @@
                     </el-form-item>
                     
 
-                    <el-form-item class="ticket_title" label="最低消费 :" v-if="message.min_cost != 9999">
+                    <el-form-item   v-show="message.voucher_type != '减至券'" class="ticket_title" label="最低消费 :" v-if="message.min_cost != 9999">
                         <span>{{message.min_cost}}</span> 元
                     </el-form-item>
                     <el-form-item class="ticket_title" label="使用说明 :" v-if="message.descs != 9999">
@@ -234,11 +234,7 @@
             let data = this.qs.stringify({
                 voucherId: id
             });
-
             this.getDetail(data);
-
-            
-
         },
         methods: {
             clickmoregoods(){
@@ -275,7 +271,6 @@
             getDetail: function (data) {
                 getProductDetail(data)
                     .then(res => {
-                        console.log(res)
                         if (res.errorCode == 30005) {
                             this.$router.push({path: '/login'});
                         }

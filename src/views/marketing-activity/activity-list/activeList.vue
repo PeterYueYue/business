@@ -3,7 +3,7 @@
         <div class="zj-header">
             <span class="bcColor" @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">代金券活动</span>
             <span class="bcColor" @click="styleClick(6)" :class="{styleTabs : styleTab == 6}">折扣券活动</span>
-            <!-- <span class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span> -->
+            <span class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span>
             <span class="bcColor" @click="styleClick(8)" :class="{styleTabs : styleTab == 8}">现金抵价券活动</span>
             <span @click="styleClick(4)" :class="{styleTabs : styleTab == 4}">积分促销活动</span>
             <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}">积分抵现活动</span>

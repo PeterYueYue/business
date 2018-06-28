@@ -27,14 +27,12 @@
             </div>
         </div>
         <div class="block">
-            <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="1"
-            :page-sizes="[10]"
-            :page-size="10"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="listtotal">
+            <el-pagination 
+                @current-change="handleCurrentChange" 
+                :page-size="10" 
+                layout="total, prev, pager, next,jumper" 
+                :total="listtotal" 
+                class="foot_nav">
             </el-pagination>
         </div>
     </div>

@@ -164,9 +164,11 @@ import {mapGetters} from 'vuex'
 			loading2:'loading2'
 		}),
 		mounted:function() {
+
+			console.log(this.$route.params.code)
+			
 			this.routerChange();
 			let user = sessionStorage.getItem('user');
-
 			
 //			alert(user);
 			if (user) {

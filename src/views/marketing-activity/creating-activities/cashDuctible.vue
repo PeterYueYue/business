@@ -304,13 +304,11 @@
         },
         methods: {
             delinstructions(item,index){
-                
                 if(this.instructions.length > 1){
                     this.instructions = this.instructions.filter( (e,i) => index !==i )
                 }
             },
             addinstructions(){
-
                 if(this.instructions.length < 5){
                     this.instructions.push({
                         val:''
@@ -330,16 +328,12 @@
                     return "";
                 }
                 var user_id  = getCookie("ENTITY_ID");
-
-                console.log(user_id)
                 this.shopid.id = user_id ;
             },
             logobeforeAvatarUpload(file) {
                 this.$message('正在上传');
             },
             logoonsuccess(response, file, fileList) {
-
-                console.log(response)
                 if (response.error == 0) {
                     this.$message.success('上传LOGO图片成功!');
                     this.imageUrltologo = URL.createObjectURL(file.raw);
@@ -447,7 +441,6 @@
                     this.messageData.start = "";
                     this.messageData.end = "";
                     this.messageData.duration = this.finallyValidity;
-
                 }
                 if(this.validity == '绝对时间'){
                     // 绝对时间
@@ -494,15 +487,11 @@
                     this.messageData.floorAmount='0.01';
                 }
                 delete this.messageData['publish_channels_type'];
-                console.log(this.messageData)
-
                 let data=this.qs.stringify(this.messageData);
                 creatCashDuctible(data).then(res=>{
-
                     if (res.errorCode == 30005) {
                         this.$router.push({path: '/login'});
                     }else if(res.errorCode == 10000){
-
                         this.isSubmit = false;
                         this.payUrl = res.content;
                         this.$message({
@@ -574,7 +563,7 @@
             denominationalIsOk(){ //判断券面额输入是否正确
                 this.money = Math.abs(this.money);
                 this.money = this.money.toFixed(2)
-                if(this.money == '0.00' || this.money.toString().length > '11'){
+                if(this.money.toString().length > '11'){
                     this.money = ''
                 }
                 var reg = /^([^0]|.{2,})$/;
@@ -615,7 +604,7 @@
             reviseCost(){
                 this.cost = Math.abs(this.cost);
                 this.cost = this.cost.toFixed(2);
-                if(this.cost == '0.00'||this.cost.toString().length > '8'){
+                if(this.cost.toString().length > '8'){
                     this.cost = ''
                 }   
             }

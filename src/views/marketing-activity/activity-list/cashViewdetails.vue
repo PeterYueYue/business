@@ -81,6 +81,9 @@
                         <span  v-if="message.voucherDataType == 'RELATIVE'" >领取后 {{message.voucherQuantity}} 日内有效</span>
                         <span v-if="message.voucherDataType == 'ABSOLUTE'">{{message.start}} 至 {{message.end}}</span>
                     </el-form-item>
+                    <el-form-item class="ticket_number" label="模板ID :">
+                        <span   >{{message.templateId}}</span>
+                    </el-form-item>
                     <!-- <el-form-item class="ticket_number" v-if="message.min_cost == 0" label="使用条件 :">
                         <span>不限制</span>
                     </el-form-item> -->

@@ -2,8 +2,8 @@
 <template>
     <div>
         <div class="pop-busarea-body">
-            <div class="pop-end" v-if="message.templateStatus == '删除'"></div>
-            <div class="pop-nopay" v-if="message.templateStatus == '草稿'"></div>
+            <div class="pop-end" v-if="message.templateStatus == '删除' || new Date().getTime() > new Date(this.message.publishEndTime).getTime() "></div>
+            <div class="pop-nopay" v-if="message.templateStatus == '草稿' && new Date().getTime() < new Date(this.message.publishEndTime).getTime()"></div>
             <div class="pop-busarea-title">
                 <div class="pop-busarea-top">
                     <p class="pop-p">
@@ -27,11 +27,11 @@
                <span>
                 <div class="pop-busarea-p">
                   <p><span></span></p>
-                  <p><span>模板ID :&nbsp;</span><span>{{message.templateId}}</span></p>
+                  <p><span>活动名称 :&nbsp;</span><span>{{message.voucherName}}</span></p>
                   <!-- <p v-if="message.voucherDataType == 'RELATIVE'"><span>活动有效期 :&nbsp;</span><span>{{message.voucherQuantity}}天</span></p> -->
                   <p ><span>活动时间 :&nbsp;</span><span>{{message.publishStartTime}} 至 {{message.publishEndTime}}</span></p>
                   <p><span>活动类型 :&nbsp;</span><span>现金抵价券</span></p>
-                  <p><span>适用门店 :&nbsp;</span><span>{{message.store.split().length}} 家门店</span></p>
+                  <p><span>适用门店 :&nbsp;</span><span>{{message.store.split(',').length}} 家门店</span></p>
                     <!--<p><span>隶属商圈 :</span><span>{{message.four}}</span></p>-->
                   <p><span>操作 :&nbsp;</span>
                   <router-link tag="span" class="pop-blue"
@@ -43,8 +43,8 @@
               </span>
                 <span>
 
-                    <button class="exportButton"  v-if="message.templateStatus == '生效'"   @click="exportWaterAction(message.templateId)">导出明细</button>
-                    <button  v-if="message.templateStatus == '生效'"   @click="getWaters(message.templateId)">查看流水</button>
+                    <button class="exportButton"   @click="exportWaterAction(message.templateId)">导出明细</button>
+                    <button  @click="getWaters(message.templateId)">查看详情</button>
                 </span>
                 
                 </div>
@@ -95,21 +95,23 @@
                 this.$router.push({path: "/viewdetails"});
             },
             getWaters: function (data) {
-                this.preview = !this.preview;
-                let message=this.qs.stringify({
-                    templateId:data
-                });
-                lookFlows(message)
-                    .then(res => {
-                        if (res.errorCode == 30005) {
-                            this.$router.push({path: '/login'});
-                        }else{
-                            this.data = res.content;
-                        }
-                    })
+                    this.preview = !this.preview;
+                    let message=this.qs.stringify({
+                        templateId:data
+                    });
+                    lookFlows(message)
+                        .then(res => {
+                            if (res.errorCode == 30005) {
+                                this.$router.push({path: '/login'});
+                            }else{
+                                this.data = res.content;
+                            }
+                        })
             },
             exportWaterAction(data){
-                window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
+                if(this.message.templateStatus == '生效'){
+                    window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
+                }
             }
         }
     }

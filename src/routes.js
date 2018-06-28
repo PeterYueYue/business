@@ -117,7 +117,7 @@ let routes = [{
         name: '会员营销',
         iconCls: 'el-icon-message', //图标样式class
         children: [
-            {path: '/memberCardManage', component: MemberCardManage, name: '会员卡管理'},
+            {path: '/memberCardManage:code', component: MemberCardManage, name: '会员卡管理'},
             {path: '/memberList', component: MemberList, name: '会员列表'},
             {path: '/integralManage', component: IntegralManage, name: '会员积分管理'},
             {path: '/integralManageList', component: IntegralManageList, name: '积分操作记录'}

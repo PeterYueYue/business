@@ -109,7 +109,7 @@
                     @current-change="handleCurrentChange" 
                     :page-size="pageSize" 
                     layout="total, prev, pager, next,jumper" 
-                    :total="totalCount" 
+                    :total="total" 
                     class="foot_nav">
                 </el-pagination>
             </div>
@@ -629,7 +629,7 @@
                     {text:'全部',type:''},
                     {text:'代金券',type:'MONEY'},
                     {text:'折扣券',type:'RATE'},
-                    {text:'兑换券',type:'EXCHANGE'},
+                    {text:'实物换购券',type:'EXCHANGE'},
                     {text:'现金抵价券',type:'CASH'},
                 ],
                 typeSelect:'',
@@ -754,6 +754,7 @@
                 addgift_dialog:false,
                 soldoutgift_dialog:false,
                 totalCount:0,
+                total:'',
                 queryacticvename:'',
                 choosegiftid:'',
                 tableData:[],
@@ -771,7 +772,7 @@
                     label: '折扣券'
                     },
                     {
-                    label:'兑换券',
+                    label:'实物换购券',
                     value:'EXCHANGE'
                     },
                     {
@@ -906,8 +907,8 @@
                                 e.index = i+1
                                 return e;
                             })
-                            this.totalCount = res.content.totalCount;
-                           
+                            this.totalCount = res.content.pageCount;
+                            this.total = res.content.total;
                         }else if(res.status == 'error'){
                             this.$message.error(res.message);
                         }

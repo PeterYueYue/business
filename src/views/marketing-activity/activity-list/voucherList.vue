@@ -51,7 +51,7 @@
         mounted: function () {
             let message = this.qs.stringify({
                 pageNumber: '1',
-                pageSize: '10000'
+                pageSize: '10000',
             });
             getShopLists(message).then(res => {
                 if (res.errorCode == 30005) {
@@ -65,7 +65,8 @@
 
             });
             let datad = this.qs.stringify({
-                activityStatu: 0
+                activityStatu: 0,
+                voucherType:'MONEY'
             });
             this.getGoldLists(datad);
         },
@@ -73,7 +74,8 @@
             Dquery: function () {
                 let data = this.qs.stringify({
                     shopId: this.shopValued,
-                    activityStatu: this.statuselectvalued
+                    activityStatu: this.statuselectvalued,
+                    voucherType:'MONEY'
                 });
                 this.getGoldLists(data);
             },

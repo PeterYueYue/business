@@ -107,7 +107,7 @@ export const DateLong = (data) => {
     return setdata;
 };
 
-//文件导出
+//文件导出开始
 export const postExport = ({url, data}) =>{
     return new Promise((resolve,reject)=>{
         const iframe = document.createElement("iframe");
@@ -148,3 +148,4 @@ function markUrl(link,data){
     }
     return link;
 }
+//文件导出结束

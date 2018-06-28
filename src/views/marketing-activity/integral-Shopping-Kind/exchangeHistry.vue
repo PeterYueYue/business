@@ -145,7 +145,7 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
                 label: '折扣券'
                 },
                 {
-                label:'兑换券',
+                label:'实物换购券',
                 value:'EXCHANGE'
                 },
                 {

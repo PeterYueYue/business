@@ -22,7 +22,9 @@
                             <p v-if="message.voucher_type == '代金券'" >
                                 <span>{{message.amount}}</span><span> 元&#160;{{message.voucher_type}}</span>
                             </p>
-                            <!--<p class="pop-download"><span>二维码</span><span>下载</span></p>-->
+                            <p v-if="message.voucher_type == '兑换券'" >
+                                <span>{{message.amount}}</span><span> &#160;{{message.voucher_type}}</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -89,9 +91,6 @@
                 preview: true,
                 data: ''
             }
-        },
-        created(){
-            console.log(this.message,"这是代金券")
         },
         methods: {
             clickTo: function () {
