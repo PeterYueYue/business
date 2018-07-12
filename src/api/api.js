@@ -10,10 +10,10 @@ import axios from 'axios';
 // let base = 'http://192.168.1.158:8080';
 
 //正式服务器环境部署打包
-let base = 'http://b.tingzhijun.com';
+// let base = 'http://b.tingzhijun.com';
 
 //本地运行
-// let base = '';  
+let base = '';  
 
 //登录接口
 export const requestLogin = params => {
@@ -408,3 +408,12 @@ export const getCircleMemberList = params =>{
 export const exportWater = params =>{
     return axios.post(`${base}/business/business_product_log!exportCashLog.action`,params).then(res =>res.data)
 }
+//商圈设置 获取商圈参数
+export const getCircleSet = params =>{
+    return axios.post(`${base}/business/business_circle_set!getCircleSet.action`,params).then(res => res.data)
+}
+//商圈设置 商圈参数设置
+export const setCircleSet = params =>{
+    return axios.post(`${base}/business/business_circle_set!setCircleSet.action`,params).then(res => res.data)
+}
+

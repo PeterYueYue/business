@@ -33,6 +33,15 @@
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<el-menu :default-active="menu_start" :router=true_set :unique-opened=true_set
                          class="el-menu-vertical-demo zj-bar"  theme="dark">
+					<el-submenu index="5">
+						<template slot="title">
+						<svg class="icon" aria-hidden="true">
+							<use xlink:href="#icon-mima"></use>
+						</svg>
+						商圈设置
+						</template>
+						<el-menu-item index="/basicsSetting">基本设置</el-menu-item>
+					</el-submenu>
 					<el-submenu index="1">
 						<template slot="title">
 						<svg class="icon" aria-hidden="true">
@@ -164,12 +173,8 @@ import {mapGetters} from 'vuex'
 			loading2:'loading2'
 		}),
 		mounted:function() {
-
-			console.log(this.$route.params.code)
-			
 			this.routerChange();
 			let user = sessionStorage.getItem('user');
-			
 //			alert(user);
 			if (user) {
 				user = JSON.parse(user);

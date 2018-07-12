@@ -77,6 +77,35 @@ export const weekDispose = (data) => {
     let arrs = '';
     return arrs = unique(arr).toString()
 };
+//星期处理1
+export const weekDispose1 = (data) => {
+    let arr = [];
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] == '1') {
+            arr.push('星期一')
+        }
+        if (data[i] == '2') {
+            arr.push('星期二')
+        }
+        if (data[i] == '3') {
+            arr.push('星期三')
+        }
+        if (data[i] == '4') {
+            arr.push('星期四')
+        }
+        if (data[i] == '5') {
+            arr.push('星期五')
+        }
+        if (data[i] == '6') {
+            arr.push('星期六')
+        }
+        if (data[i] == '7') {
+            arr.push('星期日')
+        }
+    }
+    let arrs = '';
+    return arrs = unique(arr).toString()
+};
 export const DateLong = (data) => {
     Date.prototype.Format = function (fmt) { //author: meizz
         let o = {

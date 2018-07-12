@@ -56,7 +56,7 @@
                         type="selection"
                         width="55"> 
                     </el-table-column>
-                    <el-table-column prop="index" label="序号" >
+                    <el-table-column width="25" prop="index" label="序号" >
                     </el-table-column>
                     <el-table-column prop="name" label="商品名称" >
                     </el-table-column>
@@ -101,7 +101,10 @@
                             <span  v-if="scope.row.marketed == '1'"  @click="upOrLower(scope.row)" class="lowerFrame">下架</span>
                             <span v-if="scope.row.marketed == '0'"  @click="upOrLower(scope.row)" class="lowerFrame">上架</span>
                             <span style="color: #ddd">|</span>
+                            <el-button @click="editAction(scope.row)"  type="text" size="small">编辑</el-button>
+                            <span style="color: #ddd">|</span>
                             <el-button @click="removegift_btn(scope.row.id)" style="color:red;" type="text" size="small">删除</el-button>
+                            
                         </template>
                     </el-table-column>
                 </el-table>
@@ -155,16 +158,15 @@
         </el-dialog>
         <!--添加商品-->
         <el-dialog
-
             :close-on-click-modal="false"
-            title="添加商品"
+            :title="shoptitle"
             class="addgift_c"
             v-model="addgift_dialog"
             size="small"
             top="15%">
             <el-form label-width="105px" class="addtable_form" :model="addform" :rules="addrule" ref="addform">
-                <el-form-item prop="typeOptionsValue" label="商品类型">
-                    <el-select size="small" v-model="addform.typeOptionsValue" @change="selectType" placeholder="请选择">
+                <el-form-item   prop="typeOptionsValue" label="商品类型">
+                    <el-select  :disabled="shoptitle == '编辑商品'" size="small" v-model="addform.typeOptionsValue" @change="selectType" placeholder="请选择">
                         <el-option
                         v-for="item in typeOptions"
                         :key="item.value"
@@ -174,7 +176,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="sourceValue" label="商品来源">
-                    <el-select size="small" v-model="addform.sourceValue" placeholder="请选择">
+                    <el-select :disabled="shoptitle == '编辑商品'"  size="small" v-model="addform.sourceValue" placeholder="请选择">
                         <el-option
                         v-for="item in sourceOpction"
                         :key="item.value"
@@ -184,7 +186,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="movableValue"    v-if="addform.sourceValue != 'OUTER'" label="请选择活动">
-                    <el-select size="small" class="movableValue"  v-model="addform.movableValue" @change="ticketId" placeholder="请选择">
+                    <el-select size="small" :disabled="shoptitle == '编辑商品'" class="movableValue"  v-model="addform.movableValue" @change="ticketId" placeholder="请选择">
                         <el-option
                         v-for="item in movableOpction"
                         :key="item.value"
@@ -200,7 +202,7 @@
                 </el-form-item>
                 <!-- 其他渠道 -->
                 <el-form-item v-if="addform.sourceValue == 'OUTER'" label="券 ID : " prop="">
-                    <el-input type="number" size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
+                    <el-input  :disabled="shoptitle == '编辑商品'" type="number" size="small" placeholder="请输入券ID" v-model="outerId"></el-input>
                 </el-form-item>
                 <el-form-item 
                         v-if="addform.sourceValue == 'OUTER'" 
@@ -224,8 +226,6 @@
                         
                     </span>
                 </el-form-item>
-
-
                 <el-form-item v-if="addform.sourceValue == 'OUTER' "  v-show="addform.typeOptionsValue!= 'EXCHANGE'"   label="最低消费金额 : " >
                     <el-select v-model="minPreAmount" class="validityTypeInline" placeholder="请选择" size="small">
                         <el-option
@@ -257,7 +257,7 @@
                         </el-option>
                     </el-select>
                     <el-date-picker
-                        class="validityTypeInline width_150"
+                        class="validityTypeInline width_200"
                         v-if="validityType == 'FIXED' "
                         size="small"
                         v-model="value7"
@@ -535,15 +535,17 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                <el-button type="primary" :disabled="enterNo" @click="queryshops_btn">确 定</el-button>
+                <el-button type="primary" :disabled="isIndeterminate " @click="queryshops_btn">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
     import { getShopLists,savaGift,giftLibrary,selectGift,deleteGift,afterGift,afterGifts,integralStoreList,upPutAway,downSoldOut,deleteAction,sort,addtype,ticketInfo,addStiorInfo,addCondition} from '../../../api/api';
-    import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,DateLong} from '../../../api/CommonMethods'
+    import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,weekDispose1,DateLong} from '../../../api/CommonMethods'
     export default {
+
+        watch:{addgift_dialog:function(){if(this.addgift_dialog == false){this.cancelDoSome() }}},
         data() {
             
             var totalNumvalidate=(rule, value, callback) => {
@@ -754,7 +756,7 @@
                 addgift_dialog:false,
                 soldoutgift_dialog:false,
                 totalCount:0,
-                total:'',
+                total:0,
                 queryacticvename:'',
                 choosegiftid:'',
                 tableData:[],
@@ -861,6 +863,8 @@
                 isChangeSort:'',
                 isTimes:false,
                 enterNo:true,
+                shoptitle:'添加商品',
+                isproductId:'',
 
             }
         },
@@ -870,6 +874,94 @@
             this.shopList();
         },
         methods: {
+            editAction(item){
+                this.shoptitle = '编辑商品';
+                this.addgift_dialog = true;
+                this.addform.typeOptionsValue = item.productType;
+                this.addform.sourceValue  =item.productSource;
+                this.addform.movableValue = item.name;
+                // id
+                if(this.addform.sourceValue == 'OUTER'){
+                    this.outerId = item.itemId;
+                } else if(this.addform.sourceValue == 'SELF'){
+                    this.ticketItemID = item.activeId;
+                }
+                
+                this.isproductId = item.id;
+                this.addform.name = item.name;
+                this.imageUrltologo = item.logo;
+                this.addform.logo = item.logo;
+                this.addform.textarea  =item.goodDetails;
+                this.weightLive = item.showOrder;
+                this.exchangeOpction = item.gradeCN.split(',').map(e =>{
+                    let a = {name :e}
+                    return a
+                })
+                this.exchangeValue =  item.grade.split(',').map((e,i) =>item.exchangePage.split(',')[i]) 
+                this.integralValue = item.bindingPoint
+                this.value6 = this.addTimeValue = [new Date(item.pickStartDate), new Date(item.pickEndDate)];
+                this.exchangeAstrictValue = item.pickLimitPeriod;
+                this.exchangeAstrictCount = item.pickLimitNum;
+                this.addform.point = item.count.toString();
+                this.instructions =  item.memo.split(',').map((e,i) => {  
+                    var obj =  { val:e}
+                    return obj   
+                });
+                this.moneyValue = item.bindingMoney;
+                if(item.shopIds){this.checkedshops = item.shopIds.split(',');}
+                this.shopsnumber = this.checkedshops.length; 
+                this.checkedshopstrue = this.checkedshops;
+                this.validityType = item.validType;
+                if(this.addform.sourceValue == 'OUTER'){
+                    if(this.validityType == 'RELATIVE'){
+                        this.validDays = item.validDays;
+                    } else if(this.validityType == 'FIXED'){
+                        this.value7 = this.addTimeValue1 = [new Date(item.validStartDate), new Date(item.validEndDate)];
+                    }
+                    
+
+
+
+
+
+
+
+                    if(item.useTime){
+                        this.timelimitselectvalue = '1';
+                        this.times = item.useTime.split('^').map( (e)=> {
+                            let newE = {value:e.split(',')}
+                            newE.value[0] = new Date(new Date().toLocaleDateString()+' '+newE.value[0]);
+                            newE.value[1] = new Date(new Date().toLocaleDateString()+' '+newE.value[1]);
+                            return newE
+                        })
+                    }
+                    console.log(item.forbiddenUseDate)
+                    if(item.forbiddenUseDate){
+                       this.detallimitselectvalue = '1'; 
+                       this.times1 = item.forbiddenUseDate.split('^').map( (e)=> {
+                            let newE = {value:e.split(',')}
+                            newE.value[0] = new Date(newE.value[0]);
+                            newE.value[1] = new Date(newE.value[1]);
+                            return newE
+                        })
+                    }
+                    this.checkList = weekDispose1(item.useWeek.split(',')).split(',')
+
+                    console.log(this.checkList,"89")
+                    if(item.minCost){
+                        this.minPreAmount = '1';
+                        this.addform.money = item.minCost;
+                    }
+                }
+
+                addCondition().then(res =>{
+                    this.exchangeOpction = res.content;
+                })
+                
+
+                
+                console.log(item)
+            },
             shopList: function () {
                 let data = this.qs.stringify({
                     pageNumber: '1',
@@ -1046,6 +1138,7 @@
                 this.addform.sourceValue ='';
                 this.addform.movableValue ='';
                 this.addform.textarea = '';
+               
             },
             //添加商品弹窗内,点击确定
             addgift_true_btn(){
@@ -1167,6 +1260,7 @@
 
                 let ObjectDate ={
                     //*****其他渠道*******
+                    productId: this.isproductId,
                     voucherType:this.addform.typeOptionsValue,      //商品分类
                     productSource:this.addform.sourceValue,         //商品来源
                     activeId :this.ticketItemID,                    //活动id
@@ -1185,7 +1279,7 @@
                     useWeek:'',                                     //可使用的星期，存星期几逗号隔开 1,3,7
                     useTime:'',                                     //可使用的时间支持多个 开始结束逗号分隔，多个时间之间^分割 如：16:00:00,20:00:00^21:00:00,22:00:00
                     forbiddenUseDate:'',                            //不可使用日期：开始结束逗号分隔，多个时间之间^分割 如：2016-03-03,2016-03-08^2016-10-01,2016-10-01
-                    shopInfo:this.checkedshopstrue,                 //适用门店
+                    shopInfo:'',                                    //适用门店
                     validStartDate:this.addTimeValue1[0],           //有效期开始日期
                     validEndDate:this.addTimeValue1[1],             //有效期结束日期
                     validDays:this.validDays,                       //领取后N天有效
@@ -1208,13 +1302,27 @@
                     // amount:'',                                      //优惠券面额
                     
                 }
-                
+                // 门店信息
+
+                if(this.checkedshopstrue){
+                    ObjectDate.shopInfo = this.checkedshopstrue.toString();
+                }
+                // ID
+                if(this.addform.sourceValue == 'OUTER'){
+                    ObjectDate.id =  this.outerId
+                } else if(this.addform.sourceValue == 'SELF'){
+                    ObjectDate.id =  this.ticketItemID
+                }
                 //使用说明
-                let str = [];
-                this.instructions.forEach(e => {
-                    str.push(e.val)
-                })
-                ObjectDate.memo = str.toString().replace('"','')
+                
+                if(this.instructions){
+                    let str = [];
+                    this.instructions.forEach(e => {
+                        str.push(e.val)
+                    })
+                    ObjectDate.memo = str.toString().replace('"','')
+                }
+                
                 //领取时间限制
                 if(this.timelimitselectvalue ==1){
                     let useTime=DateLong(this.times);
@@ -1261,22 +1369,23 @@
                 }
 
                 //不可用时间
+
                 let startT = []
                 let endT = []
-                this.times1.forEach( e =>{
-                    startT.push(new Date(e.value[0].toLocaleDateString()).getTime())
-                    endT.push(new Date(e.value[1].toLocaleDateString()).getTime())
-                })
-                var allStartTime = startT.sort();
-                var allEndTime = endT.sort();
-                var result = 0;
-                for(var k=1;k<allStartTime.length;k++){
-                    if (allStartTime[k] <= allEndTime[k-1]){
-                        result+=1;  
+                if(this.times1){
+                    this.times1.forEach( e =>{
+                        startT.push(new Date(e.value[0].toLocaleDateString()).getTime())
+                        endT.push(new Date(e.value[1].toLocaleDateString()).getTime())
+                    })
+                    var allStartTime = startT.sort();
+                    var allEndTime = endT.sort();
+                    var result = 0;
+                    for(var k=1;k<allStartTime.length;k++){
+                        if (allStartTime[k] <= allEndTime[k-1]){
+                            result+=1;  
+                        }
                     }
                 }
-
-                
                 // return result>0;
                 if(result > 0){
                     this.$message("不可用时间段不能重叠");
@@ -1288,21 +1397,25 @@
                         arr.push(formateDate(e.value[1]).replace(/\//g,'-'))     
                         this.forbidden_use_date.push(arr+'^')
                     })
-
                     if(this.detallimitselectvalue == "2"){
                         ObjectDate.forbiddenUseDate = '';
                     }else{
-                        ObjectDate.forbiddenUseDate = this.forbidden_use_date.toString().replace('^,','^').slice(0,-1)
+                        ObjectDate.forbiddenUseDate = this.forbidden_use_date.toString().replace('^,','^').slice(0,-1);
+                        this.forbidden_use_date = [];
+
                     }
                 }
-
                 let data = this.qs.stringify(ObjectDate);
                 addStiorInfo(data).then(res => {
                     if(res.errorCode == '30005'){
                         this.$router.push({path: '/login'});
                     }else if(res.errorCode == '10000'){
                         if(res.status == 'success'){
-                            this.$message.success('添加成功');
+                            if(this.shoptitle == '编辑商品'){
+                               this.$message.success('修改成功');     
+                            }else{
+                                this.$message.success('添加成功');
+                            }
                             this.addgift_dialog = false;
                             this.pageNumber = 1;
                             this.queryacticvename='';
@@ -1525,10 +1638,10 @@
                 }
             },
             timeChange(val){
-               this.addTimeValue = val.split("至");
+               if(val){this.addTimeValue = val.split("至");}
             },
             timeChange1(val){
-               this.addTimeValue1 = val.split("至");
+               if(val){this.addTimeValue1 = val.split("至");}
             },
              //领券时间3个函数(添加,删除,处理)
             addDomain(){
@@ -1564,7 +1677,13 @@
                     this.hhddatas2.push(this.Objects[i].id);
                 }
                 this.checkedshops = event.target.checked ? this.hhddatas2 : [];
-                this.isIndeterminate = false;
+                if(this.checkedshops.length > 0){
+                    this.isIndeterminate = false;
+                }else{
+                    this.isIndeterminate = true;
+                }
+                
+                
             },
             // 上架门店确定
             queryshops_btn() {
@@ -1579,15 +1698,18 @@
                         } 
                     })
                 })
-                
             },
             handleCheckedCitiesChange(value) {
                 let checkedCount = value.length;
                 this.checkAll = checkedCount === this.Objects.length;
                 this.isIndeterminate = checkedCount > 0 && checkedCount < this.hhddatas2.length;
+                if(value.length > 0 ){
+                    this.isIndeterminate = false; 
+                }else{
+                    this.isIndeterminate = true; 
+                }
             },
             delinstructions(item,index){
-                
                 if(this.instructions.length > 1){
                     this.instructions = this.instructions.filter( (e,i) => index !==i )
                 }
@@ -1612,8 +1734,6 @@
 
             },
             upOrLower(e){
-
-
                 //判断上下架？
                 let port = {};
                 if(e.marketed == "0"){
@@ -1644,6 +1764,43 @@
                         }
                     }
                 })
+            },
+            cancelDoSome(){
+                this.shoptitle = '添加商品';
+                this.addgift_dialog = false;
+                this.addform.typeOptionsValue = '';
+                this.addform.sourceValue  ='';
+                this.addform.movableValue = '';
+                this.addform.textarea  ='';
+                this.addform.name = '';
+                this.ticketItemID = '';
+                this.outerId = '';
+                this.imageUrltologo = '';
+                this.weightLive = '';
+                this.exchangeOpction = []
+                this.exchangeValue = [];
+                this.integralValue = '';
+                this.value6 ='';
+                this.exchangeAstrictValue = 'N';
+                this.exchangeAstrictCount = '';
+                this.integralValue = '';
+                this.addTimeValue = "";
+                this.addform.point = '';
+                this.instructions =  '';
+                this.moneyValue = '';
+                this.checkedshopstrue='';
+                this.checkedshops = '';
+                this.shopsnumber = ''; 
+                this.validDays = '';
+                this.value7 = '';
+                this.addTimeValue1 = '';
+                this.timelimitselectvalue = '2';
+                this.times = [{value:[new Date(2017, 9, 10, 0,0,0), new Date(2017, 9, 10, 23,59,59)]}];
+                this.detallimitselectvalue = '2';
+                this.times1 = [{value:[new Date(),new Date()]}];
+                this.exchangeOpction = '';
+                this.forbiddenUseDate = '';
+                this.validityType = 'RELATIVE';
             },
             reviseIntegralValue(){
                 this.integralValue = Math.abs(this.integralValue)

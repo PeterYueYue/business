@@ -197,8 +197,10 @@ import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,
                                 }
                                 return e;
                             })
-                            this.totalCount = res.content.totalCount;
+                            this.totalCount = res.content.total;
                             this.statisticsData = res.content;
+
+                            console.log(res)
                         }else if(res.status == 'error'){
                             this.$message.error(res.message);
                         }

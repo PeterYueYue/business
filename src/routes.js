@@ -6,6 +6,10 @@ import Accredit from './views/Accredit.vue';
 // 商圈登录页
 import Loginsq from './views/login_sq.vue';
 
+/*商圈设置*/ 
+//基础设置
+import BasicsSetting from './views/settingUp/basicsSettingTM'
+
 /*会员营销*/
 //会员卡管理
 import MemberCardManage from './views/member-marketing/membercard-manage/MemberCardManage.vue';
@@ -114,10 +118,19 @@ let routes = [{
     {
         path: '/',
         component: Home,
+        name: '商圈设置',
+        iconCls: 'el-icon-message', //图标样式class
+        children: [
+            {path: '/basicsSetting', component: BasicsSetting, name: '基础设置'},
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
         name: '会员营销',
         iconCls: 'el-icon-message', //图标样式class
         children: [
-            {path: '/memberCardManage:code', component: MemberCardManage, name: '会员卡管理'},
+            {path: '/memberCardManage', component: MemberCardManage, name: '会员卡管理'},
             {path: '/memberList', component: MemberList, name: '会员列表'},
             {path: '/integralManage', component: IntegralManage, name: '会员积分管理'},
             {path: '/integralManageList', component: IntegralManageList, name: '积分操作记录'}

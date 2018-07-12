@@ -52,7 +52,7 @@
                     <el-input class="width_90"  v-model="emitNumber"    type="number" placeholder="请输入数量" size="small" ></el-input>
                 </el-form-item>
                 <el-form-item label="折扣力度 :">
-                    <el-input class="width_90"  type="number"   @blur="denominationalIsOk" size="small" v-model="discount" placeholder="请输入"></el-input>
+                    <el-input class="width_90"  type="number"   @blur="reviseDiscount" size="small" v-model="discount" placeholder="请输入"></el-input>
                     折
                     <span class="color_888">/*折扣力度范围：( 1.1--9.9  ) </span>
                 </el-form-item>
@@ -519,7 +519,10 @@
                     return;
                 }
                 //折扣力度
-                this.messageData.discount = this.discount/10;
+                this.discount = (this.discount/10).toFixed(3);
+                this.discount = this.discount.substring(0,this.discount.lastIndexOf('.')+3) ;
+                this.messageData.discount = this.discount;
+
                 this.messageData.maxAmount = this.money;
                 //处理时间选择是否正确
                 let date1 = new Date(this.firstTime).getTime();
@@ -677,6 +680,7 @@
                 }
 
                 this.messageData.binding_point=this.form.needcode;
+
                 delete this.messageData['publish_channels_type'];
                 let data=this.qs.stringify(this.messageData);
                 saveProduct(data).then(res=>{
@@ -751,6 +755,12 @@
                 this.jmeIsOk = true;
                 }else{
                 this.jmeIsOk = false;
+                }
+            },
+            reviseDiscount(){
+                this.discount = Math.abs(this.discount);
+                if(this.discount == '0.00'){
+                    this.discount =''
                 }
             },
             numberIsOk(){  //判断代金券数量输入是否正确

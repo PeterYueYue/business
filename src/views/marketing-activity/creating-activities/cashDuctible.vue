@@ -18,11 +18,20 @@
                     <el-input size="small"  v-model="form.voucherName" placeholder="请输入活动名称"></el-input>
                     <span  v-if="form.voucherName.length > 30" class="wrongColor"> * 活动名称长度不能超过30个字符</span>
                 </el-form-item>
+                <el-form-item class="channel"  label="投放渠道 :">
+                    <el-select   size="small" v-model="channelValue" placeholder="请选择">
+                        <el-option
+                        v-for="item in channelOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item class="ticket_title" label="品牌名称 :">
                     <el-input size="small"  v-model="form.name" placeholder="请输入活动名称"></el-input>
                     <span  v-if="form.name.length > 12" class="wrongColor"> * 品牌名称长度不能超过12个字符</span>
                 </el-form-item>
-
                 <el-form-item  label="出资人账号:" >
                     <el-input class="width_200 "   v-model="fundAccount"  size="small"  placeholder="请输入出资人账号" ></el-input>
                 </el-form-item>
@@ -294,7 +303,12 @@
                 fundAccount:'',
                 isSubmit:true,
                 payUrl:'',
-                cost:''
+                cost:'',
+                channelValue:'MALL',
+                channelOptions:[
+                    {value:'MALL',label:'积分商城'},
+                    {value:'PAGE',label:'口碑首页'}
+                ]
                 
             }
         },
@@ -406,6 +420,8 @@
                     this.$message("活动名称不可为空且最大长度为32");
                     return;
                 }
+                //投放渠道
+                this.messageData.channel = this.channelValue;
                 //品牌名称
                 if(this.form.voucherName){
                     this.messageData.brandName = this.form.name;
@@ -852,4 +868,8 @@
    .el-message-box__btns {
        text-align: center;
    }
+   .mainBox .channel .el-select, .mainBox .channel .el-input--small{
+       width: 100px !important;
+   }
+
 </style>
