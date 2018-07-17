@@ -326,7 +326,7 @@
                     limittime: '',
                     code_radio: '1',
                     needcode: '',
-                    ways: []
+                    ways: [],
                 },
                 timelimitselectdata:[
                     {value: '1', label: '限制'},
@@ -385,16 +385,14 @@
                 brandLogo:'',//图片id
                 urlLogo:'',
                 shopid:{id:''},//上传图片带的id
-                forbidden_use_date:[]
+                forbidden_use_date:[],
+                
                 
             }
         },
         mounted:function () {
             this.shopList();
             this.cookie()
-            
-
-          
         },
         methods: {
             delinstructions(item,index){
@@ -582,9 +580,9 @@
 
                  //数量
                   
-                
                 this.messageData.quantity=this.emitNumber;
                  
+                
                 
                
                 //使用条件 
@@ -647,10 +645,6 @@
                         
                     }
                 }
-
-
-                
-
 
                 //不可用时间
 
@@ -816,7 +810,7 @@
                 if(this.form.needcode == '0.00' || this.form.needcode.toString().length > '8'){
                     this.form.needcode = '0'
                 }    
-            }
+            },
             
 
         },

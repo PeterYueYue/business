@@ -30,14 +30,14 @@ module.exports = {
         proxyTable: {
             '/business': { //这里是我配置的名字
                 // 正式
-                // target: 'http://b.tingzhijun.com',
-                // target: 'http://192.168.1.193:8080',
+                target: 'http://b.tingzhijun.com',
+                // target: 'http://192.168.1.194:8080',
 
                 // 测试
                 // target:'http://192.168.1.179:8080',
 
                 // target:'http://192.168.1.185:8080',
-                target: 'http://192.168.1.163:8080', 
+                // target: 'http://192.168.1.163:8080', 
                 // target: 'http://139.196.177.162:8080',
                 // target: 'http://192.168.1.161:8080',
                 changeOrigin: true,

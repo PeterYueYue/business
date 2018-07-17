@@ -35,6 +35,16 @@
                 <el-form-item  label="出资人账号:" >
                     <el-input class="width_200 "   v-model="fundAccount"  size="small"  placeholder="请输入出资人账号" ></el-input>
                 </el-form-item>
+                <el-form-item class="ticket_limit " label="银行 :">
+                    <el-select class="margin_bto10" v-model="bank" placeholder="请选择银行" size="small">
+                        <el-option
+                                v-for="item in bankSelectdata"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                  <el-form-item label="活动时间 :">
                     <div class="block">
                         <el-date-picker
@@ -240,7 +250,8 @@
                     limittime: '',
                     code_radio: '1',
                     ways: [],
-                    voucherName:''
+                    voucherName:'',
+
                 },
                 timelimitselectdata:[
                     {value: '1', label: '限制'},
@@ -308,7 +319,30 @@
                 channelOptions:[
                     {value:'MALL',label:'积分商城'},
                     {value:'PAGE',label:'口碑首页'}
-                ]
+                ],
+                bank:'',
+
+                bankSelectdata:[
+                    {value: '', label: '不限制'},
+                    {value: 'CCB', label: '中国建设银行'},
+                    {value: 'ABC', label: '中国农业银行'},
+                    {value: 'ICBC', label: '中国工商银行'},
+                    {value: 'BOC', label: '中国银行'},
+                    {value: 'CMBC', label: '中国民生银行'},
+                    {value: 'CMB', label: '招商银行'},
+                    {value: 'CIB', label: '兴业银行'},
+                    {value: 'BOB', label: '北京银行'},
+                    {value: 'bocom', label: '交通银行'},
+                    {value: 'CEB', label: '中国光大银行'},
+                    {value: 'GDB', label: '广东发展银行'},
+                    {value: 'SPDB', label: '上海浦东发展银行'},
+                    {value: 'SDB', label: '深圳发展银行'},
+                    {value: 'HSBC', label: '汇丰银行'},
+                    {value: 'CUB', label: '中国农村信用社'},
+                    {value: 'HXB', label: '华夏银行'},
+                    {value: 'CMSB', label: '民生银行'},
+                    {value: 'PSBC', label: '中国邮政储蓄银行'},
+                    ]
                 
             }
         },
@@ -481,6 +515,9 @@
                 }else{
                    this.messageData.cost=this.cost;     
                 }
+
+                //银行
+                this.messageData.bank = this.bank;
                 //门店信息
                 if(this.checkedshopstrue){
                     this.messageData.STORE = this.checkedshops.toString();

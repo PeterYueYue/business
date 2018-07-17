@@ -14,7 +14,7 @@
                 <span class="ticket_title_all">活动内容</span>
                 <el-form ref="form" :model="form" label-width="140px">
                     <el-form-item class="ticket_title" label="活动名称 :">
-                        <span>{{message.brandName}}</span>
+                        <span>{{message.voucherName}}</span>
                     </el-form-item>
                     <el-form-item class="ticket_title" label="出资人账号 :">
                         <span>{{message.fundAccount}}</span>
@@ -78,7 +78,7 @@
                         <el-button type="text" @click="clickmoregoods">点击查看</el-button>
                     </el-form-item>
                     <el-form-item class="ticket_number" label="券有效期 :">
-                        <span  v-if="message.voucherDataType == 'RELATIVE'" >领取后 {{message.voucherQuantity}} 日内有效</span>
+                        <span  v-if="message.voucherDataType == 'RELATIVE'" >领取后 {{message.duration}} 日内有效</span>
                         <span v-if="message.voucherDataType == 'ABSOLUTE'">{{message.start}} 至 {{message.end}}</span>
                     </el-form-item>
                     <el-form-item class="ticket_number" label="模板ID :">

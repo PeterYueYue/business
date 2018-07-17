@@ -86,13 +86,13 @@
             <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="是否自主积分 : ">
+        <!-- <el-form-item label="是否自主积分 : ">
           <el-radio-group
             v-model="pointsmethod">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="列表样式 : ">
           <el-radio-group
             v-model="listStyle"
@@ -582,7 +582,7 @@
 								'!!!' + this.lwlist[a].url + '!!!' + this.lwlist[a].iconId + '!!!' +
 								this.lwlist[a].iconUrl + '!!!' + this.lwlist[a].tag;
 							if (a < this.lwlist.length - 1) {
-								this.sumbit_columns = this.sumbit_columns + 'BBB';
+								this.sumbit_columns = this.sumbit_columns + '@@@';
 							}
 						}
 						this.form.hiddens = this.form.hiddens + ',2';
@@ -599,7 +599,7 @@
 						this.sumbit_levels = this.sumbit_levels + this.gradetabledata[i].name + '!!!' +
 							this.gradetabledata[i].point + '!!!' + this.gradetabledata[i].times;
 						if (i < this.gradetabledata.length - 1) {
-							this.sumbit_levels = this.sumbit_levels + 'BBB';
+							this.sumbit_levels = this.sumbit_levels + '@@@';
 						}
 					}
 					this.form.levels = this.sumbit_levels;
@@ -798,17 +798,21 @@
 						this.hy_tableData[i].gain +
 						'!!!' + this.hy_tableData[i].dayTopPoint + '!!!' + this.hy_enable;
 					if (i < this.hy_tableData.length - 1) {
-						this.converRates = this.converRates + 'BBB';
+						this.converRates = this.converRates + '@@@';
 					}
 				}
 				this.sure();
-			},
+      },
+      
 			sure() {
+
+        console.log(this.converRates)
 				let data = this.qs.stringify(
 					{
 						converRates: this.converRates,
 					}
-				);
+        );
+        
 				this.checksuredisabled = true;
 				saveMember(data).then(res => {
 					this.checksuredisabled = false;

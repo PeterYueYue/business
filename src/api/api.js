@@ -10,10 +10,10 @@ import axios from 'axios';
 // let base = 'http://192.168.1.158:8080';
 
 //正式服务器环境部署打包
-// let base = 'http://b.tingzhijun.com';
+let base = 'http://b.tingzhijun.com';
 
 //本地运行
-let base = '';  
+// let base = '';  
 
 //登录接口
 export const requestLogin = params => {
@@ -416,4 +416,11 @@ export const getCircleSet = params =>{
 export const setCircleSet = params =>{
     return axios.post(`${base}/business/business_circle_set!setCircleSet.action`,params).then(res => res.data)
 }
-
+// 商圈 免登录
+export const freeLogin = params =>{
+    return axios.post(`${base}/business/business_circle!freeLogin.action`,params).then(res => res.data)
+}
+// 代金券 获取银行信息
+export const getBankName = params =>{
+    return axios.post(`${base}/business/cash/banks.jhtml`,params).then(res => res.data)
+}

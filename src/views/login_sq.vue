@@ -35,10 +35,12 @@
                         </div>
                         <input class="ui-button" @click="handleSubmit2"  type="submit" name="" id="" value="登    录"/>
                     </div>
+                    
                 </div>
+                
             </div>
+            
         </div>
-
         <div class="buttom_ad" :style="buttom_ad"></div>
 
         <div></div>
@@ -48,7 +50,7 @@
 </template>
 
 <script>
-    import {requestLogin,getLoginStatus} from '../api/api';
+    import {requestLogin,getLoginStatus,freeLogin} from '../api/api';
     export default {
         data() {
             return {
@@ -73,12 +75,56 @@
         mounted: function () {
 
             getLoginStatus().then(res=>{
-
-
                 if(res == true){
                     this.$router.push({path: '/memberCardManage'});
                 }
             })
+            // let str = 'http://b.tingzhijun.com/coupons/business/?app_auth_code=e3ea496193cb47c0933f130967adbX30#/login'
+            // let str = 'http://b.tingzhijun.com/coupons/business/#/login'
+            let str = window.location.href;
+            var str1 = str.substring((str.indexOf('?') + 1), str.indexOf('#'));
+            var ayth_code = this.qs.parse(str1).app_auth_code;
+            if(ayth_code){
+                ayth_code = this.qs.stringify({authCode:ayth_code});
+                freeLogin(ayth_code).then(res =>{
+                    if (res.errorCode == 10000) {
+                        //成功
+                        let user = res.content;
+                        sessionStorage.setItem('user', JSON.stringify(user));
+                        this.$router.push({path: '/memberCardManage'});
+                        return  
+                    } else if (res.errorCode == 30002) {
+                        //账户名或者密码错误!
+                        this.message = res.message;
+                    } else if (res.errorCode == 20000) {
+                        //参数错误
+                    } else if (res.errorCode == 20001) {
+                        //授权错误!
+                    } else if (res.errorCode == 30003) {
+                        //您的账号已被禁用
+                        this.message = res.message;
+                    } else if (res.errorCode == 30003) {
+                        //您的账号已被锁定
+                        this.message = res.message;
+                    } else if(res.errorCode == 30013){
+                        //您的正式版账号已过期，请联系XXXXXXXXXXXXXX"
+                        this.message = res.message;
+                    } else if (res.errorCode == 30006) {
+                        //授权过期
+                        this.message = res.message;
+                        let user = '0';
+                        sessionStorage.setItem('user', JSON.stringify(user));
+                        this.$router.push({path: '/Accredit'});
+                        let imgContent = 'http://b.tingzhijun.com';
+                        let url = res.content;
+                        let img_url = imgContent + url;
+                        sessionStorage.setItem("key", img_url);
+                    }
+                  
+                })
+
+            }
+           
         },
         methods: {
             clickKey:function () {
@@ -90,8 +136,6 @@
             handleSubmit2() {
                 let loginParams = this.qs.stringify(this.form);
                 requestLogin(loginParams).then(res => {
-                    console.log(res)
-
                     if (res.errorCode == 10000) {
                         //成功
                         let user = res.content;
@@ -145,7 +189,6 @@
         height: 344px;
         background-color: rgba(0, 0, 0, 0.5);
     }
-
     .login-form {
         width: 220px;
         margin: 0 auto;
@@ -305,6 +348,7 @@
     .pop-error {
         /*outline:1px solid red;*/
         height: 30px !important;
+        
     }
 
     .pop-error > p {
@@ -312,6 +356,9 @@
         color: red;
         height: 30px;
         line-height: 30px;
+        width: 500px !important;
+        margin-left:-140px; 
+       
     }
 
 
