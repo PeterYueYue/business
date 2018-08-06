@@ -2,13 +2,16 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
 // 应用初始状态
 const state = {
     count: 10,
-    loading2: false
+    loading2: false,
+    type:'FREE',
+    
 }
 
 // 定义所需的 mutations
@@ -24,6 +27,10 @@ const mutations = {
     },
     CLOSELODING(state){
         state.loading2 = false; 
+    },
+    GETTYPE(state,data){
+        state.type = data
+        console.log(data)
     }
 }
 
@@ -32,5 +39,6 @@ export default new Vuex.Store({
     actions,
     getters,
     state,
-    mutations
+    mutations,
+    plugins: [createPersistedState({storage: window.sessionStorage})]
 })

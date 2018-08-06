@@ -441,8 +441,8 @@
                     </el-checkbox-group >
                     积分：<el-input size="small" v-model="integralValue" @blur="reviseIntegralValue" class="width_50" type="number"  >
                     </el-input> 
-                     <!-- 金额：<el-input class="width_50"  @blur="reviseMoneyValue"  v-model="moneyValue" size="small" type="number"  ></el-input>
-                    <span class="color_888"> *小提示：金额非必填，不填默认仅需积分兑换</span> -->
+                     金额：<el-input class="width_50"  @blur="reviseMoneyValue"  v-model="moneyValue" size="small" type="number"  ></el-input>
+                    <span class="color_888"> *小提示：金额非必填，不填默认仅需积分兑换</span>
                 </el-form-item>
                 <el-form-item label="兑换限制">
                     <el-select size="small" v-model="exchangeAstrictValue" placeholder="请选择">

@@ -11,6 +11,9 @@
             <el-form-item label="服务到期时间:">
                 <el-input readonly="readonly"  size="small" class="width_200px" v-model="circelData.endDate"></el-input>
             </el-form-item>
+            <el-form-item label="转盘领奖网址:">
+                <el-input readonly="readonly"  size="small" class="width_200px" v-model="circelData.rewardUrl"></el-input>
+            </el-form-item>
             <el-form-item label="收款账号授权过期时间:">
                 <el-input  readonly="readonly"   class="width_200px" size="small" v-model="circelData.sellerExpiresTime"></el-input>
                 <el-button   @click="dialogVisible = true"  size="small">重新授权</el-button>
@@ -18,13 +21,14 @@
             <el-form-item label="会员卡领卡链接:">
                 <el-input readonly="readonly"  size="small" v-model="circelData.memberCardUrl"></el-input>
             </el-form-item>
+            
             <el-form-item label="自主积分">
                 <el-radio-group v-model="circelData.selfPoint">
                 <el-radio label="0">否</el-radio>
                 <el-radio label="1">是</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item  v-if="!circelData.crmImplClass" label="会员卡前缀:">
+            <el-form-item  v-show="!circelData.crmImplClass" label="会员卡前缀:">
                 <el-input class="width_100px" size="small" v-model="circelData.cardFront"></el-input>
             </el-form-item>
             <el-form-item label="口碑商圈首页:">
@@ -46,7 +50,7 @@
         :visible.sync="dialogVisible"
         width="30%"
         :before-close="handleClose">
-        <img class="qrCodeImg" src="https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/home/img/qrcode/zbios_efde696.png" alt="">
+        <img class="qrCodeImg" :src=circelData.qrCode alt="">
         </el-dialog>
     </div>
 </template>
@@ -56,15 +60,18 @@
   export default {
     data() {
       return {
-        circelData:{},
+        circelData:{
+           crmImplClass:''     
+        },
         dialogVisible: false,
         password:'',
         password1:'',
         passwordIsok:true,
+        
       }
     },
     mounted(){
-        getCircleSet().then(res =>{ this.circelData = res.content;})
+        getCircleSet().then(res =>{  this.circelData = res.content;  console.log(this.circelData)})
     },
     methods: {
       onSubmit() {
@@ -75,6 +82,7 @@
                cardFront :this.circelData.cardFront,
                mainUrl   :this.circelData.mainUrl,
                password  :this.password,
+               crmImplClass: this.circelData.crmImplClass
             });
         setCircleSet(data).then(res =>{this.$message('设置成功') })
       },

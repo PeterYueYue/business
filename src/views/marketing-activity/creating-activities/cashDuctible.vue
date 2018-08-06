@@ -1,4 +1,4 @@
-<!--代金券创建s-->
+<!--现金抵价券创建s-->
 <!--活动营销/单品营销-->
 <template>
     <div class="zj-main mainBox">
@@ -165,12 +165,23 @@
                 </el-dialog>
             </el-form>
         </div>
+        <el-dialog
+        title="温馨提示"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center>
+        <span>必须设置收款账号!</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="centerDialogVisible = false  ">稍后完善</el-button>
+            <el-button type="primary" @click="centerDialogVisible = false ;$router.push({ path:'/basicsSetting'})">立刻前去</el-button>
+        </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,DateLong} from '../../../api/CommonMethods'
-    import {getstorelist,creatCashDuctible,getShopLists} from '../../../api/api';
+    import {getstorelist,creatCashDuctible,getShopLists,getBankName,getCircleSet} from '../../../api/api';
     export default {
         data() {
             return {
@@ -324,31 +335,26 @@
 
                 bankSelectdata:[
                     {value: '', label: '不限制'},
-                    {value: 'CCB', label: '中国建设银行'},
-                    {value: 'ABC', label: '中国农业银行'},
-                    {value: 'ICBC', label: '中国工商银行'},
-                    {value: 'BOC', label: '中国银行'},
-                    {value: 'CMBC', label: '中国民生银行'},
-                    {value: 'CMB', label: '招商银行'},
-                    {value: 'CIB', label: '兴业银行'},
-                    {value: 'BOB', label: '北京银行'},
-                    {value: 'bocom', label: '交通银行'},
-                    {value: 'CEB', label: '中国光大银行'},
-                    {value: 'GDB', label: '广东发展银行'},
-                    {value: 'SPDB', label: '上海浦东发展银行'},
-                    {value: 'SDB', label: '深圳发展银行'},
-                    {value: 'HSBC', label: '汇丰银行'},
-                    {value: 'CUB', label: '中国农村信用社'},
-                    {value: 'HXB', label: '华夏银行'},
-                    {value: 'CMSB', label: '民生银行'},
-                    {value: 'PSBC', label: '中国邮政储蓄银行'},
-                    ]
+                ],
+                centerDialogVisible: false
                 
             }
         },
         mounted:function () {
+            getCircleSet().then(res =>{  let data = res.content; if(!data.sellerExpiresTime){this.centerDialogVisible= true }})
             this.shopList();
-            this.cookie()
+            this.cookie();
+
+            getBankName().then(res => {
+                let banks = res.content;
+                banks.code.forEach((e,i) => {
+                    this.bankSelectdata.push({
+                        value:e,
+                        label:banks.name[i]
+                    })
+                })
+            })
+
         },
         methods: {
             delinstructions(item,index){

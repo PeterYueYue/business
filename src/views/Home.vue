@@ -49,10 +49,10 @@
 						</svg>
 						会员营销
 						</template>
-						<el-menu-item index="/memberCardManage">会员卡管理</el-menu-item>
-						<el-menu-item index="/memberList">会员管理</el-menu-item>
-						<el-menu-item index="/integralManage">积分管理员</el-menu-item>
-						<el-menu-item index="/integralManageList">积分操作记录</el-menu-item>
+						<el-menu-item    index="/memberCardManage">会员卡管理</el-menu-item>
+						<el-menu-item 	v-if="manageType !== 'FREE'"  index="/memberList">会员管理</el-menu-item>
+						<el-menu-item  	v-if="manageType !== 'FREE'"  index="/integralManage">积分管理员</el-menu-item>
+						<el-menu-item  	v-if="manageType !== 'FREE'"  index="/integralManageList">积分操作记录</el-menu-item>
 					</el-submenu>
 					<el-submenu index="2">
 						<template slot="title">
@@ -62,7 +62,7 @@
 						商圈用户管理
 						</template>
 						<el-menu-item index="/businessList">商户列表</el-menu-item>
-						<el-menu-item index="/dealMessage">支付宝交易通知</el-menu-item>
+						<el-menu-item v-if="manageType !== 'FREE'" index="/dealMessage">支付宝交易通知</el-menu-item>
 						
 					</el-submenu>
 					<el-submenu index="3">
@@ -72,15 +72,15 @@
 						</svg>
 						营销活动
 						</template>
-                        <el-menu-item index="/redPacket">现金红包</el-menu-item>
-                        <el-menu-item index="/addbusiness">口碑招商活动</el-menu-item>
-						<el-menu-item index="/intergralShopMain">积分商城</el-menu-item>
+                        <el-menu-item v-if="manageType !== 'FREE'" index="/redPacket">现金红包</el-menu-item>
+                        <el-menu-item v-if="manageType !== 'FREE'" index="/addbusiness">口碑招商活动</el-menu-item>
+						<el-menu-item v-if="manageType !== 'FREE'" index="/intergralShopMain">积分商城</el-menu-item>
 						<!-- <el-menu-item index="/codeGiftMain">积分换礼</el-menu-item> -->
-						<el-menu-item index="/turntableSetting">积分大转盘</el-menu-item>
-						<el-menu-item index="/active">活动创建</el-menu-item>
-						<el-menu-item index="/activityList">活动列表</el-menu-item>
+						<el-menu-item v-if="manageType !== 'FREE'" index="/turntableSetting">积分大转盘</el-menu-item>
+						<el-menu-item  index="/active">活动创建</el-menu-item>
+						<el-menu-item  index="/activityList">活动列表</el-menu-item>
 					</el-submenu>
-					<el-submenu index="4">
+					<el-submenu v-if="manageType !== 'FREE'" index="4">
 						<template slot="title">
 						<svg class="icon" aria-hidden="true">
 							<use xlink:href="#icon-qiaquan1"></use>
@@ -170,7 +170,8 @@ import {mapGetters} from 'vuex'
 			}
 		},
 		computed:mapGetters({
-			loading2:'loading2'
+			loading2:'loading2',
+			manageType:'type'
 		}),
 		mounted:function() {
 			this.routerChange();
@@ -179,7 +180,7 @@ import {mapGetters} from 'vuex'
 			if (user) {
 				user = JSON.parse(user);
 //				this.sysUserName = user.name || '';
-                this.sysUserName=user;
+				user.mobile?this.sysUserName=user.mobile:this.sysUserName=user;
 //				this.sysUserAvatar = user.avatar || '';
 			}
 

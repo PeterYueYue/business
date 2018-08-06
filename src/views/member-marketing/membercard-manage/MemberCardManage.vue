@@ -360,11 +360,22 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog
+      title="温馨提示"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center>
+      <span>{{tips}}</span>
+      <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false  ">稍后完善</el-button>
+          <el-button type="primary" @click="centerDialogVisible = false ;$router.push({ path:'/basicsSetting'})">立刻前去</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-	import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus} from '../../../api/api'
+	import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus,getCircleSet} from '../../../api/api'
 
 	const typeOptions = ['积分', '余额'];
 	export default {
@@ -458,14 +469,18 @@
 					sendPoint: [
 						{required: true, message: ' ', trigger: 'blur'}
 					]
-				}
+        },
+        centerDialogVisible: false,
+        tips:''
 			}
 		},
 		mounted: function () {
 			this.memberPoints();
 			//获取商圈会员卡模板
 			this.getMembercard();
-			this.cookie();
+      this.cookie();
+      // 判断信息是否完整
+      this.getCircleState();
 
 		},
 		methods: {
@@ -477,7 +492,22 @@
 				} else if (type == 'times') {
 					this.gradetabledata[index].times = Math.abs(this.gradetabledata[index].times);
 				}
-			},
+      },
+      getCircleState(){
+        getCircleSet().then(res =>{  
+          let data = res.content; 
+          if(!data.mainUrl) {
+            this.centerDialogVisible= true;
+            this.tips = '必须设置口碑商圈首页!'
+            this.disabled = true;
+          }
+          if(!data.crmImplClass&&!data.cardFront){
+            this.tips = '必须设置会员卡前缀!'
+            this.centerDialogVisible = true
+            this.disabled = true;
+          }
+        })
+      },
 			//新增会员等级
 			addgrade() {
 				this.gradetabledata.push({name: '', point: '', times: ''})

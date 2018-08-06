@@ -1,14 +1,14 @@
 <template>
     <div class="zj-main">
         <div class="zj-header">
-            <span class="bcColor" @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">代金券活动</span>
-            <span class="bcColor" @click="styleClick(6)" :class="{styleTabs : styleTab == 6}">折扣券活动</span>
-            <span class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span>
+            <span v-if="manageType !== 'FREE'"  class="bcColor" @click="styleClick(1)" :class="{styleTabs : styleTab == 1}">代金券活动</span>
+            <span v-if="manageType !== 'FREE'"  class="bcColor" @click="styleClick(6)" :class="{styleTabs : styleTab == 6}">折扣券活动</span>
+            <span v-if="manageType !== 'FREE'"  class="bcColor" @click="styleClick(7)" :class="{styleTabs : styleTab == 7}">实物换购券活动</span>
             <span class="bcColor" @click="styleClick(8)" :class="{styleTabs : styleTab == 8}">现金抵价券活动</span>
-            <span @click="styleClick(4)" :class="{styleTabs : styleTab == 4}">积分促销活动</span>
-            <span @click="styleClick(3)" :class="{styleTabs : styleTab == 3}">积分抵现活动</span>
-            <span @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">单品券活动</span>
-            <span @click="styleClick(5)" :class="{styleTabs : styleTab == 5}">注册送券活动</span>
+            <span v-if="manageType !== 'FREE'"  @click="styleClick(4)" :class="{styleTabs : styleTab == 4}">积分促销活动</span>
+            <span v-if="manageType !== 'FREE'"  @click="styleClick(3)" :class="{styleTabs : styleTab == 3}">积分抵现活动</span>
+            <span v-if="manageType !== 'FREE'"  @click="styleClick(2)" :class="{styleTabs : styleTab == 2}">单品券活动</span>
+            <span v-if="manageType !== 'FREE'"  @click="styleClick(5)" :class="{styleTabs : styleTab == 5}">注册送券活动</span>
         </div>
         <p class="zj-routerview">
             <transition name="fade" mode="out-in">
@@ -18,6 +18,7 @@
     </div>
 </template>
 <script>
+import {mapGetters} from 'vuex'
     export default {
         data() {
             return {
@@ -26,8 +27,12 @@
         },
         watch:{
 			"$route":"routerChange"
-		},
+        },
+        computed:mapGetters({
+			manageType:'type'
+		}),
         mounted: function() {
+            if(this.manageType == 'FREE'){ this.$router.push({ path:'/cashDuctibleList'})}
             this.routerChange();
         },
         methods: {

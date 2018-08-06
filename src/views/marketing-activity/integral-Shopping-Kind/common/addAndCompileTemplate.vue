@@ -6,7 +6,7 @@
             :close-on-click-modal="false"
             :title="shoptitle"
             class="addgift_c"
-            v-model="addgift_dialog"
+            v-model="templateIsShow"
             size="small"
             top="15%">
             <el-form label-width="105px" class="addtable_form" :model="addform" :rules="addrule" ref="addform">
@@ -313,7 +313,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="addgift_true_btn">确 定</el-button>
-                <el-button @click="addgift_dialog = false">取 消</el-button>
+                <el-button @click="$emit('changeAddgift_dialog',false)">取 消</el-button>
             </span>
             
         </el-dialog>
@@ -348,7 +348,20 @@
 import {addtype,ticketInfo} from '../../../../api/api'
 export default {
     props:['addgift_dialog'],
-    watch:{addgift_dialog:function(){if(this.addgift_dialog == false){this.cancelDoSome() }}},
+    watch:{
+        addgift_dialog:function(){
+            if(this.addgift_dialog == false){
+                this.templateIsShow = false; 
+                this.cancelDoSome() 
+
+            }else{
+               this.templateIsShow = true; 
+            }
+        },
+        templateIsShow:function(state){
+            this.$emit('changeAddgift_dialog',state)
+        }
+    },
     data(){
         var totalNumvalidate=(rule, value, callback) => {
             let reg = /^[0-9]\d*$/;
@@ -534,6 +547,8 @@ export default {
             isIndeterminate: true,
             checkAll: false,
             Objects:'',
+            templateIsShow:false
+            
 
 
 

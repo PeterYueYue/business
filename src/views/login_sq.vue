@@ -79,7 +79,7 @@
                     this.$router.push({path: '/memberCardManage'});
                 }
             })
-            // let str = 'http://b.tingzhijun.com/coupons/business/?app_auth_code=e3ea496193cb47c0933f130967adbX30#/login'
+            // let str = 'http://b.tingzhijun.com/coupons/business/?app_auth_code=e3ea496193cb47c0933f2130967adbX30#/login'
             // let str = 'http://b.tingzhijun.com/coupons/business/#/login'
             let str = window.location.href;
             var str1 = str.substring((str.indexOf('?') + 1), str.indexOf('#'));
@@ -88,8 +88,12 @@
                 ayth_code = this.qs.stringify({authCode:ayth_code});
                 freeLogin(ayth_code).then(res =>{
                     if (res.errorCode == 10000) {
+
+                        
                         //成功
                         let user = res.content;
+                        this.$store.dispatch('getType',user.type)
+
                         sessionStorage.setItem('user', JSON.stringify(user));
                         this.$router.push({path: '/memberCardManage'});
                         return  
@@ -139,6 +143,9 @@
                     if (res.errorCode == 10000) {
                         //成功
                         let user = res.content;
+                        if(!user.type){
+                            this.$store.dispatch('getType',"ALL")
+                        }
                         sessionStorage.setItem('user', JSON.stringify(user));
                         this.$router.push({path: '/memberCardManage'});
                         return  

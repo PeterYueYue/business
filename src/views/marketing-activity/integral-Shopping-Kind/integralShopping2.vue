@@ -157,7 +157,12 @@
             </span>
         </el-dialog>
         <!--添加商品-->
-        <add-and-compile  v-bind:addgift_dialog ='addgift_dialog'  ></add-and-compile>
+        <add-and-compile 
+        
+         v-on:changeAddgift_dialog="changeAddgift_dialog"     
+         v-bind:addgift_dialog ='addgift_dialog'  >
+
+         </add-and-compile>
        
         
     </div>
@@ -309,6 +314,9 @@
         },
         
         methods: {
+            changeAddgift_dialog(state){
+                this.addgift_dialog = state;
+            },
             editAction(item){
                 this.shoptitle = '编辑商品';
                 this.addgift_dialog = true;

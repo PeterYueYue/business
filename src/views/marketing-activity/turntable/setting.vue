@@ -3,7 +3,7 @@
         <div class="zj-left">
             <span class="zj-back">
                     <div class="zj-content">
-                        <img src="../../../assets/images/backgroundImg.jpg"
+                        <img src="../../../assets/images/backgroundImg.png"
                              style="display: inline-block;position: absolute;top: 0;width: 100%;height: 80%;margin-top: 50px;"
                              alt="">
                         <span class="zj-made1" v-on:mouseenter="overFlow(1)" v-on:mouseleave="leaveFlow(1)">{{data.name1}}</span>
