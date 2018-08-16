@@ -41,6 +41,7 @@
 						商圈设置
 						</template>
 						<el-menu-item index="/basicsSetting">基本设置</el-menu-item>
+						<el-menu-item index="/addoutestore">外部门店设置</el-menu-item>
 					</el-submenu>
 					<el-submenu index="1">
 						<template slot="title">

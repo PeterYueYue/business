@@ -482,6 +482,9 @@
       // 判断信息是否完整
       this.getCircleState();
 
+
+      console.log(this.tagUrl)
+
 		},
 		methods: {
 			//会员等级设置table内input验证
@@ -549,7 +552,7 @@
 			//验证
 			set_Membercard(form) {
 				let nameRe = /^\w|[\u4e00-\u9fa5]{1,15}$/;
-				let sendPointRe = /^([1-9][0-9]*)$/
+				let sendPointRe = /^([0-9][0-9]*)$/
 				if (!nameRe.test(this.form.cardName)) {
 					this.$message.warning('钱包端名称填写不完整，请重新填写！');
 					return;
@@ -692,7 +695,9 @@
 					}
 					if (res.content.sendPoint) {
 						this.form.sendPoint = res.content.sendPoint.toString();
-					}
+          }
+          this.form.tagUrl.push(res.content.cardTemplateColumnList.iconUrl)
+
 					this.colorStyle.background = res.content.bgColor;
 					this.logoimgurl = res.content.logoUrl;
 					this.imageUrltologo = res.content.logoUrl;

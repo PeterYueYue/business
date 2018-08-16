@@ -58,14 +58,27 @@
                         </el-date-picker>
                     </div>
                 </el-form-item>
-                <el-form-item label="适用门店 :">
-                    <div>
+                <el-form-item label="适用门店（内） :">
+                    <div >
                         <span v-if="shopsnumber">已选择{{shopsnumber}}家门店</span>
                         <!--<el-button v-if="this.shopsnumber" type="text" @click="dialogVisible_queryshops = true">点击查看</el-button>-->
-                        <el-button v-if="this.shopsnumber" type="text" @click="againchooseshop">重新选择</el-button>
-                        <el-button v-if="!this.shopsnumber" type="text" @click="dialogVisible_queryshops = true">选择门店
+                        <el-button v-if="this.shopsnumber" type="text" @click="againchooseshop('inner')">重新选择</el-button>
+                        
+                        <el-button v-if="!this.shopsnumber" type="text" @click="dialogVisible_queryshops = true; shopList() ">选择门店
                         </el-button>
                     </div>
+                    
+                </el-form-item>
+                <el-form-item label="适用门店（外） :">
+                    <div >
+                        <span v-if="shopsnumber1">已选择{{shopsnumber1}}家门店</span>
+                        <!--<el-button v-if="this.shopsnumber" type="text" @click="dialogVisible_queryshops = true">点击查看</el-button>-->
+                        <el-button v-if="this.shopsnumber1" type="text" @click="againchooseshop1('outer')">重新选择</el-button>
+                        
+                        <el-button v-if="!this.shopsnumber1" type="text" @click="dialogVisible_queryshops1 = true; outerShopList()">选择门店
+                        </el-button>
+                    </div>
+                    
                 </el-form-item>
                 <el-form-item label="发放数量 :"  >
                     <!-- <el-select size="small"   v-model="emitOption" placeholder="请选择">
@@ -160,9 +173,36 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                        <el-button type="primary" @click="queryshops_btn">确 定</el-button>
+                        <el-button type="primary" @click="queryshops_btn('inner')">确 定</el-button>
                     </span>
                 </el-dialog>
+
+                <!-- 外部试用门店 -->
+
+                <el-dialog
+                        title="选择适用门店"
+                        v-model="dialogVisible_queryshops1"
+                        size="small"
+                        top="20%">
+                    <div class="kinds_main">
+                        <div class="shopkinds_list">
+                            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1"
+                                         @change="handleCheckAllChange1">全选
+                            </el-checkbox>
+                            <el-checkbox-group v-model="checkedshops1" @change="handleCheckedCitiesChange1">
+                                <div class="check_divbox" v-for="item in Objects1"  :key="item.id"  >
+                                    <el-checkbox :label="item.id"  :key="item.id">{{item.main_shop_name}}</el-checkbox>
+                                </div>
+                            </el-checkbox-group>
+                        </div>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogVisible_queryshops1 = false">取 消</el-button>
+                        <el-button type="primary" @click="queryshops_btn('outer')  ">确 定</el-button>
+                    </span>
+                </el-dialog>
+
+
             </el-form>
         </div>
         <el-dialog
@@ -181,7 +221,7 @@
 
 <script>
     import {formateDate,formDateSecond,formDateSecond59,formatTimestamp,weekDispose,DateLong} from '../../../api/CommonMethods'
-    import {getstorelist,creatCashDuctible,getShopLists,getBankName,getCircleSet} from '../../../api/api';
+    import {getstorelist,creatCashDuctible,getShopLists,getBankName,getCircleSet,getOutShopLists} from '../../../api/api';
     export default {
         data() {
             return {
@@ -207,10 +247,15 @@
 //                  {value: 'URL_WITH_TOKEN',label: '口令送'},
                 ],
                 isIndeterminate: true,
+                isIndeterminate1: true,
                 checkAll: false,
+                checkAll1: false,
                 checkedshops: [],
+                checkedshops1: [],
                 checkedShopPid:[],
+                checkedShopPid1:[],
                 shopsnumber: '',
+                shopsnumber1: '',
                 startTime: '****-**-**',
                 endTime: '****-**-**',
                 time: '',
@@ -281,7 +326,9 @@
                     {value: '2', label: '不限制'},
                 ],
                 hhddatas2: [],
+                hhddatas21: [],
                 Objects: '',
+                Objects1: '',
                 pickerOptions2: {
                     shortcuts: [{
                         text: '一周',
@@ -311,6 +358,7 @@
                 },
                 choose_goods: false,
                 dialogVisible_queryshops: false,
+                dialogVisible_queryshops1: false,
                 messageData:{},
                 firstTime:'',
                 lastTime:'',
@@ -336,13 +384,18 @@
                 bankSelectdata:[
                     {value: '', label: '不限制'},
                 ],
-                centerDialogVisible: false
+                centerDialogVisible: false,
+                checkedshopstrue:'',
+                checkedshopstrue1:''
+                
+        
                 
             }
         },
         mounted:function () {
             getCircleSet().then(res =>{  let data = res.content; if(!data.sellerExpiresTime){this.centerDialogVisible= true }})
-            this.shopList();
+            
+
             this.cookie();
 
             getBankName().then(res => {
@@ -362,6 +415,7 @@
                     this.instructions = this.instructions.filter( (e,i) => index !==i )
                 }
             },
+            
             addinstructions(){
                 if(this.instructions.length < 5){
                     this.instructions.push({
@@ -525,8 +579,15 @@
                 //银行
                 this.messageData.bank = this.bank;
                 //门店信息
-                if(this.checkedshopstrue){
-                    this.messageData.STORE = this.checkedshops.toString();
+                if(this.checkedshopstrue ||this.checkedshopstrue1){
+                    if(this.checkedshopstrue){
+
+                        this.messageData.STORE = this.checkedshops.toString();
+                    }
+                    if(this.checkedshopstrue1){
+                        this.messageData.outStore = this.checkedshops1.toString();
+                    }
+                    
                 }else{
                     this.$message("请选择门店");
                     return;
@@ -571,14 +632,41 @@
                     pageSize: '10000'
                 });
                 getShopLists(data).then(res=>{
+                    console.log(res)
+                    if (res.errorCode == 30005) {
+                        this.$router.push({path: '/login'});
+                    }else{
+                        this.Objects=res.content.resultList;
+                    }
+                })
+                
+            },
+            outerShopList(){
+                getOutShopLists().then(res => {
 
                     console.log(res)
-                        if (res.errorCode == 30005) {
-                            this.$router.push({path: '/login'});
-                        }else{
-                            this.Objects=res.content.resultList;
-                        }
-                    })
+                    if (res.errorCode == 30005) {
+                        this.$router.push({path: '/login'});
+                    }else{
+                        let arr =  []
+                        res.content.forEach( e => {
+                            let obj = {
+                                "circleId"          :   e.circleId,
+                                "createDate"        :   e.createDate,
+                                "createDateString"  :   e.createDateString,
+                                "createTimeString"  :   e.createTimeString,
+                                "delFlag"           :   e.delFlag,
+                                "ids"               :   e.id,
+                                "modifyDate"        :   e.modifyDate,
+                                "id"                :   e.partnerId,
+                                "main_shop_name"    :   e.shopName
+                            }
+                            arr.push(obj)
+                        })
+                        this.Objects1= arr;
+                    }
+                })
+
             },
             handleCheckAllChange(event) {
                 this.hhddatas2 = [];
@@ -588,28 +676,70 @@
                 this.checkedshops = event.target.checked ? this.hhddatas2 : [];
                 this.isIndeterminate = false;
             },
+            handleCheckAllChange1(event) {
+                this.hhddatas21 = [];
+                for (var i = 0; i < this.Objects1.length; i++) {
+                    this.hhddatas21.push(this.Objects1[i].id);
+                }
+                this.checkedshops1 = event.target.checked ? this.hhddatas21 : [];
+                this.isIndeterminate1 = false;
+            },
             handleCheckedCitiesChange(value) {
                 let checkedCount = value.length;
                 this.checkAll = checkedCount === this.Objects.length;
                 this.isIndeterminate = checkedCount > 0 && checkedCount < this.hhddatas2.length;
             },
+            handleCheckedCitiesChange1(value) {
+                let checkedCount = value.length;
+                this.checkAll1 = checkedCount === this.Objects1.length;
+                this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.hhddatas21.length;
+            },
             againchooseshop() {
+
+
                 this.dialogVisible_queryshops = true;
                 this.checkedshops = this.checkedshopstrue;
             },
+            againchooseshop1() {
+
+
+                this.dialogVisible_queryshops1 = true;
+                this.checkedshops1 = this.checkedshopstrue1;
+            },
             // 上架门店确定
-            queryshops_btn() {
-                this.checkedShopPid = [];
-                this.dialogVisible_queryshops = false;
-                this.checkedshopstrue = this.checkedshops;
-                this.shopsnumber = this.checkedshopstrue.length;
-                this.Objects.forEach(e =>{
-                    this.checkedshops.forEach(k =>{
-                        if(e.shopId == k){
-                            this.checkedShopPid.push(e.pId)
-                        } 
+            queryshops_btn(area) {
+
+                if( area == 'outer'  ){
+                    this.checkedShopPid1 = [];
+                    this.dialogVisible_queryshops1 = false;
+                    this.checkedshopstrue1 = this.checkedshops1;
+                    this.shopsnumber1 = this.checkedshopstrue1.length;
+                    this.Objects1.forEach(e =>{
+                        this.checkedshops1.forEach(k =>{
+                            if(e.shopId == k){
+                                this.checkedShopPid1.push(e.pId)
+                            } 
+                        })
                     })
-                })
+                }else{
+
+                    this.checkedShopPid = [];
+                    this.dialogVisible_queryshops = false;
+                    this.checkedshopstrue = this.checkedshops;
+                    this.shopsnumber = this.checkedshopstrue.length;
+                    this.Objects.forEach(e =>{
+                        this.checkedshops.forEach(k =>{
+                            if(e.shopId == k){
+                                this.checkedShopPid.push(e.pId)
+                            } 
+                        })
+                    })
+                }
+
+
+                
+
+
             },
             changeTime: function () {
                 this.startTime = formateDate(this.time[0]);
@@ -914,5 +1044,6 @@
    .mainBox .channel .el-select, .mainBox .channel .el-input--small{
        width: 100px !important;
    }
+   
 
 </style>

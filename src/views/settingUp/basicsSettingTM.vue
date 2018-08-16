@@ -21,6 +21,9 @@
             <el-form-item label="会员卡领卡链接:">
                 <el-input readonly="readonly"  size="small" v-model="circelData.memberCardUrl"></el-input>
             </el-form-item>
+            <el-form-item label="买券链接:">
+                <el-input readonly="readonly"  size="small" v-model="circelData.buyUrl"></el-input>
+            </el-form-item>
             
             <el-form-item label="自主积分">
                 <el-radio-group v-model="circelData.selfPoint">

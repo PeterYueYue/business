@@ -31,6 +31,27 @@ export const queryAccredit = () => {
 export const getShopLists = params => {
     return axios.post(`${base}/business/business_shop_info!list.action`, params).then(res => res.data);
 };
+// 获取外部门店列表
+export const getOutShopLists = params => {
+    return axios.post(`${base}/business/business_circle_shop!getAllShopList.action`, params).then(res => res.data);
+};
+// 外部门店列表 （门店设置）
+export const setOuterStoreList = params => {
+    return axios.post(`${base}/business/business_circle_shop!getShopListPage.action`, params).then(res => res.data);
+}
+// 新增外部门店
+export const addOuterStore = params => {
+    return axios.post(`${base}/business/business_circle_shop!saveShop.action`, params).then(res => res.data)
+}
+// 编辑外部门店
+export const editouterStore = params => {
+    return axios.post(`${base}/business/business_circle_shop!updateShop.action`, params).then(res => res.data);
+}
+// 删除外部门店
+export const deleteouterStore = params => {
+    return axios.post(`${base}/business/business_circle_shop!delShop.action`, params).then(res => res.data);
+}
+
 //获取会员积分设置
 export const getMemberPoints = () => {
     return axios.get(`${base}/business/business_conver_rate!getRateByCircle.action`).then(res => res.data);

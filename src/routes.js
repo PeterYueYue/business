@@ -9,6 +9,8 @@ import Loginsq from './views/login_sq.vue';
 /*商圈设置*/ 
 //基础设置
 import BasicsSetting from './views/settingUp/basicsSettingTM'
+// 外部门店设置
+import AddOuterStore from './views/settingUp/AddOuterStore'
 
 /*会员营销*/
 //会员卡管理
@@ -122,6 +124,7 @@ let routes = [{
         iconCls: 'el-icon-message', //图标样式class
         children: [
             {path: '/basicsSetting', component: BasicsSetting, name: '基础设置'},
+            {path: '/addoutestore', component:AddOuterStore, name: '外部门店设置'}
         ]
     },
     {
