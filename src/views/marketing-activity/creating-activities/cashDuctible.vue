@@ -100,6 +100,10 @@
                     <el-input class="width_90"  type="number"   @blur="reviseCost" size="small" v-model="cost" placeholder="请输入"></el-input>
                     元 
                 </el-form-item>
+                <el-form-item label="购买限制 :">
+                    <el-input class="width_90"  type="number"   @blur="reviseBuying" size="small" v-model="buying"  placeholder="不限制"></el-input>
+                    人/次( <span style="color:red;">投放渠道为口碑首页时生效</span> )
+                </el-form-item>
                 <el-form-item class="ticket_limit " label="最低消费 :">
                     <el-select class="margin_bto10" v-model="form.uselimitselectvalue" placeholder="请选择" size="small">
                         <el-option
@@ -386,7 +390,8 @@
                 ],
                 centerDialogVisible: false,
                 checkedshopstrue:'',
-                checkedshopstrue1:''
+                checkedshopstrue1:'',
+                buying:''
                 
         
                 
@@ -594,7 +599,8 @@
                 }
                  //数量
                 this.messageData.voucherQuantity=this.emitNumber;
-                              
+                // 购买限制
+                this.messageData.limitTime = this.buying;
                 //使用条件 
                 if(this.form.uselimitselectvalue == 1){
                     if(this.numberX){
@@ -796,6 +802,13 @@
                 if(this.cost.toString().length > '8'){
                     this.cost = ''
                 }   
+            },
+            reviseBuying(){
+                this.buying = Math.abs(this.buying);
+                this.buying = parseInt(this.buying)
+                if(this.buying == 0){
+                    this.buying = ''
+                }
             }
             
            
