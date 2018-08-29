@@ -37,6 +37,9 @@
             <el-form-item label="口碑商圈首页:">
                 <el-input class="width_300px" size="small" v-model="circelData.mainUrl"></el-input>
             </el-form-item>
+            <el-form-item label="新用户赠送积分:">
+                <el-input type="number" class="width_100px" @blur="revisePresend" size="small" v-model="circelData.newPoint"></el-input>
+            </el-form-item>
             <el-form-item label="新密码:">
                 <el-input type="password" class="width_100px" size="small" v-model="password"></el-input>
             </el-form-item>
@@ -70,6 +73,7 @@
         password:'',
         password1:'',
         passwordIsok:true,
+        presend:''
         
       }
     },
@@ -79,13 +83,15 @@
     methods: {
       onSubmit() {
         this.passwordRevise()
+        if(this.circelData.newPoint == ''){this.circelData.newPoint = 0}
         if(this.passwordIsok == false){ return false } ;
         var data = this.qs.stringify({
                selfPoint :this.circelData.selfPoint ,
                cardFront :this.circelData.cardFront,
                mainUrl   :this.circelData.mainUrl,
                password  :this.password,
-               crmImplClass: this.circelData.crmImplClass
+               crmImplClass: this.circelData.crmImplClass,
+               newPoint : this.circelData.newPoint
             });
         setCircleSet(data).then(res =>{this.$message('设置成功') })
       },
@@ -96,6 +102,10 @@
           }else{
               this.passwordIsok = true;
           }
+      },
+      revisePresend(){
+          this.circelData.newPoint = Math.abs(this.circelData.newPoint);
+          this.circelData.newPoint = parseInt(this.circelData.newPoint);
       }
     }
   }
