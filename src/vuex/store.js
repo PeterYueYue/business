@@ -11,9 +11,7 @@ const state = {
     count: 10,
     loading2: false,
     type:'FREE',
-    
 }
-
 // 定义所需的 mutations
 const mutations = {
     INCREMENT(state) {
@@ -33,7 +31,6 @@ const mutations = {
         console.log(data)
     }
 }
-
 // 创建 store 实例
 export default new Vuex.Store({
     actions,

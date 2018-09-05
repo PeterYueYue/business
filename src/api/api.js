@@ -445,3 +445,7 @@ export const freeLogin = params =>{
 export const getBankName = params =>{
     return axios.post(`${base}/business/cash/banks.jhtml`,params).then(res => res.data)
 }
+// 现金兑换券 详情隐藏按钮
+export const hide = params => {
+    return axios.post(`${base}/business/cash/offLine.jhtml`,params).then(res => res.data)
+}

@@ -175,6 +175,8 @@ import {mapGetters} from 'vuex'
 			manageType:'type'
 		}),
 		mounted:function() {
+
+
 			this.routerChange();
 			let user = sessionStorage.getItem('user');
 //			alert(user);

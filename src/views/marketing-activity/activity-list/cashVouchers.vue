@@ -31,7 +31,7 @@
                   <!-- <p v-if="message.voucherDataType == 'RELATIVE'"><span>活动有效期 :&nbsp;</span><span>{{message.voucherQuantity}}天</span></p> -->
                   <p ><span>活动时间 :&nbsp;</span><span>{{message.publishStartTime}} 至 {{message.publishEndTime}}</span></p>
                   <p><span>活动类型 :&nbsp;</span><span>现金抵价券</span></p>
-                  <p><span>适用门店 :&nbsp;</span><span>{{message.store.split(',').length}} 家门店</span></p>
+                  <p><span>适用门店 :&nbsp;</span><span>{{shopLenth}} 家门店</span></p>
                     <!--<p><span>隶属商圈 :</span><span>{{message.four}}</span></p>-->
                   <p><span>操作 :&nbsp;</span>
                   <router-link tag="span" class="pop-blue"
@@ -87,7 +87,13 @@
         data() {
             return {
                 preview: true,
-                data: ''
+                data: '',
+                shopLenth:''
+            }
+        },
+        mounted(){
+            if(this.message.store){
+                this.shopLenth = this.message.store.split(',').length;
             }
         },
         methods: {

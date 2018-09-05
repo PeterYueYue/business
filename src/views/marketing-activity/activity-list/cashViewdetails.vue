@@ -166,6 +166,7 @@
                                    type="primary" v-if="offline == '草稿'">
                             下 架
                         </el-button>
+                        <el-button class="bottom_button" @click="hide" size="small">隐 藏</el-button>
                     </el-form-item>
                     <el-dialog
                             title="提示"
@@ -185,7 +186,7 @@
 </template>
 
 <script>
-    import {getProductDetail,cashItemInfo, cashItemLower,getGoodsByShop} from '../../../api/api'
+    import {getProductDetail,cashItemInfo, cashItemLower,getGoodsByShop,hide} from '../../../api/api'
 
     export default {
         data() {
@@ -215,6 +216,13 @@
             this.getDetail(data);
         },
         methods: {
+            hide(){
+
+                let data = this.qs.stringify({id:this.id})
+                hide(data).then(res =>{
+                    console.log(res)
+                })
+            },
             clickmoregoods(){
                  this.dialogVisible_goodslist = true;
                  let data = this.qs.stringify({

@@ -14,7 +14,6 @@
     </el-form-item>
   </el-form>
 </template>
-
 <script>
   import { requestLogin } from '../api/api';
   //import NProgress from 'nprogress'

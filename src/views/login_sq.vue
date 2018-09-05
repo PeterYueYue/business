@@ -48,7 +48,6 @@
 
 
 </template>
-
 <script>
     import {requestLogin,getLoginStatus,freeLogin} from '../api/api';
     export default {
@@ -73,7 +72,6 @@
             }
         },
         mounted: function () {
-
             getLoginStatus().then(res=>{
                 if(res == true){
                     this.$router.push({path: '/memberCardManage'});
@@ -88,8 +86,6 @@
                 ayth_code = this.qs.stringify({authCode:ayth_code});
                 freeLogin(ayth_code).then(res =>{
                     if (res.errorCode == 10000) {
-
-                        
                         //成功
                         let user = res.content;
                         this.$store.dispatch('getType',user.type)
@@ -124,11 +120,8 @@
                         let img_url = imgContent + url;
                         sessionStorage.setItem("key", img_url);
                     }
-                  
                 })
-
             }
-           
         },
         methods: {
             clickKey:function () {
