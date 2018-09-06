@@ -157,6 +157,9 @@
                 <el-form-item v-if="isSubmit == false"  >
                     <el-button class="bottom_button" size="small" @click="payAction" type="primary" >立即支付</el-button>
                 </el-form-item>
+                <el-form-item  v-if="isSubmit == false" class="ticket_title" label="支付链接 :">
+                        <span>{{payUrl}}</span>
+                </el-form-item>
                 <!--选择适用门店弹窗-->
                 <el-dialog
                         title="选择适用门店"

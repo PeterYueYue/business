@@ -160,13 +160,16 @@
                     <el-form-item v-if="message.templateStatus == '草稿'" label="完成支付 :">
                         <a target="_blank" :href="message.confirmUri">支付</a>
                     </el-form-item>
+                    <el-form-item class="ticket_title" label="支付链接 :">
+                        <span>{{message.confirmUri}}</span>
+                    </el-form-item>
                     <el-form-item>
                         <el-button class="bottom_button" @click="back" size="small">返 回</el-button>
                         <el-button class="bottom_button" @click="dialogVisible_xiajia = true" size="small"
                                    type="primary" v-if="offline == '草稿'">
                             下 架
                         </el-button>
-                        <el-button class="bottom_button" @click="hide" size="small">隐 藏</el-button>
+                        <el-button class="bottom_button"  v-if="message.channel"  @click="hide" size="small">隐 藏</el-button>
                     </el-form-item>
                     <el-dialog
                             title="提示"
@@ -207,8 +210,7 @@
             }
         },
         mounted: function () {
-
-
+                
             let id = this.$route.query.id;
             let data = this.qs.stringify({
                 id: id
@@ -217,10 +219,11 @@
         },
         methods: {
             hide(){
-
                 let data = this.qs.stringify({id:this.id})
                 hide(data).then(res =>{
-                    console.log(res)
+                    if(res.message == "操作成功"){
+                        this.$message(res.message )
+                    }
                 })
             },
             clickmoregoods(){
