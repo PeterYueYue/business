@@ -578,7 +578,7 @@
                 } 
                 //商圈首页售价
 
-                if(this.channelValue == 'PAGE' && this.cost <= 0){
+                if(this.channelValue == 'PAGE' && this.cost < 0){
                     this.$message("(投放渠道为口碑首页时)商圈首页售价不能低于1元");
                     return;
                 }
