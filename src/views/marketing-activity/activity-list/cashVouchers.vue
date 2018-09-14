@@ -115,9 +115,10 @@
                         })
             },
             exportWaterAction(data){
-                if(this.message.templateStatus == '生效'){
-                    window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
-                }
+                window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
+                // if(this.message.templateStatus == '生效'){
+                //     window.location.href = 'http://b.tingzhijun.com/business/business_product_log!exportCashLog.action?itemId='+data+''
+                // }
             }
         }
     }
