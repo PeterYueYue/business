@@ -381,7 +381,7 @@
                 isSubmit:true,
                 payUrl:'',
                 cost:'',
-                channelValue:'MALL',
+                channelValue:'PAGE',
                 channelOptions:[
                     {value:'MALL',label:'积分商城'},
                     {value:'PAGE',label:'口碑首页'}
@@ -395,17 +395,11 @@
                 checkedshopstrue:'',
                 checkedshopstrue1:'',
                 buying:''
-                
-        
-                
             }
         },
         mounted:function () {
             getCircleSet().then(res =>{  let data = res.content; if(!data.sellerExpiresTime){this.centerDialogVisible= true }})
-            
-
             this.cookie();
-
             getBankName().then(res => {
                 let banks = res.content;
                 banks.code.forEach((e,i) => {
@@ -415,7 +409,6 @@
                     })
                 })
             })
-
         },
         methods: {
             delinstructions(item,index){
@@ -423,7 +416,6 @@
                     this.instructions = this.instructions.filter( (e,i) => index !==i )
                 }
             },
-            
             addinstructions(){
                 if(this.instructions.length < 5){
                     this.instructions.push({
@@ -588,7 +580,6 @@
                 }else{
                    this.messageData.cost=this.cost;     
                 }
-
                 //银行
                 this.messageData.bank = this.bank;
                 //门店信息
@@ -652,12 +643,10 @@
                     }else{
                         this.Objects=res.content.resultList;
                     }
-                })
-                
+                })             
             },
             outerShopList(){
                 getOutShopLists().then(res => {
-
                     console.log(res)
                     if (res.errorCode == 30005) {
                         this.$router.push({path: '/login'});
@@ -680,7 +669,6 @@
                         this.Objects1= arr;
                     }
                 })
-
             },
             handleCheckAllChange(event) {
                 this.hhddatas2 = [];
@@ -709,20 +697,15 @@
                 this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.hhddatas21.length;
             },
             againchooseshop() {
-
-
                 this.dialogVisible_queryshops = true;
                 this.checkedshops = this.checkedshopstrue;
             },
             againchooseshop1() {
-
-
                 this.dialogVisible_queryshops1 = true;
                 this.checkedshops1 = this.checkedshopstrue1;
             },
             // 上架门店确定
             queryshops_btn(area) {
-
                 if( area == 'outer'  ){
                     this.checkedShopPid1 = [];
                     this.dialogVisible_queryshops1 = false;
@@ -736,7 +719,6 @@
                         })
                     })
                 }else{
-
                     this.checkedShopPid = [];
                     this.dialogVisible_queryshops = false;
                     this.checkedshopstrue = this.checkedshops;
@@ -749,11 +731,6 @@
                         })
                     })
                 }
-
-
-                
-
-
             },
             changeTime: function () {
                 this.startTime = formateDate(this.time[0]);
@@ -818,28 +795,20 @@
                     this.buying = ''
                 }
             }
-            
-           
-            
-
         },
-
     }
 </script>
 
 <style>
-
     .active1 {
         /*border: 1px solid red;*/
     }
-
     .ticket_title_all {
         display: inline-block;
         margin-top: 10px;
         padding-left: 8px;
         border-left: 10px solid #00a0e9;
     }
-
     .ticket_show {
         text-align: center;
         width: 39%;
@@ -847,7 +816,6 @@
         margin-top: 80px;
         justify-content: center;
     }
-
     .ticket_show div {
         display: inline-block;
         height: 450px;
@@ -855,7 +823,6 @@
         margin: 50px auto;
         position: relative;
     }
-
     .ticket_show div img {
         height: 450px;
         width: 230px;
@@ -863,7 +830,6 @@
         display: inline-block;
         z-index: 10;
     }
-
     .ticket_show div span {
         display: inline-block;
         position: absolute;
@@ -875,7 +841,6 @@
         z-index: 50;
         font-size: 20px;
     }
-
     .ticket_show div p {
         display: inline-block;
         width: 195px;
