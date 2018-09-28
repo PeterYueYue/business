@@ -7,7 +7,7 @@ import axios from 'axios';
 //测试环境部署打包
 // let base = 'http://139.196.177.162:80';
 // let base = 'http://192.168.1.179:8080';
-// let base = 'http://192.168.1.158:8080';
+// let base = 'http://192.168.1.121:9000';
 
 //正式服务器环境部署打包
 let base = 'http://b.tingzhijun.com';

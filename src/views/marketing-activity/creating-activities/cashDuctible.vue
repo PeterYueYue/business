@@ -180,7 +180,7 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible_queryshops = false">取 消</el-button>
-                        <el-button type="primary" @click="queryshops_btn('inner')">确 定</el-button>
+                        <el-button type="primary" :disabled="shopsnumber1 >0" @click="queryshops_btn('inner')">确 定</el-button>
                     </span>
                 </el-dialog>
 
@@ -205,7 +205,7 @@
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible_queryshops1 = false">取 消</el-button>
-                        <el-button type="primary" @click="queryshops_btn('outer')  ">确 定</el-button>
+                        <el-button type="primary" :disabled="shopsnumber >0"  @click="queryshops_btn('outer')  ">确 定</el-button>
                     </span>
                 </el-dialog>
 
