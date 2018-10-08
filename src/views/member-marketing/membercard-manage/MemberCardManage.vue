@@ -75,10 +75,14 @@
           </el-input>
           <span class="ticket_tip color_888">提示 : 内容将展示在支付宝会员卡会员权益说明中,如有多条说明回车换行即可!</span>
         </el-form-item>
-        <el-form-item class="exchange_rate" label="会员领卡赠送积分 :" prop="sendPoint">
+
+
+        <!-- <el-form-item class="exchange_rate" label="会员领卡赠送积分 :" prop="sendPoint">
           <el-input type="number" size="small" v-model="form.sendPoint" placeholder="请输入积分"></el-input>
-          <!--<span class="ticket_tip color_red">提示 : 设置后均在次日零点生效</span>-->
-        </el-form-item>
+          <span class="ticket_tip color_red">提示 : 设置后均在次日零点生效</span>
+        </el-form-item> -->
+
+        
         <el-form-item label="字段规则显示 :" required>
           <el-checkbox-group
             v-model="checkedCities1"
@@ -231,11 +235,13 @@
                 width="80"
                 label="会员等级">
                 <template slot-scope="scope">
-                  <div v-if="scope.$index == 0">
+                  <div   v-if="scope.$index == 0">
                     <span style="color:red;">* </span>Vip1
                   </div>
                   <div v-if="scope.$index == 1">Vip2</div>
                   <div v-if="scope.$index == 2">Vip3</div>
+                  <div v-if="scope.$index == 3">Vip4</div>
+                  <div v-if="scope.$index == 4">Vip5</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -245,6 +251,8 @@
                   <el-input v-if="scope.$index == 0" size="small" v-model="scope.row.name" placeholder="普卡"></el-input>
                   <el-input v-if="scope.$index == 1" size="small" v-model="scope.row.name" placeholder="银卡"></el-input>
                   <el-input v-if="scope.$index == 2" size="small" v-model="scope.row.name" placeholder="金卡"></el-input>
+                  <el-input v-if="scope.$index == 3" size="small" v-model="scope.row.name" placeholder=""></el-input>
+                  <el-input v-if="scope.$index == 4" size="small" v-model="scope.row.name" placeholder=""></el-input>
                 </template>
               </el-table-column>
               <el-table-column
@@ -264,6 +272,18 @@
                               v-model="scope.row.point" placeholder="积分"></el-input>
                     <span>分</span>
                   </div>
+                  <div v-if="scope.$index == 3">
+                    <span>累计</span>
+                    <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'point')"
+                              v-model="scope.row.point" placeholder="积分"></el-input>
+                    <span>分</span>
+                  </div>
+                  <div v-if="scope.$index == 4">
+                    <span>累计</span>
+                    <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'point')"
+                              v-model="scope.row.point" placeholder="积分"></el-input>
+                    <span>分</span>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -277,6 +297,16 @@
                     <span>倍积分</span>
                   </div>
                   <div v-if="scope.$index == 2">
+                    <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'times')"
+                              v-model="scope.row.times" placeholder="倍率"></el-input>
+                    <span>倍积分</span>
+                  </div>
+                  <div v-if="scope.$index == 3">
+                    <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'times')"
+                              v-model="scope.row.times" placeholder="倍率"></el-input>
+                    <span>倍积分</span>
+                  </div>
+                  <div v-if="scope.$index == 4">
                     <el-input type="number" size="small" @blur="tableinputdatablur(scope.$index,'times')"
                               v-model="scope.row.times" placeholder="倍率"></el-input>
                     <span>倍积分</span>
@@ -377,7 +407,7 @@
 <script>
 	import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus,getCircleSet} from '../../../api/api'
 
-	const typeOptions = ['积分', '余额'];
+	const typeOptions = ['积分', '余额','级别'];
 	export default {
 		data() {
 			return {
@@ -557,10 +587,10 @@
 					this.$message.warning('钱包端名称填写不完整，请重新填写！');
 					return;
 				}
-				if (!sendPointRe.test(this.form.sendPoint)) {
-					this.$message.warning('会员领卡赠送积分格式不正确，请重新填写！');
-					return;
-				}
+				// if (!sendPointRe.test(this.form.sendPoint)) {
+				// 	this.$message.warning('会员领卡赠送积分格式不正确，请重新填写！');
+				// 	return;
+				// }
 
 				// 验证栏位设置不能为空
 				for (let a = 0; a < this.lwlist.length; a++) {
@@ -592,15 +622,25 @@
 
 				this.form.selfPoint = this.pointsmethod;
 				this.form.layout = this.listStyle === 0 ? 'list' : 'grid';
-				this.form.tags = this.tag1+ '!!!' + this.tag2 + '!!!' + this.tag3;
+        this.form.tags = this.tag1+ '!!!' + this.tag2 + '!!!' + this.tag3;
+
+        console.log(this.checkedCities1,"yy")
+
+        
+        
 				for (let i = 0; i < this.checkedCities1.length; i++) {
 					if (this.checkedCities1[i] == '积分') {
 						this.sumbit_fieldList = this.sumbit_fieldList + 'POINT' + ',';
 					}
 					if (this.checkedCities1[i] == '余额') {
 						this.sumbit_fieldList = this.sumbit_fieldList + 'BALANCE' + ',';
+          }
+          if (this.checkedCities1[i] == '级别') {
+						this.sumbit_fieldList = this.sumbit_fieldList + 'LEVEL  ' + ',';
 					}
-				}
+        }
+
+
 				this.form.fieldList = this.sumbit_fieldList.substr(0, this.sumbit_fieldList.length - 1);
 				this.form.hiddens = this.isshow1 + ',' + this.isshow2 + ',' + this.isshow3;
 				this.sumbit_fieldList = '';
@@ -757,7 +797,9 @@
 						this.lwlist = res.content.cardTemplateColumnList;
 					}
 					if (res.content.cardTemplateLevelList) {
-						this.gradetabledata = res.content.cardTemplateLevelList;
+            this.gradetabledata = res.content.cardTemplateLevelList;
+            
+            console.log(this.gradetabledata,"888")
 					}
 				})
 			},

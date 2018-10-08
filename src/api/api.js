@@ -449,3 +449,7 @@ export const getBankName = params =>{
 export const hide = params => {
     return axios.post(`${base}/business/cash/offLine.jhtml`,params).then(res => res.data)
 }
+// 积分 大转盘 获取活动名称
+export const getVoucherName = params => {
+    return axios.post(`${base}/business/reward!getVoucherName.action`,params).then(res => res.data)
+}

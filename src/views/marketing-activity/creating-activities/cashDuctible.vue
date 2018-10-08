@@ -384,7 +384,8 @@
                 channelValue:'PAGE',
                 channelOptions:[
                     {value:'MALL',label:'积分商城'},
-                    {value:'PAGE',label:'口碑首页'}
+                    {value:'PAGE',label:'口碑首页'},
+                    {value:'TURN',label:'转盘抽奖'}
                 ],
                 bank:'',
 

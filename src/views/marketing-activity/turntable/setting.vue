@@ -222,14 +222,14 @@
                 <span></span>
                 <span>抽奖规则设置</span>
             </div>
-            <span class="zj-line">
+            <span class="zj-line ">
                 <span>抽奖所需积分 : &#X3000;</span>
                 <span> 每次&nbsp;</span>
                 <el-input class="zj-code" size="small" type="number" @blur="reviseCode" placeholder="积分" v-model="data.code"
                           :disabled="disabled"></el-input>
                 <span>&nbsp积分</span>
             </span>
-            <span class="zj-line">
+            <span class="zj-line ">
                 <span>抽奖次数 :&#X3000; </span>&nbsp;
                 <el-select v-model="select" placeholder="请选择" :disabled="disabled">
                     <el-option
@@ -240,12 +240,32 @@
                     </el-option>
                 </el-select>
             </span>
-            <span class="zj-line" v-if="select == 2">
+            <span class="zj-line cjyy" v-if="select == 2">
                 <span></span>
                 <el-input class="zj-code" size="small" @blur="reviseQuantity" type="number" placeholder="次数" v-model="data.quantity"
                           :disabled="disabled"></el-input>
                 <span>&nbsp;次/人/天</span>
             </span>
+
+            <span class="zj-line">
+                <span>抽奖总次数 :&#X3000; </span>&nbsp;
+                <el-select v-model="select1" placeholder="请选择" :disabled="disabled">
+                    <el-option
+                            v-for="item in items"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </span>
+            <span class="zj-line cjyy" v-if="select1 == 2">
+                <span></span>
+                <el-input class="zj-code" size="small" @blur="revisetotalLimit" type="number" placeholder="次数" v-model="data.totalLimit"
+                          :disabled="disabled"></el-input>
+                <span>&nbsp;次/人</span>
+            </span>
+
+
             <span class="zj-line">
                 <span>活动时间 :&#X3000; </span>&nbsp;
                <el-date-picker
@@ -276,7 +296,7 @@
 </template>
 <script>
     import {formateDate} from '../../../api/CommonMethods'
-    import {makeActive, getActive, underpants} from '../../../api/api'
+    import {makeActive, getActive, underpants,getVoucherName} from '../../../api/api'
 
     export default {
         data() {
@@ -299,6 +319,7 @@
                 flow5: '1',
                 flow6: '1',
                 select: 2,
+                select1: 1,
                 items: [{
                     value: 1,
                     label: '不限制'
@@ -334,8 +355,10 @@
                     description: '',
                     code: '',
                     quantity: '',
-                    date: '45'
+                    date: '45',
+                    totalLimit:''
                 },
+                isRewardName:[],
                 value1: '',
                 value2: '',
                 value3: '',
@@ -408,10 +431,17 @@
                     this.data.quantity = ''
                 }
             },
+            revisetotalLimit(){
+                this.data.totalLimit = Math.abs(this.data.totalLimit);
+                this.data.totalLimit = parseInt(this.data.totalLimit);
+                if(this.data.totalLimit == "0.00" || this.data.totalLimit.toString().length > 8){
+                    this.data.totalLimit = ''
+                }
+            },
             reviseCode(){
                 this.data.code = Math.abs(this.data.code);
                 this.data.code = parseInt(this.data.code);
-                if(this.data.code == "0.00" || this.data.code.toString().length > 8){
+                if( this.data.code.toString().length > 8){
                     this.data.code = ''
                 }
             },
@@ -426,9 +456,27 @@
                 if(this.data.name6.length > '15'){
                     this.data.name6 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return
+                }
+                // 通过id获取券名称
+                if(this.data.name6){
+                    let data = this.qs.stringify({
+                        rewardName: this.data.name6
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[5] = ''; 
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                            this.isRewardName[5] = res;
+                        }
+                    })
                 }
             },
             reviseNumber5(){
@@ -442,10 +490,29 @@
                 if(this.data.name5.length > '15'){
                     this.data.name5 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return
                 }
+                 // 通过id获取券名称
+                 if(this.data.name5){
+                     let data = this.qs.stringify({
+                        rewardName: this.data.name5
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[4] = '';
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                            this.isRewardName[4] = res; 
+                        }
+                    })
+                 }
+                
             },
             reviseNumber4(){
                 this.data.number4 = Math.abs(this.data.number4);
@@ -458,10 +525,29 @@
                 if(this.data.name4.length > '15'){
                     this.data.name4 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return;
                 }
+                // 通过id获取券名称
+                if(this.data.name4){
+                    let data = this.qs.stringify({
+                        rewardName: this.data.name4
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[3] = '';
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                            this.isRewardName[3] = res; 
+                        }
+                    })
+                }
+                
             },
             reviseNumber3(){
                 this.data.number3 = Math.abs(this.data.number3);
@@ -474,10 +560,30 @@
                 if(this.data.name3.length > '15'){
                     this.data.name3 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return;
                 }
+                // 通过id获取券名称
+
+                if(this.data.name3){
+                    let data = this.qs.stringify({
+                        rewardName: this.data.name3
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[2] = '' 
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                            this.isRewardName[2] = res 
+                        }
+                    })
+                }
+                
             },
             reviseNumber2(){
                 this.data.number2 = Math.abs(this.data.number2);
@@ -490,10 +596,29 @@
                 if(this.data.name2.length > '15'){
                     this.data.name2 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return;
                 }
+                // 通过id获取券名称
+                if(this.data.name2){
+                    let data = this.qs.stringify({
+                        rewardName: this.data.name2
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[1] = ''
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                            this.isRewardName[1] = res;
+                        }
+                    })
+                }
+                
             },
             reviseNumber1(){
                 this.data.number1 = Math.abs(this.data.number1);
@@ -503,13 +628,35 @@
                 }
             },
             reviseName1(){
+
                 if(this.data.name1.length > '15'){
                     this.data.name1 = "";
                     this.$message({
-                    type: 'warning',
-                    message: '内容过长，请从新输入!'
-                });
+                        type: 'warning',
+                        message: '内容过长，请从新输入!'
+                    });
+                    return;
                 }
+                // 通过id获取券名称
+                if(this.data.name1){
+                    let data = this.qs.stringify({
+                        rewardName: this.data.name1
+                    });
+                    getVoucherName(data).then(res => {
+                        if(!res){
+                            this.isRewardName[0] = '';
+                            this.$message({
+                                type: 'warning',
+                                message: '券id 不存在!'
+                            }); 
+                        }else{
+                          this.isRewardName[0] = res;
+                          
+                          console.log(this.isRewardName)
+                        }
+                    })
+                }
+
             },
             open2() {
                 this.$confirm('是否提交?', '提示', {
@@ -517,6 +664,9 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+
+
+                    
                     this.sureTo();
 //                    this.$message({
 //                        type: 'success',
@@ -549,6 +699,8 @@
             },
             queryMessage: function () {
                 getActive().then(res => {
+
+                    console.log(res,"213")
                     if (res.errorCode == 10000 ) {
                         if (res.content.RewardList.length > 0) {
                             this.disabled = true;
@@ -628,7 +780,15 @@
                         }
                     })
             },
-            sureTo: function () {              
+            sureTo: function () {    
+                let isGo = true;
+                for(let i=0; i<this.isRewardName.length;i++){
+                    if(this.isRewardName[i]==''){
+                        isGo = false;
+                        break;
+                    }
+                }
+                if(!isGo){ return}
                 let rewardType = [];
                 let numbersRe = /^(?!00)(?:[0-9]{1,5}|100000)$/
                 if(this.data.name1.length > 0 && this.data.name1.length < 15){
@@ -637,7 +797,9 @@
                             rewardClass: 1,
                             rewardName: this.data.name1,
                             rewardResidueNum: this.data.number1,
-                            rewardType: this.value1
+                            rewardType: this.value1,
+                            voucherName:this.isRewardName[0]
+
                         })
                     }else{
                         this.$message("奖项一的数量输入格式不正确");
@@ -653,7 +815,8 @@
                             rewardClass: 2,
                             rewardName: this.data.name2,
                             rewardResidueNum: this.data.number2,
-                            rewardType: this.value2
+                            rewardType: this.value2,
+                            voucherName:this.isRewardName[1]
                         })
                     }else{
                         this.$message("奖项二的数量输入格式不正确");
@@ -670,7 +833,8 @@
                             rewardClass: 3,
                             rewardName: this.data.name3,
                             rewardResidueNum: this.data.number3,
-                            rewardType: this.value3
+                            rewardType: this.value3,
+                            voucherName:this.isRewardName[2]
                         })
                     }else{
                         this.$message("奖项三的数量输入格式不正确");
@@ -687,7 +851,8 @@
                             rewardClass: 4,
                             rewardName: this.data.name4,
                             rewardResidueNum: this.data.number4,
-                            rewardType: this.value4
+                            rewardType: this.value4,
+                            voucherName:this.isRewardName[3]
                         })
                     }else{
                         this.$message("奖项四的数量输入格式不正确");
@@ -704,7 +869,8 @@
                             rewardClass: 5,
                             rewardName: this.data.name5,
                             rewardResidueNum: this.data.number5,
-                            rewardType: this.value5
+                            rewardType: this.value5,
+                            voucherName:this.isRewardName[4]
                         })
                     }else{
                         this.$message("奖项五的数量输入格式不正确");
@@ -721,7 +887,8 @@
                             rewardClass: 6,
                             rewardName: this.data.name6,
                             rewardResidueNum: this.data.number6,
-                            rewardType: this.value6
+                            rewardType: this.value6,
+                            voucherName:this.isRewardName[5]
                         })
                     }else{
                         this.$message("奖项六的数量输入格式不正确");
@@ -748,6 +915,7 @@
                     this.$message("抽奖所需积分输入格式不正确");
                     return;
                 }
+                // 抽奖次数
                 if(this.select == 2){
                     if(numbersRe.test(this.data.quantity)){
                         message.quantity = this.data.quantity;
@@ -756,9 +924,19 @@
                         return;
                     }
                 }else{
-                    message.quantity = '9999999'
-
-                }                
+                    message.quantity = '999999'
+                }  
+                // 抽奖总次数
+                if(this.select1 == 2){
+                    if(numbersRe.test(this.data.totalLimit)){
+                        message.totalLimit = this.data.totalLimit;
+                    }else{
+                        this.$message("抽奖次数输入格式不正确");
+                        return;
+                    }
+                }else{
+                    message.totalLimit = '999999'
+                } 
                 //处理时间选择是否正确
                 let date1 = new Date(this.startTime).getTime();
                 let nowTime = new Date().getTime();
@@ -783,6 +961,8 @@
                 }).then(() => {
                     makeActive(datas)
                     .then(res => {
+
+                        console.log(res,"dddd")
                         if (res.errorCode == 10000) {
                             this.$message({
                                 message: '创建成功!',
@@ -1251,5 +1431,8 @@
     }
     .zj-main{
         justify-content: space-around;
+    }
+    .cjyy .zj-code{
+        margin-left: 5px;
     }
 </style>

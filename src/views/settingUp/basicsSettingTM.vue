@@ -24,6 +24,9 @@
             <el-form-item label="买券链接:">
                 <el-input readonly="readonly"  size="small" v-model="circelData.buyUrl"></el-input>
             </el-form-item>
+            <el-form-item label="转盘链接:">
+                <el-input readonly="readonly"  size="small" v-model="circelData.turnUrl"></el-input>
+            </el-form-item>
             
             <el-form-item label="自主积分">
                 <el-radio-group v-model="circelData.selfPoint">
