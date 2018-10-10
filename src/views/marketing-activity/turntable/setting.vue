@@ -6,12 +6,12 @@
                         <img src="../../../assets/images/backgroundImg.png"
                              style="display: inline-block;position: absolute;top: 0;width: 100%;height: 80%;margin-top: 50px;"
                              alt="">
-                        <span class="zj-made1" v-on:mouseenter="overFlow(1)" v-on:mouseleave="leaveFlow(1)">{{data.name1}}</span>
-                        <span class="zj-made2" v-on:mouseenter="overFlow(2)" v-on:mouseleave="leaveFlow(2)">{{data.name2}}</span>
-                        <span class="zj-made3" v-on:mouseenter="overFlow(3)" v-on:mouseleave="leaveFlow(3)">{{data.name3}}</span>
-                        <span class="zj-made4" v-on:mouseenter="overFlow(4)" v-on:mouseleave="leaveFlow(4)">{{data.name4}}</span>
-                        <span class="zj-made5" v-on:mouseenter="overFlow(5)" v-on:mouseleave="leaveFlow(5)">{{data.name5}}</span>
-                        <span class="zj-made6" v-on:mouseenter="overFlow(6)" v-on:mouseleave="leaveFlow(6)">{{data.name6}}</span>
+                        <span class="zj-made1" v-on:mouseenter="overFlow(1)" v-on:mouseleave="leaveFlow(1)">{{disk.name1}}</span>
+                        <span class="zj-made2" v-on:mouseenter="overFlow(2)" v-on:mouseleave="leaveFlow(2)">{{disk.name2}}</span>
+                        <span class="zj-made3" v-on:mouseenter="overFlow(3)" v-on:mouseleave="leaveFlow(3)">{{disk.name3}}</span>
+                        <span class="zj-made4" v-on:mouseenter="overFlow(4)" v-on:mouseleave="leaveFlow(4)">{{disk.name4}}</span>
+                        <span class="zj-made5" v-on:mouseenter="overFlow(5)" v-on:mouseleave="leaveFlow(5)">{{disk.name5}}</span>
+                        <span class="zj-made6" v-on:mouseenter="overFlow(6)" v-on:mouseleave="leaveFlow(6)">{{disk.name6}}</span>
                         <div class="zj-div zj-xs1" v-if="flow1 == 2">
                             <p>奖项</p>
                             <p>数量:{{data.number1}}</p>
@@ -359,6 +359,14 @@
                     totalLimit:''
                 },
                 isRewardName:[],
+                disk:{
+                    name1:'',
+                    name2:'',
+                    name3:'',
+                    name4:'',
+                    name5:'',
+                    name6:'',
+                },
                 value1: '',
                 value2: '',
                 value3: '',
@@ -416,6 +424,7 @@
             this.select = this.items[0].value;
             this.queryMessage()
         },
+       
         methods: {
             reviseDate(){
                 this.data.date = Math.abs(this.data.date);
@@ -444,6 +453,9 @@
                 if( this.data.code.toString().length > 8){
                     this.data.code = ''
                 }
+                if(this.data.code == '0.00'){
+                    this.data.code = "0"
+                }
             },
             reviseNumber6(){
                 this.data.number6 = Math.abs(this.data.number6);
@@ -453,7 +465,7 @@
                 }
             },
             reviseName6(){
-                if(this.data.name6.length > '15'){
+                if(this.data.name6.length > '35'){
                     this.data.name6 = "";
                     this.$message({
                         type: 'warning',
@@ -468,15 +480,18 @@
                     });
                     getVoucherName(data).then(res => {
                         if(!res){
-                            this.isRewardName[5] = ''; 
+                            this.isRewardName[5] = '';
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
                             this.isRewardName[5] = res;
+                            this.disk.name6 = res;
                         }
                     })
+                }else{
+                    this.disk.name6 = ''; 
                 }
             },
             reviseNumber5(){
@@ -487,7 +502,7 @@
                 }
             },
             reviseName5(){
-                if(this.data.name5.length > '15'){
+                if(this.data.name5.length > '35'){
                     this.data.name5 = "";
                     this.$message({
                         type: 'warning',
@@ -505,12 +520,15 @@
                             this.isRewardName[4] = '';
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
-                            this.isRewardName[4] = res; 
+                            this.isRewardName[4] = res;
+                            this.disk.name5 = res; 
                         }
                     })
+                 }else{
+                    this.disk.name5 = '';
                  }
                 
             },
@@ -522,7 +540,7 @@
                 }
             },
             reviseName4(){
-                if(this.data.name4.length > '15'){
+                if(this.data.name4.length > '35'){
                     this.data.name4 = "";
                     this.$message({
                         type: 'warning',
@@ -540,12 +558,15 @@
                             this.isRewardName[3] = '';
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
-                            this.isRewardName[3] = res; 
+                            this.isRewardName[3] = res;
+                            this.disk.name4 = res; 
                         }
                     })
+                }else{
+                    this.disk.name4 = '';
                 }
                 
             },
@@ -557,7 +578,7 @@
                 }
             },
             reviseName3(){
-                if(this.data.name3.length > '15'){
+                if(this.data.name3.length > '35'){
                     this.data.name3 = "";
                     this.$message({
                         type: 'warning',
@@ -566,22 +587,24 @@
                     return;
                 }
                 // 通过id获取券名称
-
                 if(this.data.name3){
                     let data = this.qs.stringify({
                         rewardName: this.data.name3
                     });
                     getVoucherName(data).then(res => {
                         if(!res){
-                            this.isRewardName[2] = '' 
+                            this.isRewardName[2] = '' ;
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
-                            this.isRewardName[2] = res 
+                            this.isRewardName[2] = res;
+                            this.disk.name3 = res; 
                         }
                     })
+                }else{
+                    this.disk.name3 = '';
                 }
                 
             },
@@ -593,7 +616,7 @@
                 }
             },
             reviseName2(){
-                if(this.data.name2.length > '15'){
+                if(this.data.name2.length > '35'){
                     this.data.name2 = "";
                     this.$message({
                         type: 'warning',
@@ -608,15 +631,18 @@
                     });
                     getVoucherName(data).then(res => {
                         if(!res){
-                            this.isRewardName[1] = ''
+                            this.isRewardName[1] = '';
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
                             this.isRewardName[1] = res;
+                            this.disk.name2 = res;
                         }
                     })
+                }else{
+                    this.disk.name2 = '';
                 }
                 
             },
@@ -628,8 +654,7 @@
                 }
             },
             reviseName1(){
-
-                if(this.data.name1.length > '15'){
+                if(this.data.name1.length > '35'){
                     this.data.name1 = "";
                     this.$message({
                         type: 'warning',
@@ -639,24 +664,22 @@
                 }
                 // 通过id获取券名称
                 if(this.data.name1){
-                    let data = this.qs.stringify({
-                        rewardName: this.data.name1
-                    });
+                    let data = this.qs.stringify({rewardName: this.data.name1});
                     getVoucherName(data).then(res => {
                         if(!res){
                             this.isRewardName[0] = '';
                             this.$message({
                                 type: 'warning',
-                                message: '券id 不存在!'
+                                message: '有资券不存在，或未开始、已结束、未支付。'
                             }); 
                         }else{
                           this.isRewardName[0] = res;
-                          
-                          console.log(this.isRewardName)
+                          this.disk.name1 = res;
                         }
                     })
+                }else{
+                    this.disk.name1 = '';
                 }
-
             },
             open2() {
                 this.$confirm('是否提交?', '提示', {
@@ -685,7 +708,24 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    let newDate = {};
+                    let newDisk = {};
+                    for(var e in this.data){
+                        newDate[e]=''
+                    }
+                    for(var e in this.disk){
+                        newDisk[e]=''
+                    }
+                    this.startTime= '';
+                    this.endTime= '';
+                    this.values='';
+                    this.disk = newDisk;
+                    this.data = newDate;
+                    this.data.date = '45';
+                    this.select =  2;
+                    this.select1= 1;
                     this.underpant();
+                     
 //                    this.$message({
 //                        type: 'success',
 //                        message: '提交成功!'
@@ -696,6 +736,8 @@
                         message: '已取消下架!'
                     });
                 });
+
+                
             },
             queryMessage: function () {
                 getActive().then(res => {
@@ -766,10 +808,11 @@
             },
             //下架
             underpant: function () {
+                const that = this;
                 let data = this.qs.stringify({
                     activityId: this.activityId
                 });
-                underpants(data)
+                underpants(data,that)
                     .then(res => {
                         if (res.errorCode == 10000) {
                             this.$message({
@@ -791,7 +834,7 @@
                 if(!isGo){ return}
                 let rewardType = [];
                 let numbersRe = /^(?!00)(?:[0-9]{1,5}|100000)$/
-                if(this.data.name1.length > 0 && this.data.name1.length < 15){
+                if(this.data.name1.length > 0 && this.data.name1.length < 35){
                     if(numbersRe.test(this.data.number1)){
                         rewardType.push({
                             rewardClass: 1,
@@ -806,10 +849,10 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项一的名称不能为空且长度小于15个字符");
+                    this.$message("奖项一的名称不能为空且长度小于35个字符");
                     return; 
                 }
-                if(this.data.name2.length > 0 && this.data.name2.length < 15){
+                if(this.data.name2.length > 0 && this.data.name2.length < 35){
                     if(numbersRe.test(this.data.number2)){
                         rewardType.push({
                             rewardClass: 2,
@@ -823,11 +866,11 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项二的名称不能为空且长度小于15个字符");
+                    this.$message("奖项二的名称不能为空且长度小于35个字符");
                     return; 
 
                 }
-                if(this.data.name3.length > 0 && this.data.name3.length < 15){
+                if(this.data.name3.length > 0 && this.data.name3.length < 35){
                     if(numbersRe.test(this.data.number3)){
                         rewardType.push({
                             rewardClass: 3,
@@ -841,11 +884,11 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项三的名称不能为空且长度小于15个字符");
+                    this.$message("奖项三的名称不能为空且长度小于35个字符");
                     return; 
 
                 }
-                if(this.data.name4.length > 0 && this.data.name4.length < 15){
+                if(this.data.name4.length > 0 && this.data.name4.length < 35){
                     if(numbersRe.test(this.data.number4)){
                         rewardType.push({
                             rewardClass: 4,
@@ -859,11 +902,11 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项四的名称不能为空且长度小于15个字符");
+                    this.$message("奖项四的名称不能为空且长度小于35个字符");
                     return; 
 
                 }
-                if(this.data.name5.length > 0 && this.data.name5.length < 15){
+                if(this.data.name5.length > 0 && this.data.name5.length < 35){
                     if(numbersRe.test(this.data.number5)){
                         rewardType.push({
                             rewardClass: 5,
@@ -877,11 +920,11 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项五的名称不能为空且长度小于15个字符");
+                    this.$message("奖项五的名称不能为空且长度小于35个字符");
                     return; 
 
                 }
-                if(this.data.name6.length > 0 && this.data.name6.length < 15){
+                if(this.data.name6.length > 0 && this.data.name6.length < 35){
                     if(numbersRe.test(this.data.number6)){
                         rewardType.push({
                             rewardClass: 6,
@@ -895,7 +938,7 @@
                         return;  
                     }       
                 }else{
-                    this.$message("奖项六的名称不能为空且长度小于15个字符");
+                    this.$message("奖项六的名称不能为空且长度小于35个字符");
                     return; 
                 }               
                 let type = JSON.stringify(rewardType);
@@ -909,12 +952,13 @@
                     this.$message("请填写奖项描述");
                     return;
                 }
-                if(numbersRe.test(this.data.code)){
-                    message.bindingPoint    = this.data.code;
-                }else{
-                    this.$message("抽奖所需积分输入格式不正确");
-                    return;
-                }
+                message.bindingPoint    = this.data.code?this.data.code:'0';
+                // if(numbersRe.test(this.data.code)){
+                    
+                // }else{
+                //     this.$message("抽奖所需积分输入格式不正确");
+                //     return;
+                // }
                 // 抽奖次数
                 if(this.select == 2){
                     if(numbersRe.test(this.data.quantity)){

@@ -315,7 +315,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-button v-if="gradetabledata.length < 3" size="small" type="text" @click="addgrade">新增会员等级</el-button>
+            <el-button v-if="gradetabledata.length < 5" size="small" type="text" @click="addgrade">新增会员等级</el-button>
             <!-- <el-button class="bottom_button" style="margin-left:48px;display:block;margin-top:10px;" size="small" type="primary">确 定</el-button> -->
           </div>
         </el-form-item>
@@ -407,7 +407,7 @@
 <script>
 	import {getMemberPoints, saveMember, getmembercade, sentmembercard, getLoginStatus,getCircleSet} from '../../../api/api'
 
-	const typeOptions = ['积分', '余额','级别'];
+	const typeOptions = ['积分', '余额','无'];
 	export default {
 		data() {
 			return {
