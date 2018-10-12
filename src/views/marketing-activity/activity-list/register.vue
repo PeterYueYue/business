@@ -31,6 +31,7 @@
                                 <p><span>活动有效期 :&nbsp;</span><span>{{message.pickStartDate}}至{{message.pickEndDate}}</span></p>
                                 <p v-if="message.validEndDate && message.validStartDate "  ><span>券有效期 :&nbsp;</span><span>{{message.validStartDate}}至{{message.validEndDate}}</span></p>
                                 <p  v-if="message.validDay"><span>券有效期 :&nbsp;</span><span>{{message.validStr}}</span></p>
+                                <p ><span>投放渠道 :&nbsp;</span><span>{{message.channel =="REG"?"用户注册":message.channel =="FACE"?"上传照片":''}}</span></p>
                                 <p><span>操作 :&nbsp;</span>
                                 <el-button type="text"   class="zcsqButten" size="small" @click="open2(message.id)">点击下架</el-button>
                                 
@@ -92,7 +93,7 @@
                 }).catch(() => {
                 this.$message({
                     type: 'info',
-                    message: '已取消删除'
+                    message: '已取消下架'
                 });          
                 });
             },

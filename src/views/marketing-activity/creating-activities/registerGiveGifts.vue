@@ -50,6 +50,12 @@
                 <el-option size="small" label="代金券" value="MONEY"></el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item  class="registerType" label="投放渠道" prop="region"    >
+                <el-select size="small" v-model="ruleForm.channel" placeholder="请选择渠道   ">
+                <el-option size="small" label="用户注册" value="REG"></el-option>
+                <el-option size="small" label="上传照片" value="FACE"></el-option>
+                </el-select>
+            </el-form-item>
 
             <el-form-item class="registerType"   v-if="ruleForm.region == 'DIS' " label="折扣" prop="discount">
                 <el-input v-model="ruleForm.discount" size="small" @blur="reviseDiscount"  type="number"   class="regsternameInput"   ></el-input>
@@ -136,7 +142,8 @@ import {submitRegister} from '../../../api/api';
           discount:'',
           amount:'',
           validDate:'',
-          section:'1'
+          section:'1',
+          channel:'REG'
           
         },
         section:'1',
@@ -292,7 +299,8 @@ import {submitRegister} from '../../../api/api';
                 this.ruleForm.date7,
                 // this.changeTimes(this.ruleForm.date5,this.ruleForm.date6),
                 // this.changeTimes(this.ruleForm.date7,this.ruleForm.date8),
-                this.ruleForm.validDate
+                this.ruleForm.validDate,
+                this.ruleForm.channel,
                 ]
                 console.log(data)
                 let circleVoucherInfo = [];
