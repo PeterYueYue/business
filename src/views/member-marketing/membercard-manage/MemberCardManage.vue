@@ -67,7 +67,7 @@
         <el-form-item label="会员权益 :" prop="memo">
           <el-input
             class="card_desset"
-            type="textarea"
+            type="textarea" 
             :rows="5"
             resize='none'
             placeholder="请输入积分描述"
@@ -86,9 +86,12 @@
         <el-form-item label="字段规则显示 :" required>
           <el-checkbox-group
             v-model="checkedCities1"
+            
             :min="1">
-            <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+            <el-checkbox    @change="changeLevel" v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+            
           </el-checkbox-group>
+          
         </el-form-item>
         <!-- <el-form-item label="是否自主积分 : ">
           <el-radio-group
@@ -624,9 +627,6 @@
 				this.form.layout = this.listStyle === 0 ? 'list' : 'grid';
         this.form.tags = this.tag1+ '!!!' + this.tag2 + '!!!' + this.tag3;
 
-        console.log(this.checkedCities1,"yy")
-
-        
         
 				for (let i = 0; i < this.checkedCities1.length; i++) {
 					if (this.checkedCities1[i] == '积分') {
@@ -635,8 +635,8 @@
 					if (this.checkedCities1[i] == '余额') {
 						this.sumbit_fieldList = this.sumbit_fieldList + 'BALANCE' + ',';
           }
-          if (this.checkedCities1[i] == '级别') {
-						this.sumbit_fieldList = this.sumbit_fieldList + 'LEVEL  ' + ',';
+          if (this.checkedCities1[i] == '无') {
+						this.sumbit_fieldList = this.sumbit_fieldList + 'LEVEL' + ',';
 					}
         }
 
@@ -650,7 +650,6 @@
 							this.lwlist[a].tag == '') {
 							continue;
 						} else {
-							console.log(this.form);
 							this.sumbit_columns = this.sumbit_columns + this.lwlist[a].title + '!!!' + this.lwlist[a].subTitle +
 								'!!!' + this.lwlist[a].url + '!!!' + this.lwlist[a].iconId + '!!!' +
 								this.lwlist[a].iconUrl + '!!!' + this.lwlist[a].tag;
@@ -706,7 +705,6 @@
 					delete this.form.cardTemplateLevelSize;
 				}
 				let data = this.qs.stringify(this.form);
-				// console.log(this.form);
 				this.$message('提交中...');
 				this.disabled = true;
 				sentmembercard(data).then(res => {
@@ -757,7 +755,11 @@
 					}
 					if (res.content.fieldList == 'POINT,BALANCE') {
 						this.checkedCities1 = ['积分', '余额'];
-					}
+          }
+          if (res.content.fieldList == 'LEVEL') {
+						this.checkedCities1 = ['无'];
+          }
+          
           if(res.content.selfPoint){
 					  res.content.selfPoint.charAt(0) == '0' ? this.pointsmethod = 0 : this.pointsmethod = 1;
           }
@@ -799,7 +801,6 @@
 					if (res.content.cardTemplateLevelList) {
             this.gradetabledata = res.content.cardTemplateLevelList;
             
-            console.log(this.gradetabledata,"888")
 					}
 				})
 			},
@@ -906,7 +907,18 @@
 			},
 			addTag(v){
 				this.tagStatus = !!v;
-			}
+      },
+      changeLevel(e){
+
+        if(e.target.defaultValue == "无" ){
+          this.checkedCities1 = ["无"]
+        }else{
+          this.checkedCities1 = this.checkedCities1.filter(k => k!="无")
+        }
+        
+        
+      }
+      
 		}
 	}
 
