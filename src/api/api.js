@@ -10,10 +10,10 @@ import axios from 'axios';
 // let base = 'http://192.168.1.121:9000';
 
 //正式服务器环境部署打包
-let base = 'http://b.tingzhijun.com';
+// let base = 'http://b.tingzhijun.com';
 
 //本地运行
-// let base = '';  
+let base = '';  
 
 //登录接口
 export const requestLogin = params => {
